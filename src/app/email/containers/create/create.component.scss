@@ -1,0 +1,150 @@
+.create__mail--action {
+  display: block;
+  padding: 10px;
+  margin: 0;
+  border-right: 1px solid rgba(0,0,0,.12);
+  font-size: 1.2em;
+
+  &:hover {
+    color: lightblue;
+    cursor: pointer;
+    &.danger {
+      color: red;
+    }
+  }
+
+  &:last-of-type {
+    border-right: none;
+  }
+}
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.example-container > * {
+  width: 100%;
+}
+
+.mat-input-element.mat-form-field-autofill-control ::placeholder {
+  font-size: 1.2em !important;
+  font-weight: 200 !important;
+}
+
+.mat-form-field-appearance-outline {
+  &.mat-form-field-can-float.mat-form-field-should-float {
+    .mat-form-field-outline-gap {
+      border-top-color: transparent;
+    }
+  }
+
+  .mat-form-field-outline-gap {
+    border: 1px solid currentColor;
+    border-left-style: none;
+    border-right-style: none;
+    border-radius: 1e-6px;
+
+    &::before {
+      content: none !important;
+    }
+  }
+}
+
+.quabbly__quoted--mail {
+    font: small/1.5 'Trebuchet MS', Consolas, 'Courier New', Arial,Helvetica,sans-serif;
+    letter-spacing: normal;
+}
+
+.attachment {
+  &__container {
+    max-width: 90%;
+    margin: 10px auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    min-width: 90%;
+    padding: 10px;
+  }
+
+  &.collapsed {
+    height: 0;
+    opacity: 0;
+    visibility: hidden;
+    padding: 0;
+    transition: 0.3s ease-in-out height;
+  }
+
+  &.expanded {
+    visibility: visible;
+    opacity: 1;
+    height: auto;
+    transition: 0.3s ease-out all;
+  }
+
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  margin: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.3);
+  &:last-of-type {
+    border-bottom: 0;
+  }
+
+  &.uploaded {
+    color: blue;
+  }
+
+  &__name {
+    font-size: 1.3em;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  &__name, &__size {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-around;
+  }
+}
+
+.remove {
+  cursor: pointer;
+  font-weight: bold;
+  height: 30px;
+  font-size: 1.5em;
+  width: 30px;
+  text-align: center;
+
+  &:hover {
+    color: #fff;
+    border-radius: 50%;
+    background-color: rgba(255, 0, 0, 0.4);
+    &::after {
+      content: '\00D7';
+    }
+  }
+
+  &::after {
+    content: '\2212';
+  }
+}
+
+.cursor__pointer {
+  cursor: pointer;
+}
+
+.hover__dark-bg {
+  &:hover {
+    background-color: #bbb;
+  }
+  width: 50px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,274 @@
+<div class="card-header">
+  <nav class="navbar ruler-nav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <span>
+          <button (click)="newTabHandler()" class="btn btn-primary" id="create-invoice">
+            Create Invoice
+            <i id="createinvoiceplusicon" class="fa fa-plus"></i>
+          </button>
+        </span>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="card-body">
+    <ngb-tabset #invoiceTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="forceResize($event, 'viewInvoice')">
+      <ngb-tab title="Invoice" id="viewInvoice">
+        <ng-template ngbTabContent>
+          <div class="details-header">
+            <h2 id="tableValue">{{tableValue}}</h2>
+            <div class="text-center" *ngIf="invoiceList && (invoiceList.length === 0)">
+              <div class="loading-tab">
+                <i class="fa fa-frown-o fa-2x text-secondary"></i><br />
+                <h5 id="no-invoice">No Invoice</h5>
+              </div>
+            </div>
+            <div class="text-center" *ngIf="!(invoiceList)">
+              <div class="loading-tab">
+                <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+              </div>
+            </div>
+            <ngx-datatable *ngIf="invoiceList && invoiceList.length" [rows]="rows" [columnMode]="'force'"
+              [headerHeight]="40" [footerHeight]="50" [rowHeight]="'auto'" [externalPaging]="true" [count]="count"
+              [offset]="offset" [limit]="limit" (page)='onPage($event)'>
+              <ngx-datatable-column name="Invoice Number">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template class="tab-column">
+                  <h6>{{row.secret.invoiceNumber}}</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Invoice Date">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6>{{row.secret.invoiceDate | date}}</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Invoice Due Date">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6>{{row.secret.invoiceDueDate | date}}</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Receiver Name">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6>{{row.secret.receiverName}}</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Receiver Phone Number">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6>{{row.secret.receiverPhoneNumber}}</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Date Created">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6>{{row.createdAt  | date }}</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Action">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <span class="action-span">
+                    <i (click)="showInvoice(content,row)" class="icon fa fa-eye fa-1.5x text-info" *ngIf="!row.active"
+                      placement="auto" ngbTooltip="View Invoice" id="viewinvoiceicon"></i>
+                  </span>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+        <ng-template ngbTabTitle>
+          <span [innerHTML]="tab.title"></span> &nbsp;
+          <span (click)="closeTab($event, tabIndex)" class="indicate--danger">
+            &times;
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <app-create-invoice *ngIf="tab.type === 'NEW_INVOICE' "
+            (invoiceCreatedSuccessfulEvent)="invoiceSuccessHandler($event, tabIndex)"></app-create-invoice>
+          <app-list-invoice *ngIf="tab.type === 'VIEW_INVOICE' " [listInvoiceData]="tab.content"></app-list-invoice>
+
+          <div class="details-header" *ngIf="tab.type ===  'NEW_PAGE' ">
+            <div class="card" id="invoice_to_print">
+
+              <div class="card-boday">
+
+                <div class="container">
+                  <div class="col-md-12">
+                    <div class="col-md-4">
+                      <h3 id="invoiceTab">Invoice</h3>
+                    </div>
+                    <div class="col-md-6 offset-8">
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+
+                    <div class="col-md-4 float-left">
+                      <table id="fromSender">
+                        <thead>
+                          <th id="from-label">From</th>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <span class="names"> {{invoiceToView.secret.senderName}}</span>
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.senderEmail}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.senderPhoneNumber}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.senderBusinessPhoneNumber}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.senderAddress}}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-md-4 float-left" id="receiver_info">
+                      <table id="toSender">
+                        <thead>
+                          <th id="to-label">To</th>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <span class="names">{{invoiceToView.secret.receiverName}}</span>
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.receiverEmail}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.receiverPhoneNumber}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.receiverAddress}}
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-md-4 float-right" id="invoice_detai">
+                      <table id="invoicedetail">
+                        <thead>
+                          <th id="invDetail-label">Invoice Details</th>
+                        </thead>
+                        <tbody>
+                          <tr class="invoice_content">
+                            <td>
+                              No: {{invoiceToView.secret.invoiceNumber}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              Date: {{invoiceToView.secret.invoiceDate | date}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              Due Date: {{invoiceToView.secret.invoiceDueDate | date}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              Terms: {{invoiceToView.secret.invoiceTerms}}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-md-12" id="itemDiv">
+                    <table id="itemTable">
+                      <thead id="invoiceheader">
+                        <th id="description-label">Description</th>
+                        <th id="price-label">Price</th>
+                        <th id="qty-label">Qty</th>
+                        <th id="amt-label">Amount</th>
+                      </thead>
+                      <tbody *ngFor="let item of invoiceToView.secret.items">
+                        <tr class="invoice_content">
+                          <td>{{item.itemDescription}}</td>
+                          <td><span>&#8358;</span> {{item.price}}</td>
+                          <td>{{item.quantity}}</td>
+                          <td><span>&#8358;</span> {{item.amount}}</td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="col-md-7 float-left">
+                      <table>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                    <hr>
+                    <div class="col-md-5 float-right">
+                      <table id="amtSection" class="table table-striped">
+                        <tbody>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation"> SubTotal:</td>
+                            <td><span>&#8358;</span> {{invoiceToView.secret.subTotal}}</td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation"> Tax:</td>
+                            <td> {{invoiceToView.secret.tax}} % </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation"> Total:</td>
+                            <td *ngIf="invoiceToView.secret.tax"> <span>&#8358;</span>
+                              {{invoiceToView.secret.total}}</td>
+                            <td *ngIf="!invoiceToView.secret.tax"> <span>&#8358;</span>
+                              {{invoiceToView.secret.subTotal}}</td>
+
+                          </tr>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation">
+                              Amount Paid:
+                            </td>
+                            <td><span>&#8358;</span> {{invoiceToView.secret.amountPaid}} </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation"> Balance Due:</td>
+                            <td *ngIf="invoiceToView.secret.tax"><span>&#8358;</span>
+                              {{invoiceToView.secret.balanceDue}}</td>
+                            <td *ngIf="!invoiceToView.secret.tax"><span>&#8358;</span>
+                              {{invoiceToView.secret.subTotal}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button id="downloadinvoice" type="button" (click)="captureScreen()">Download and Print</button>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

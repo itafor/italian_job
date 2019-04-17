@@ -1,0 +1,88 @@
+<div class="container">
+  <div class="details-header">
+    <div class="row">
+      <div class="col-lg-12 emp-form">
+        <div class="card">
+          <div class="modal-header">
+            <h4 class="modal-title" id="createinventoryheader">New Inventory</h4>
+          </div>
+          <div class="card-body col-5" style="margin: auto; width: 70%">
+            <app-alert></app-alert>
+            <form #createInventory=ngForm [formGroup]="form" (ngSubmit)="onSubmit()">
+              <div class="form-group row">
+                <div class="col-9">
+                  <label for="inventoryName" id="itemdescription-label" class="col-3 col-form-label">Item
+                    Description<span style="color:red">*</span></label>
+                  <textarea (keyup)="initDescription($event)" type="text" id="itemdescription-input"
+                    class="form-control" [formControl]="form.controls['item_description']"
+                    [ngClass]="{'is-invalid': form.controls['item_description'].hasError('required') && form.controls['item_description'].touched}">
+                  </textarea>
+                  <div class="invalid-feedback"
+                    *ngIf="form.controls['item_description'].hasError('required') && form.controls['item_description'].touched">
+                    Item Description is required.</div>
+                  <small class="show-error" *ngIf="itemerrmessage">
+                    At least 3 Characters
+                  </small>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-7">
+                  <label for="categoryName" id="category-label" class="col-3 col-form-label">Category</label>
+                  <div class="form-group">
+                    <select id="selectcategory" style="margin-top: 10px;" class="custom-select mr-sm-6" id="category-input"
+                      [formControl]="form.controls['category']"
+                      [ngClass]="{'is-invalid': form.controls['category'].hasError('required') && form.controls['category'].touched}">
+                      <option selected value="">Choose Inventory Category</option>
+                      <option id="category-{{index}}" *ngFor="let category of inventoryCategory; let index = index"
+                        value="{{category._id}}">{{category.secret.name? category.secret.name : 'None'}}
+                      </option>
+                    </select>
+                    <div class="invalid-feedback"
+                      *ngIf="form.controls['category'].hasError('required') && form.controls['category'].touched">Please
+                      select a category</div>
+                  </div>
+                  <small class="show-error" *ngIf="errmessage">
+                    At least 3 Characters
+                  </small>
+                </div>
+              </div>
+                <div class="form-group row">
+                  <div class="col-4">
+                    <label for="itemUnitCcost" id="unitcost-label" class="col-form-label">Unit Cost<span
+                        style="color:red">*</span></label>
+                    <input (keyup)="initUnitCost($event)" type="number" id="unitcost-input" class="form-control"
+                      [formControl]="form.controls['unit_cost']"
+                      [ngClass]="{'is-invalid': form.controls['unit_cost'].hasError('required') && form.controls['unit_cost'].touched}">
+                    <div class="invalid-feedback"
+                      *ngIf="form.controls['unit_cost'].hasError('required') && form.controls['unit_cost'].touched">
+                      Please specify unit cost.</div>
+                      <small class="show-error" *ngIf="unitmessage">
+                        At least 3 Numbers
+                      </small>
+                  </div>
+                </div>
+                  <div class="form-group row">
+                    <div class="col-4">
+                      <label for="itemQuantity" id="quantity-label" class="col-form-label">Quantity<span
+                          style="color:red">*</span></label>
+                      <input type="number" id="quantity-input" class="form-control"
+                        [formControl]="form.controls['quantity']"
+                        [ngClass]="{'is-invalid': form.controls['quantity'].hasError('required') && form.controls['quantity'].touched || form.controls['quantity'].hasError('minlength') || form.controls['quantity'].hasError('maxlength')}">
+                      <div class="invalid-feedback"
+                        *ngIf="form.controls['quantity'].hasError('required') && form.controls['quantity'].touched">
+                        Please specify a quantity.</div>
+                    </div>
+                  </div>
+                    <div class="d-flex justify-content-center mt-4 mb-4">
+                      <button class="btn btn-primary" id="createInventoryBtn" type="submit"
+                        [disabled]="!form.valid || disableBtn"><i *ngIf="loading" class="fa fa-spinner fa-spin"></i>
+                        Create Inventory
+                      </button>
+                    </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

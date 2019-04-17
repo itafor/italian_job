@@ -1,0 +1,50 @@
+#invoice {
+    font-family:'Courier New', Courier, monospace; font-style:italic; font-size:50px; margin-top: 20px;
+}
+#invoiceLogo{
+    margin-top: -90px;
+}
+#invoiceheader{
+   background-color:#eae6f1; color: #333; 
+  font-size: 18px;
+}
+#itemTable{
+   width: 100%;
+}
+
+#itemDiv{
+    margin-top: 210px;
+}
+#from , #to , #invoicedetail{
+    font-size: 18px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+
+.invoiceCalculation{
+    font-family: 'Courier New', Courier, monospace
+}
+
+.names{
+    font-size:18px;
+}
+#printInvoice{
+    margin-right: 5px;
+}
+
+#delete_invoice{
+    margin-right: 10px;
+    }
+.invoice_content{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+}    
+#tableValue{
+    font-size: 2px;
+    opacity: 0.01;
+}
+    @media only screen and (max-width: 600px) {
+        #delete_invoice{
+            margin-right: 5px;
+            }
+      }

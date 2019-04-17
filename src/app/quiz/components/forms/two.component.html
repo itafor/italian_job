@@ -1,0 +1,281 @@
+<!-- Quiz Wizrd Step Two Begins -->
+<div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="display-4" style="font-size:1.3rem;">Quiz Settings</div>
+        </div>
+
+        <div class="card-body">
+          <form id="step_two_form" [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-md-10 offset-md-1">
+                <div class="form-group row">
+                  <label for="duration" class="col-2 col-form-label">Quiz Duration</label>
+                  <div class="col-10">
+                    <div class="row">
+                      <div class="col-6">
+                          <select [formControl]="f.quizDurationMinutes" class="form-control" id="duration" required>
+                              <option selected>--Select Number of Minutes--</option>
+                        <option *ngFor="let m of minutes" value="{{m}}">{{m}}</option>
+                            </select>
+
+                      </div>
+                      <div class="px-2 py-2">:</div>
+                      <div class="col">
+                          <select class="form-control" [formControl]="f.quizDurationHours" id="duration" required>
+                              <option selected>--Select Number of Hours--</option>
+                              <option *ngFor="let h of hours" value="{{h}}">{{ h }}</option>
+                          </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+                <div class="form-group row mt-4">
+                  <label for="quiz_availability" class="col-2 col-form-label">Quiz Availability</label>
+                  <div class="col-10">
+                    <select [formControl]="f.quizAvailability" value="avail" class="form-control" id="quiz_availability" required>
+                      <option value="exam_always_available" selected>Quiz is always available</option>
+                      <option value="exam_available_at_specific_time">Quiz is available at a specified period</option>
+                    </select>
+                  </div>
+                </div>
+                <span class="danger" *ngIf="!form.controls['quizAvailability'].valid && form.controls['quizAvailability'].touched">This
+                    field
+                    is required.</span>
+
+
+
+
+
+                  <div *ngIf="f['quizAvailability'].value === 'exam_available_at_specific_time'">
+                <div class="form-group row mt-4">
+                  <label for="quiz_available_at" class="col-3 col-form-label">Period of Quiz Availability</label>
+                  <div class="col-9">
+                    <div class="row mb-2">
+                      <div class="col-6">
+                        <div class="form-group row">
+                          <label class="col-4 col-form-label">Start Date</label>
+                          <div class="col-8">
+                            <input class="form-control" type="date" id="available_start_date" [formControl]="f.quizAvailableAt">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group row">
+                          <label class="col-4 col-form-label">Start Time</label>
+                          <div class="col-8">
+                            <input class="form-control" type="time" id="available_start_time" [formControl]="f.quizAvailableAt">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-6">
+                        <div class="form-group row">
+                          <label class="col-4 col-form-label" for="available_end_date">End Date</label>
+                          <div class="col-8">
+                            <input class="form-control" type="date" id="available_end_date" [formControl]="f.quizAvailableAt">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group row">
+                          <label class="col-4 col-form-label" for="available_end_time">End Time</label>
+                          <div class="col-8">
+                            <input class="form-control" type="time" id="available_end_time" [formControl]="f.quizAvailableAt">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+
+
+                <hr class="mt-5 mb-4">
+
+                <div class="row mt-4">
+                  <div class="col-7">
+                    <div class="form-group row mt-4">
+                      <label class="col-5 col-form-label">Category of Questions</label>
+                      <div class="col">
+                        <select [formControl]="f['quizCategoryQuestion'] " class="form-control"  id="quiz_question_category" required>
+                          <option value="multiple_choice" selected>Multiple Choice Questions</option>
+                          <option value="fill_in_the_gap">Fill in the Gap Questions</option>
+                          <option value="mixed">Both Multiple Choice and Fill in the Gap Questions</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+
+                  <div class="col-5">
+                    <div class="form-group row mt-4 pt-2" style="padding-left:2px;">
+                      <label class="custom-control custom-checkbox">
+                        <input type="checkbox" [formControl]="f.displayResult" class="custom-control-input" id="display_result_after_quiz" checked required>
+                        <span class="custom-control-label"></span>
+                        <span class="custom-control-description">Allow quiz respondents see their result after quiz ends</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <span class="danger" *ngIf="!form.controls['quizCategoryQuestion'].valid && form.controls['quizCategoryQuestion'].touched">This field
+                    is required.</span>
+
+
+
+                <div class="form-group row mt-4">
+                  <label for="question_answer_shuffle" class="col col-form-label">Question/Answer Shuffle</label>
+                  <div class="col-9">
+                    <select [formControl]="f.shuffleQuestions" class="form-control"  id="question_answer_shuffle" required>
+                      <option value="dont_shuffle" selected>Do not Shuffle</option>
+                      <option value="shuffle_questions_only">Shuffle Questions only</option>
+                      <option value="shuffle_questions_answers">Shuffle both Questions and Answer</option>
+                    </select>
+                  </div>
+                </div>
+                <span class="danger" *ngIf="!form.controls['shuffleQuestions'].valid && form.controls['shuffleQuestions'].touched">This field
+                    is required.</span>
+
+                <div class="row mt-4">
+                  <div class="col-6">
+                    <div class="form-group row mt-4" style="padding-left:2px;">
+                      <label class="custom-control custom-checkbox">
+                        <input type="radio" class="custom-control-input" id="retake_quiz " checked required [formControl]="f.retakeQuiz" [value]="false">
+                        <span class="custom-control-label"></span>
+                        <span class="custom-control-description">Allow quiz respondents re-take the quiz</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group row" style="padding-top: 15px;">
+                      <label for="times_to_retake_quiz" class="col-6 col-form-label">Number times to re-take the quiz</label>
+                      <div class="col">
+                        <input class="form-control" type="number" id="times_to_retake_quiz"  value=5 min="0" max="10">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row mt-4" style="padding-left:2px;">
+                  <label class="custom-control custom-checkbox">
+                    <input [formControl]="f.navigateQuiz" type="checkbox" class="custom-control-input"  id="navigate_quiz_back" checked required>
+                    <span class="custom-control-label"></span>
+                    <span class="custom-control-description">Allow quiz respondents re-answer a question</span>
+                  </label>
+                </div>
+
+                <div class="form-group row mt-4" style="padding-left:2px;">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" [formControl]="f.attemptAll"  id="attempt_all_questions" checked required>
+                    <span class="custom-control-label"></span>
+                    <span class="custom-control-description">Quiz respondents must answer all questions</span>
+                  </label>
+                </div>
+
+                <hr class="mt-5 mb-4">
+
+                <div class="form-group row mb-4">
+                  <label for="result_score_form" class="col-3 col-form-label">Form of Result</label>
+                  <div class="col-9">
+                    <select [formControl]="f.resultView" class="form-control"  id="result_score_form" required>
+                      <option value="result_score_in_percentage" selected>Result in Percentage</option>
+                      <option value="result_score_in_points">Result in Points</option>
+                    </select>
+                  </div>
+                </div>
+                <span class="danger" *ngIf="!form.controls['resultView'].valid && form.controls['resultView'].touched">This field
+                    is required.</span>
+
+
+
+
+                <div *ngIf="f.resultView.value === 'result_score_in_percentage'">
+                <div class="form-group row mb-4">
+                  <label for="percentage_grading_option" class="col-3 col-form-label">Percentage Grading Option</label>
+                  <div class="col-9">
+                    <select [formControl]="f.percentageGradingOption" class="form-control" id="percentage_grading_option" required>
+                      <option  value="{{ gradingenum.cutoff }}" selected>Pass/Fail Percentage Grading</option>
+                      <option value="custom_grading">Custom Percentage Grading</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <span class="danger" *ngIf="!form.controls['percentageGradingOption'].valid && form.controls['percentageGradingOption'].touched">This field
+                  is required.</span>
+
+
+
+              <div *ngIf="f.percentageGradingOption.value === gradingenum.cutoff">
+                <div class="form-group row mb-4">
+                  <label for="pass_fail_custom_grading" class="col-3 col-form-label">Minimum Pass Score</label>
+                  <div class="col-4">
+                    <input type="number" class="form-control" id="pass_fail_custom_grading"  placeholder="50" value="50">
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="f.percentageGradingOption.value === gradingenum.custom">
+                <div class="form-group row mb-4">
+                  <label for="custom_grading" class="col-3 col-form-label">Custom Grading Option</label>
+                  <div class="col-9">
+                    <div class="table-responsive">
+                      <table class="table-sm">
+                        <thead>
+                          <tr colspan="2">
+                              <td style="display: flex;" colspan="2">
+                                  <button class="btn btn-success mr-2 mb-1" (click)="addGrade()">+</button>
+                                  <button type="button" class="btn btn-danger mr-1 mb-1">Delete</button>
+                                </td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let customGradeOpts of this.f['customPassingGrade'].controls;" [formGroup]="customGradeOpts">
+                            <td><input type="text" formControlName="grade_name" class="form-control"></td>
+                            <td><input type="number" formControlName="min_grade" class="form-control"></td>
+                            <td><input type="number" formControlName="max_grade" class="form-control"></td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                </div>
+
+                <hr class="mt-5 mb-4">
+
+                <div class="form-group row mt-4" style="padding-left:2px;">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input"  id="use_as_default" checked required>
+                    <span class="custom-control-label"></span>
+                    <span class="custom-control-description">Use settings as default</span>
+                  </label>
+                </div>
+
+                <div class="row float-right">
+                  <div class="col-12">
+                    <button id="step_two_previous" (click)="saveAndGoBack()"
+                    class="btn btn-secondary loading-demo py-2 mr-3 mb-1">
+                      <i class="icon ion-ios-arrow-back pr-2"></i>
+                      Previous
+                    </button>
+                    <button type="submit" id="step_two_submit" [disabled]="form.invalid" class="btn btn-primary loading-demo py-2 mr-2 mb-1"> <i *ngIf="loading" class="fa fa-spinner fa-spin"></i>  Next<i class="icon ion-ios-arrow-forward pl-2"></i>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

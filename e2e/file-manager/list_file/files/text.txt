@@ -1,0 +1,12 @@
+my name is alabi sodiq am a student of kwara state polytechnic am currently available for 1 year intership
+i studied computer science in which in specialized in learning web design and development
+
+am currently implementing various skills i have acquire so far which i am using to develop news application which is being designed and developed  react and redux framework. It includes displaying of sport news and entertainment news 
+from an api .This project has a unique User Experience & User Interface which was implmented with react-bootstrap framework and react-slick. its responsive and i make sure the website load fast by making of api for images. 
+
+i have completed few project such as:
+
+1.A resturant website which display different dishes on the website developed with Angular Framework
+2.Part of the team that developed InvestNaira website which react framework was majorly used.
+3.An Event web application where you can create event and display information about the event such as time, date,event name and description of the event.
+4.Elite-Schedule application which display various team information and it contain the table and games of team it was developed with Ionic framework

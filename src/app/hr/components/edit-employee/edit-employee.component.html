@@ -1,0 +1,139 @@
+<div class="details-header">
+  <div class="row">
+    <div class="col-lg-12 emp-form">
+      <div class="card">
+        <div class="modal-header">
+          <h4 class="modal-title" id="editEmployeeHeader">Updating {{ employeeData.employeeSecret.firstname }} </h4>
+        </div>
+        <div class="card-body">
+          <div class="text-center">
+            <app-alert></app-alert>
+          </div>
+          <form [formGroup]="form" (ngSubmit)="onUpdate($event)">
+            <div class="form-group row">
+              <label for="example-text-input" class="col-2 col-form-label">Names</label>
+              <div class="col-lg-3 employee-input">
+                <input type="text" id="edit-employee-firstname" class="form-control"
+                  [formControl]="form.controls['firstname']"
+                  [ngClass]="{'is-invalid': form.controls['firstname'].hasError('required') ||  form.controls['firstname'].hasError('minlength') || form.controls['firstname'].hasError('maxlength') && form.controls['firstname'].touched}" />
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['firstname'].hasError('required') && form.controls['firstname'].touched">
+                  Firstname
+                  is required.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['firstname'].hasError('minlength') && form.controls['firstname'].touched">
+                  Firstname
+                  must be 3 charactors or more.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['firstname'].hasError('maxlength') && form.controls['firstname'].touched">
+                  Firstname
+                  must not exceed 50 characters.</div>
+              </div>
+              <div class="col-lg-3 employee-input">
+                <input type="email" id="edit-employee-middlename" class="form-control"
+                  [formControl]="form.controls['middlename']" />
+              </div>
+              <div class="col-lg-3">
+                <input type="text" id="edit-employee-lastname" class="form-control"
+                  [formControl]="form.controls['lastname']"
+                  [ngClass]="{'is-invalid': form.controls['lastname'].hasError('required') || form.controls['lastname'].hasError('minlength') || form.controls['lastname'].hasError('maxlength')  && form.controls['lastname'].touched}"
+                  placeholder="Lastname" />
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['lastname'].hasError('required') && form.controls['lastname'].touched">Lastname
+                  is required.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['lastname'].hasError('minlength') && form.controls['lastname'].touched">Lastname
+                  must be 3 charactors or more.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['lastname'].hasError('maxlength') && form.controls['lastname'].touched">Lastname
+                  must not exceed 50 characters.</div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="example-search-input" class="col-2 col-form-label">Company Email</label>
+              <div class="col-lg-9">
+                <input type="email" id="edit-employee-companyemail" class="form-control"
+                  [formControl]="form.controls['companyEmail']"
+                  [ngClass]="{'is-invalid': form.controls['companyEmail'].hasError('email') && form.controls['companyEmail'].touched}" />
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['companyEmail'].hasError('email') && form.controls['companyEmail'].touched">Email
+                  is not valid.</div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="example-email-input" class="col-2 col-form-label">Personal Email</label>
+              <div class="col-lg-9">
+                <input type="email" id="edit-employee-personalemail" class="form-control"
+                  [formControl]="form.controls['personalEmail']"
+                  [ngClass]="{'is-invalid': form.controls['personalEmail'].hasError('required') || form.controls['personalEmail'].hasError('email') && form.controls['personalEmail'].touched}" />
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['personalEmail'].hasError('required') && form.controls['personalEmail'].touched">
+                  Personal
+                  Email
+                  is required.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['personalEmail'].hasError('email') && form.controls['personalEmail'].touched">
+                  Email
+                  is not valid.</div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="example-url-input" class="col-2 col-form-label">House Address</label>
+              <div class="col-lg-9">
+                <textarea id="edit-employee-houseaddress" class="form-control emp-address"
+                  [formControl]="form.controls['houseAddress']"
+                  [ngClass]="{'is-invalid': form.controls['houseAddress'].hasError('required') && form.controls['houseAddress'].touched}"></textarea>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['houseAddress'].hasError('required') && form.controls['houseAddress'].touched">
+                  House
+                  address is required.</div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="example-tel-input" class="col-2 col-form-label">Telephone</label>
+              <div class="col-lg-5 employee-input">
+                <input type="text" id="edit-employee-phoneone" class="form-control"
+                  [formControl]="form.controls['phone1']"
+                  [ngClass]="{'is-invalid': form.controls['phone1'].hasError('pattern') || form.controls['phone1'].hasError('required') || form.controls['phone1'].hasError('minlength') || form.controls['phone1'].hasError('maxlength') && form.controls['phone1'].touched}"
+                  placeholder="Phone One" />
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['phone1'].hasError('required') && form.controls['phone1'].touched">Telephone
+                  is required.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['phone1'].hasError('maxlength') && form.controls['phone1'].touched">Phone
+                  number must be 11 characters.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['phone1'].hasError('minlength') && form.controls['phone1'].touched">
+                  Phone number must be 11 characters.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['phone1'].hasError('pattern') && form.controls['phone1'].touched">
+                  Phone number must be a number.</div>
+              </div>
+              <div class="col-lg-4 employee-input">
+                <input type="text" id="edit-employee-phonetwo" class="form-control" placeholder="Phone Two"
+                  [formControl]="form.controls['phone2']"
+                  [ngClass]="{'is-invalid': form.controls['phone2'].hasError('pattern') || form.controls['phone2'].hasError('minlength') || form.controls['phone2'].hasError('maxlength') && form.controls['phone2'].touched}" />
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['phone2'].hasError('maxlength') && form.controls['phone2'].touched">
+                  Phone number must be 11 characters.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['phone2'].hasError('minlength') && form.controls['phone2'].touched">
+                  Phone number must be 11 characters.</div>
+                <div class="invalid-feedback"
+                  *ngIf="form.controls['phone2'].hasError('pattern') && form.controls['phone2'].touched">
+                  Phone number must be a number.</div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-center mt-4 mb-4">
+              <button id="editBtn" [disabled]="isBtnDisabled()" (click)="onUpdate($event)"
+                class="btn btn-primary disable-edit-submit" type="submit">
+                <i *ngIf="loading" class="fa fa-spin fa-spinner"></i>
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

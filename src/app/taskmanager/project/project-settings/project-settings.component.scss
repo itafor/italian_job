@@ -1,0 +1,27 @@
+.sidebar-x {
+    border-right: 1px solid #cccccc29;
+    height: 100%;
+}
+
+.list-group a {
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+
+}
+
+.scrol-br {
+ overflow: hidden !important;
+}
+
+.active, .list-group a:hover {
+    color: #7386D5;
+    background-color: #eee;
+    transition: .3s ease-in;
+    border-radius: 5px;
+}
+
+.details-header {
+    margin: 30px 16px 0px;
+    background-color: #fff;
+    padding: 18px;
+}

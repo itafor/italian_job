@@ -1,0 +1,525 @@
+<!-- <ngb-tabset type="pills">
+<ngb-tab title="Project Board" class="btn btn-dark">
+<ng-template ngbTabContent> -->
+<div id="addtaskandcolumn" style="display: flex; padding: 0rem 0.5rem 0rem 0.5rem">
+  <span class="project-name">
+    {{allColumnData && allColumnData.project && allColumnData.project.projectSecret && allColumnData.project.projectSecret.name ? allColumnData.project.projectSecret.name : ''}}
+  </span>
+  <div *ngIf="allColumnData && allColumnData.columnList && allColumnData.columnList.length > 0">
+    <button (click)="opentaskform(task)" class="btn btn-primary addtask">
+      Add Task &nbsp; <i class="fa fa-tasks"></i>
+    </button>
+  </div>
+  <div style="margin-left: auto;" *ngIf="allColumnData">
+    <button (click)="open(content)" class="btn btn-primary addcolumn">
+      <i class="fa fa-plus-circle"></i> Add New Column
+    </button>
+  </div>
+</div>
+<div *ngIf="tasksloader">
+  <div id="loader">
+  </div>
+</div>
+<div class="taskboard page-height movedcolumns custom-scroll position-relative" dragula="rearrangetaskcolumns" #refTaskboard>
+  <div id="drop list-container" class="taskboard-wrapper" (click)="loadSelectedColumnDetail(board)"
+    *ngFor="let board of taskboardColumnList; let i = index;" [attr.data-column_id]="board.id">
+    <div class="taskboard-list" style="box-shadow: unset; background: #e3e3e3 !important;">
+      <div id="taskboard-header" class="taskboard-header text-uppercase">
+        <!-- Never Move Us Starting from here-->
+        <div class="thecolumntomove">+</div>
+        <div style="display: none">
+          <input id="taskboardinput" class="the-taskboard-input" value="{{board.columnSecret.name}}"
+            style="padding-left: 10px; border-radius: 2px; position: relative;" />
+          <input style="display: none" value="{{board.id}}">
+          <span style="display: none">{{board.id}}</span>
+          <span data-role="updateColumnNameCTA" (click)="updateColumnName($event)"
+            style="position: absolute; right: 60px; top: 10px; color: #66bb6a; cursor: pointer;">
+            <i id="clickedit" class="fa fa-edit"></i>
+          </span>
+        </div>
+        <!-- Never Move Us Stopping here-->
+        <span id="tasklistname" class="task-list-name-badge">
+          <span class="task-list-name">
+            {{board.columnSecret.name}}
+          </span>
+          <span class="badge badge-secondary position-badge"
+          *ngIf="columnsWithCount[board.id]">{{ columnsWithCount[board.id] }}</span>
+        </span>
+        <div  id="columnOptions" class="dropdown remove-caret" placement="left-top" ngbDropdown *ngIf="auth.isAdmin">
+          <button id="columnOptionsDropdown" type="button" class="btn btn-light py-1 px-2" ngbDropdownToggle style="background-color: transparent !important;"><i class="ion-ios-more"></i></button>
+          <div class="dropdown-menu py-0" role="menu" ngbDropdownMenu>
+             <button (click)="openEditColumnNameModal(board)"
+              class="dropdown-item py-2"><i class="fa fa-edit"></i>  Edit</button>
+            <button class="dropdown-item py-2" (click)="confirmDeleteColumn(board)">
+              <i class="fa fa-trash"></i> Delete</button>
+            </div>
+        </div>
+        <span class="sr-only">number of tasks in column</span>
+        <span style="display: none">{{board.id}}</span>
+      </div>
+
+      <div id="viewtaskdetails list" class="taskboard-cards custom-scroll" dragula="rearrangetask" [attr.data-columnid]="board.id">
+        <div (click)="opentaskdetail(taskdetail, task)" *ngFor="let task of taskListGroupedByColumn[board.id]" [attr.data-taskid]="task.id">
+          <div id="drag" class="taskboard-task" style="margin-bottom: .5rem; background-color: #fff !important">
+            <span class="task-priority" *ngIf="task.taskSecret.priority"><i class="icon ion-bookmark" [style]="getColorForPriority(task.taskSecret.priority) | sanitizeTaskStyle"></i></span>
+            <div class="taskboard-task-title card-text" style="cursor: unset">
+              <a style="color: #000;" routerLink="/taskmanager/project/{{ currentTaskboardId }}/{{ task.id }}"
+              (click)="stopPropagation($event)">{{task.taskSecret.summary}}</a>
+            </div>
+            <small class="card-text text-muted"
+              style="padding-top: 15px; color: #8f8f8f !important">{{ stripTagsFromContent(task.taskSecret.description)  }}</small>
+            <span style="display: none">{{task.id}}</span> <!-- Never Move Me-->
+            <span style="display: none">{{board.id}}</span> <!-- Never Move Me-->
+            <div class="taskmodal--meta__container">
+              <div style="text-transform: uppercase">
+                <div class="badge taskboard-assignee">M</div> {{task.createdTime | date:'d MMM'}}
+              </div>
+              <div style="position: absolute; right: 23%;">
+                <i class="icon ion-android-attach mr-1"></i>
+                {{ getTaskDataCount(task, 'attachments') }}
+              </div>
+              <div style="position: absolute; right: 6%;">
+                <i class="icon ion-chatbox-working mr-1"></i>
+                {{ getTaskDataCount(task, 'comments') }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card position-absolute" style="bottom: 0; right: 0;" *ngIf="outOfSync">
+    <div class="card-body">
+      <p style="margin-bottom: 0; width: 180px; color: #555;white-space: pre-wrap;">An error occured. Your last changes were not saved</p>
+    </div>
+  </div>
+  <div class="taskboard-indicator position-fixed" [ngClass]=" {'d-none': !showLeftScroller} "
+  (click)="scrollTaskIntoView('first')" (dblclick)="scrollTaskIntoView('first', true)">
+    <span>
+      <i class="fa fa-arrow-left"></i>
+    </span>
+  </div>
+  <div class="taskboard-indicator position-fixed right" [ngClass]=" {'d-none': !showRightScroller} "
+  (click)="scrollTaskIntoView('last')" (dblclick)="scrollTaskIntoView('last', true)">
+    <span>
+      <i class="fa fa-arrow-right"></i>
+    </span>
+  </div>
+</div>
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 ngbAutofocus class="modal-title" id="modal-basic-title">New Column</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="columnForm" (ngSubmit)="submitForm()">
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="alert alert-danger center_msg" *ngIf="tasknameInputMaxErr">
+          <span>Maximum of 50 characters exceeded.</span>
+        </div>
+        <div class="form-group row">
+          <label id="modal-label" class="col-2 col-form-label" for="example-text-input">Name:</label>
+          <div class="col-10">
+            <input class="form-control col-title err-max" id="example-text-input" type="text"
+              [formControl]="columnForm.controls['columnName']" value="{{column_name}}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modal-submitbtn" class="modalfooter modal-footer tsk-modal-btn">
+      <button id="submitcolumns" class="btn btn-primary" type="submit" [disabled]="!columnForm.valid || disableBtn">
+        <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Add
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #task let-modal>
+  <div class="modal-header">
+    <h4 ngbAutofocus class="modal-title" id="modal-basic-title">Add Task</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="taskForm" (ngSubmit)="submitTaskForm()">
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="form-group row">
+          <label id="modal-label" class="col-2 col-form-label" for="example-text-input">Summary:</label>
+          <div class="col-10">
+            <input (keyup)="int(taskname)" class="form-control col-title err-max" id="example-text-input" type="text"
+              [formControl]="taskForm.controls['summary']" value="{{task_name}}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modal-submitbtn" class="modalfooter modal-footer tsk-modal-btn">
+      <button id="submittasks" class="btn btn-primary" type="submit" [disabled]="!taskForm.valid || disableBtn">
+        <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Add
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #taskdetail let-modal>
+  <div class="modal-header" data-role="taskmodal">
+    <div role="ProjectNameAndKey">
+      <i class="fa fa-ribbon"></i>
+      <span class="task__preview--header project">{{ projectName }}</span> >>
+      <a id="projectNameTitle" class="task__preview--header task"
+      href="/taskmanager/project/{{ currentTaskboardId }}/{{ selectedTaskId }}"
+      title="Go To Task Page" (click)="showTaskInFull($event, modal)"
+      [attr.data-taskuniquekey]="selectedTaskData.taskUniqueKey">
+        {{ selectedTaskData.taskUniqueKey }}</a>
+    </div>
+    <div style="display: flex; font-size: 16px; color: #616060; cursor: pointer;">
+      <span  class="mr-2" *ngIf="watcherApiCallLoading">
+        <i class="fa fa-spinner fa-spin"></i>
+      </span>
+      <div [ngClass]="{'force__disable_wrapper': watcherApiCallLoading } ">
+        <div [attr.title]="toolTip" class="watcher-section"
+      [ngClass]=" {'active': iamwatching, force__disable: watcherApiCallLoading}  " (click)="updateWatchStatus()">
+        <i id="watchers" class="fa" [ngClass]=" {'fa-eye':  !iamwatching, 'fa-eye-slash': iamwatching } " style="cursor: pointer; "></i>
+        <div style="margin-left: 10px; font-size: 13px; ">{{selectedTaskWatchers ? selectedTaskWatchers.length : 0 }}
+        </div>
+      </div>
+      </div>
+      <div aria-hidden="true" ngbAutofocus class="close" style="margin-left: 45px; margin-top: -13px;"
+        (click)="modal.dismiss('Cross click')">&times;</div>
+    </div>
+    <div (mouseenter)="makeWatcherVisible()" (mouseleave)="hideWatchers()" class="allwatchers" *ngIf="viewwatchers">
+      <div id="startwatchers" class="watcher-bio watcher-action" (click)="actionTaskWatcher(true)" *ngIf="!iamwatching">
+        <i class="fa fa-eye" style="color: #333a67; font-weight: bold; padding-top: 4px; padding-right: 10px;"></i>
+        Start watching
+      </div>
+      <div id="stopwatchers" class="watcher-bio watcher-action" (click)="actionTaskWatcher(false)" *ngIf="iamwatching">
+        <i class="fa fa-eye" style="color: #333a67; font-weight: bold; padding-top: 4px; padding-right: 10px;"></i>
+        Stop watching
+      </div>
+      <div *ngFor="let watcher of selectedTaskWatchers">
+        <div class="col-12 each-watcher">
+          <i class="fa fa-user-circle" style="padding-top: 3px; color: #5c6bc0; font-size: 25px;"></i>
+          <div class="watcher-bio">{{watcher.userName}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-body" style="padding-bottom: 0px;overflow-y: scroll;">
+    <div class="row">
+      <div class="col-8">
+        <div class="the-task-summary inputheader" style="margin-left:0;" (click)="startEditingSummary()" [ngClass]=" {'height--100px': editingState.summary} ">
+          <span [ngClass]="  { 'd-none': editingState.summary } "
+            class="editheader adjust-form-control card-text">{{ selectedtasksummary }}</span>
+            <span *ngIf="apiCallState.taskSummary.loading" class="pos__inside"><i class="fa fa-spinner fa-spin"></i></span>
+            <span *ngIf="apiCallState.taskSummary.message"
+            class="ml-3 indicate pos__inside"
+            [ngClass]=" { 'indicate--error': apiCallState.taskSummary.error,
+             'indicate--success': !apiCallState.taskSummary.error } "> {{ apiCallState.taskSummary.message }} </span>
+          <input type="text" [ngClass]=" { 'd-none': !editingState.summary } "
+            class="editheader form-control position-relative"
+            value="{{ selectedtasksummary }}" id="removeblur"
+            (keyup)="checkForEnter($event, updateTaskSummary)" >
+            <span class="task__status--underneath">{{ selectedColumnData ? selectedColumnData.columnSecret.name : ''  }}</span>
+
+        </div>
+        <div class="task__summary--confirmation">
+          <div class="taskheaderactionicons" *ngIf="editingState.summary">
+            <i id="acceptheaderchanges" (click)="updateTaskSummary()" class="btn fa fa-check"></i>
+            <i id="rejectheaderchanges" (click)="finishEditingSummary()" class="btn fa fa-times"></i>
+          </div>
+        </div>
+        <div class="position-relative">
+          <span *ngIf="apiCallState.taskDescription.loading" class="pos__inside" style="top: -20px;"><i class="fa fa-spinner fa-spin"></i></span>
+          <span *ngIf="apiCallState.taskDescription.message"
+          class="ml-3 indicate pos__inside"
+          [ngClass]=" { 'indicate--error': apiCallState.taskDescription.error,
+            'indicate--success': !apiCallState.taskDescription.error } "> {{ apiCallState.taskDescription.message }} </span>
+
+          <div [innerHTML]="currenttaskdescription | sanitizeTaskHtml" *ngIf="!editingState.description && currenttaskdescription"
+          (click)="startEditingDescription()" class="task__description--container"></div>
+          <div *ngIf="!editingState.description && !currenttaskdescription"
+          (click)="startEditingDescription()"
+          class="task__description--container">
+            <p class="lead text-muted none__yet task-manager__text">No Description yet...</p>
+          </div>
+          <div *ngIf="editingState.description" class="w-100 mt-2" style="padding-left: 0.75em;">
+            <app-editor-with-buttons [data]="currenttaskdescription" (cancel)="finishEditingDescription()"
+              (submit)="updateDescription($event)"></app-editor-with-buttons>
+          </div>
+        </div>
+        <div class="section__container">
+          <div class="row subtasks__container" style="margin-left: 0;margin-right: 0;">
+            <div class="row header__container" style="margin-left: 0; margin-right: 0;">
+              <div class="task-detail-sub-header col-11" style="margin-left: unset;padding-left:0; ">
+                <span class="mr-2 secondary__color"> <i class="fa fa-tasks"></i></span>SubTasks
+                <span *ngIf="apiCallState.subTask.loading"><i class="fa fa-spinner fa-spin"></i></span>
+                <span *ngIf="apiCallState.subTask.message"
+                class="ml-3 indicate"
+                [ngClass]=" { 'indicate--error': apiCallState.subTask.error, 'indicate--success': !apiCallState.subTask.error } "> {{ apiCallState.subTask.message }} </span>
+              </div>
+              <div class="subtask-action-btn" *ngIf="!subtaskfield" (click)="toggleCreateSubTask()">
+                <div id="addsubtaskbutton" class="notifier">
+                  <span><i class="fa fa-plus"></i></span>
+                </div>
+              </div>
+              <div class="subtask-action-btn" *ngIf="subtaskfield" (click)="toggleCreateSubTask()">
+                <div id="addsubtaskbutton" class="notifier">
+                  <span><i class="fa fa-minus"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12" *ngIf="subtaskfield" style="margin-bottom: 50px;">
+              <div class="col-12" style="position: absolute; margin-left: -14px;">
+                <input class="inty input-desc" type="text" placeholder="What needs to be done?"
+                style="width: 102%; padding-right: 80px; margin-top: 0;" autofocus (keyup)="checkForEnter($event, inputCreateSubtask)" />
+                <div
+                  style="display: flex; position: relative; bottom: 28px; float: right; left: -8px; font-size: 15px;">
+                  <i id="savesubtask" class="fa fa-check" (click)="inputCreateSubtask($event.target.parentElement.previousElementSibling.value)"
+                    style="cursor: pointer; color: #333a67 !important;"></i>
+                  <i id="cancelsubtask" class="fa fa-times" (click)="subtaskfield = false"
+                    style="margin-left: 17px; cursor: pointer; color: #ef5350;"></i>
+                </div>
+              </div>
+            </div>
+            <div class="list-group  subtasks">
+              <div class="list-group-item subtask" *ngFor="let subtask of selectedTaskSubTasks; let subTaskIndex = index;"
+              (click)="openSubtaskModal(subtask, subTaskIndex)">
+                <span class="indicator" data-role="subtaskupdate">
+                  <i class="fa fa-circle" title="view subtask"></i>
+                </span>
+                <p class="lead task-manager__text" style="font-weight: 600;margin-top: auto; margin-bottom: auto;"> {{ subtask.summary }}  </p>
+                <p class="time__details">
+                    <span style="font-size: 13px;color: #999;">{{subtask.createdTime | date : 'd MMM' }} </span>
+                </p>
+                <span class="user__widget--icon" style="line-height: 20px;width:unset;height:unset;">{{ initialsOf(subtask.userName) }}</span>
+              </div>
+              <p class="lead text-muted none__yet q-ml-20" *ngIf="!selectedTaskSubTasks?.length"> No subtasks for this
+                task yet... </p>
+            </div>
+          </div>
+        </div>
+        <div class="section__container">
+          <div class="row header__container mx-0">
+              <div class="task-detail-sub-header" style="margin-left:0; padding-left: 0;">
+                  <span class="mr-2 secondary__color"> <i class="fa fa-paperclip" style="margin: unset;"></i></span> Attachments
+                  <span *ngIf="apiCallState.attachments.loading"><i class="fa fa-spinner fa-spin"></i></span>
+                  <span *ngIf="apiCallState.attachments.message"
+                  class="ml-3 indicate"
+                  [ngClass]=" { 'indicate--error': apiCallState.attachments.error,
+                   'indicate--success': !apiCallState.attachments.error } "> {{ apiCallState.attachments.message }} </span>
+              </div>
+              <div class="subtask-action-btn" (click)="openAttachmentModal()">
+                  <div id="addattachmentCTA" class="notifier">
+                    <span><i class="fa fa-plus"></i></span>
+                  </div>
+              </div>
+          </div>
+          <div class="row" style="margin-left: 0px;" data-role="attachments">
+              <div data-role="attachment" class="attachment__container" *ngFor="let attachment of selectedAttachments">
+                <div class="image">
+                  <i class="{{  iconForAttachment(attachment) }} t__maskable"></i>
+                  <span class="download">
+                    <a target="_blank" title="Download {{attachment.filename}}"
+                    href="{{ urlWithToken(attachment.url) }}" style="cursor: pointer;">
+                        <i class="fa fa-cloud-download"></i>
+                    </a>
+                  </span>
+                  <span class="t__maskable" style="text-transform: uppercase;">
+                    {{  uiFileTypeForAttachment(attachment) }}
+                  </span>
+                </div>
+                <div class="details">
+                  <span>{{attachment.filename}}</span>
+                  <span>Added {{  attachment.created | date: 'd MMM' }} at {{  attachment.created | date: 'h:mm a' }}</span>
+                  <span class="deleteable" title="Delete attachment"
+                  (click)="confirmDeleteAttachment(attachment, selectedTaskId)">Delete</span>
+                </div>
+              </div>
+              <p class="lead text-muted q-ml-20 none__yet" data-role="noattachments"
+              *ngIf="!selectedAttachments?.length"> No attachments in this task yet... </p>
+          </div>
+        </div>
+        <div class="section__container">
+          <div class="row mx-0">
+              <div class="row header__container mx-0">
+                  <div class="task-detail-sub-header" style="padding-left: 0; margin-left: 0px;">
+                      <span class="mr-2 secondary__color"> <i class="fa fa-comment"></i></span>
+                      Comments
+                  </div>
+              </div>
+          </div>
+          <div id="commentarea">
+              <textarea id="taskcomment" class="addcommentarea form-control col-10"
+              placeholder="Add comment..." rows="1" [(ngModel)]="defaultcomment" ref-commentBox></textarea>
+                <button id="savecomment" class="btn btn-block" (click)="createTaskComment()"
+                  [disabled]="disableBtn || !defaultcomment.trim().length">
+                      <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Save
+                </button>
+                <span aria-hidden="true" class="commentarea__formatting"> Formatting Help: &nbsp;
+                <b>*bold*</b>&nbsp;<i >_italics_</i>&nbsp; ~strike~ <code >`code`</code>&nbsp;<code >```preformatted```</code></span>
+          </div>
+          <div class="task-comments__container" style="width: 100%; margin-top: 50px;">
+              <app-quabbly-comment-component
+              *ngFor="let comment of selectedTaskComments;let commentIndex = index;"
+              [comment]="comment" [authorizedToModifyComment]="authorization(comment)"
+              (deleteInitiated)="confirmDeleteComment($event, commentIndex, selectedTaskId)"
+              (commentUpdated)="updateComment($event, comment.uuid, commentIndex, selectedTaskId)"
+              [error]="comment['error']" [errorTimeout]="500">
+              </app-quabbly-comment-component>
+              <div style="visibility: hidden; height: 2px; width: 100%;" id="taskmanager-modal-refScrollComments"></div>
+              <div *ngIf="!selectedTaskComments?.length">
+                <p class="lead text-muted q-ml-20 none__yet">
+                  No comments on this task...
+                </p>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 task--meta__container">
+        <div class="task--meta">
+          <span class="header" id="statusLog">Status
+            <span *ngIf="apiCallState.status.loading" class="ml-3"><i class="fa fa-spinner fa-spin"></i></span>
+            <span *ngIf="apiCallState.status.message"
+            class="ml-3 indicate"
+            [ngClass]=" { 'indicate--error': apiCallState.status.error,
+             'indicate--success': !apiCallState.status.error } "> {{ apiCallState.status.message }} </span>
+          </span>
+          <span class="task__status cta uppercase" (click)="toggleUpdatingStatus()" style="color: #999;font-weight: bolder;"
+          *ngIf="!updatingStatus">{{selectedColumnData ? selectedColumnData.columnSecret.name : ''}}</span>
+          <div class="assignee-display" [ngClass]="  {'priority__selection': updatingStatus} ">
+            <span class="assignee-display-word" *ngIf="updatingStatus"
+            (click)="toggleUpdatingStatus()">  {{ selectedColumnData ? selectedColumnData.columnSecret.name : '' }} </span>
+          </div>
+          <div [ngClass]=" { 'd-none':  !updatingStatus } " class="selectable__dropdown">
+            <div (click)="updateStatus(column.id)" class="form-control searchable"
+            *ngFor="let column of statusesAvailableToUpdateTo">
+              <span class="assignee-display-word"> {{ column.columnSecret.name }}  </span>
+            </div>
+          </div>
+        </div>
+        <div class="task--meta">
+            <span class="header">Priority
+              <span *ngIf="apiCallState.priority.loading" class="ml-3"><i class="fa fa-spinner fa-spin"></i></span>
+                  <span *ngIf="apiCallState.priority.message"
+                  class="ml-3 indicate"
+                  [ngClass]=" { 'indicate--error': apiCallState.priority.error,
+                   'indicate--success': !apiCallState.priority.error } "> {{ apiCallState.priority.message }} </span>
+            </span>
+            <span class="task__status cta uppercase"   (click)="toggleUpdatingPriority()" *ngIf="!updatingPriority"
+            [style]="getStylesForPriority([priority]) | sanitizeTaskStyle">{{ priority }}</span>
+            <div class="assignee-display" [ngClass]="  {'priority__selection': updatingPriority} ">
+              <span class="assignee-display-word" *ngIf="updatingPriority" (click)="toggleUpdatingPriority()">  {{ priority }} </span>
+            </div>
+            <div [ngClass]=" { 'd-none':  !updatingPriority } " class="selectable__dropdown">
+              <div (click)="updatePriority(priority.text)" class="form-control searchable" *ngFor="let priority of prioritiesAvailableToUpdateTo">
+                <span class="assignee-display-word" [style]="priority.color | sanitizeTaskStyle"> {{ priority.text }}  </span>
+              </div>
+            </div>
+          </div>
+        <div class="task--meta">
+          <span class="header" id="assigneeLog">Assigned
+              <span *ngIf="apiCallState.assignee.loading" class="ml-3"><i class="fa fa-spinner fa-spin"></i></span>
+              <span *ngIf="apiCallState.assignee.message"
+              class="ml-3 indicate"
+              [ngClass]=" { 'indicate--error': apiCallState.assignee.error,
+               'indicate--success': !apiCallState.assignee.error } "> {{ apiCallState.assignee.message }} </span>
+          </span>
+          <div class="assignee-display">
+            <span class="user__widget--icon" *ngIf="selectedTaskData.taskSecret.assignee" style="margin-left:0;">{{ initialsOf(assignee) }}</span>
+            <span id="assignee" class="assignee-display-word task-manager__text--only">
+              {{ assignee }}
+            </span>
+          </div>
+          <div class="assignee-display" (click)="updateAssignee()" *ngIf="!updatingAssignee">
+            <span><i class="fa fa-user-circle assignee-display-icon"></i></span>
+            <span class="assignee-display-word" style="text-decoration: underline;cursor: pointer;">Assign</span>
+          </div>
+          <div [ngClass]=" { 'd-none':  !updatingAssignee } " style="width: 80%;">
+            <!-- Input with type ahead -->
+            <div class="form-group searchable">
+              <!-- Use ng-If so it clears -->
+              <!-- Get confirmation on behavior form PO -->
+              <input type="text" placeholder="Assign Task to..." [ngClass]="{'d-none': !updatingAssignee}"
+                [ngbTypeahead]="suggestAssignees" [inputFormatter]="inputFormatter"
+                [resultFormatter]="assigneeTypeAheadFormatter" class="form-control input__searchable"
+                ref-typeAheadInput />
+              <!-- DOnt change position because of sibling -->
+              <i class="fa fa-check input__searchable--icon" style="color: green;" *ngIf="!!typeAheadInput.value.trim()"
+                (click)="handleAssigningFromTypeAhead($event, typeAheadInput)"></i>
+              <i class="fa fa-times input__searchable--icon close" (click)="cancelAssigneeUpdate(typeAheadInput)"></i>
+            </div>
+          </div>
+        </div>
+        <div class="task--meta">
+          <span class="header" id="reportedbyLog">Created By</span>
+          <div class="flex-and-center">
+            <span class="user__widget--icon" style="margin-left:0;padding:0;">{{ initialsOf(uiFriendlyReporterName()) }}</span>
+            <span id="whoisreporting"
+              style="padding: 10px; border-radius: 4px;text-overflow: ellipsis; overflow: hidden;">
+              <b>{{  uiFriendlyReporterName()  }} </b>
+            </span>
+          </div>
+        </div>
+        <div class="task--meta">
+            <span class="header">Time Created</span>
+            <span class="task-manager__text--only" style="font-weight: 500;">{{ selectedTaskData.createdTime | date : 'd MMM yyyy' }} - {{ selectedTaskData.createdTime | date: 'h:mm a' }}</span>
+          </div>
+          <div class="task--meta" *ngIf="selectedTaskData.lastUpdatedTime">
+            <span class="header">Last Updated</span>
+            <span class="task-manager__text--only" style="font-weight: 500;">{{ selectedTaskData.lastUpdatedTime | date : 'd MMM yyyy' }} - {{ selectedTaskData.lastUpdatedTime | date: 'h:mm a' }}</span>
+          </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #attach let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Upload File</h4>
+    <button id="uploadfiles" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form (ngSubmit)="processUploadAttachment()" enctype="multipart/form-data">
+      <div class="form-group">
+        <div>
+          <input id="fileupload" type="file" ref-attachmentInput
+          (change)="initUploadAttachment($event)" class="form-control" multiple>
+        </div>
+      </div>
+      <div id="modal-submitbtn" class="modal-footer">
+        <button type="submit" [disabled]="attachmentLoading || !attachmentInput.value" class="btn btn-dark uploadefile">
+          <i *ngIf="attachmentLoading" class="fa fa-spinner fa-spin"></i> Upload
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+
+<!-- Full Height Modal Right -->
+<!-- </ng-template>
+</ngb-tab>
+<ngb-tab>
+  <ng-template ngbTabTitle> Project Log </ng-template>
+  <ng-template ngbTabContent>
+      <div *ngFor="let task of selectedTaskLog" style="float: right; padding-bottom: 10px">
+          <div>
+            {{summarizeActivity(task)}}
+            <br>
+          </div>
+        </div>
+      <div >
+        <p class="projectLog">Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table
+            craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
+            cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia
+            yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean
+            shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero
+            sint qui sapiente accusamus tattooed echo park.</p>
+    </div> -->
+<!-- </ng-template>
+</ngb-tab>
+</ngb-tabset> -->

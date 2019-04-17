@@ -1,0 +1,153 @@
+.role-status {
+    color: #868e96;
+    margin-left: -6px;
+    margin-right: 7px;
+    border-radius: 9px;
+    background-color: #f8f9fa;
+}
+
+.details-header {
+    margin: 30px 16px 0px;
+    background-color: #f8f9fa;
+    padding: 18px;
+}
+
+.loading-bar{
+    margin: 30px 16px 0px;
+    padding: 18px;
+}
+.details-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 0px 1rem;
+}
+
+.avatar {
+    width: 140px;
+    border-radius: 9px;
+}
+
+.basic-info{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.role-tag {
+    margin-left: 12px;
+    color: #80808073;
+}
+
+.role-tag-assigned {
+    color: #808080;
+    margin-left: 12px;
+}
+
+.doc-tag {
+    margin-bottom: 1px;
+}
+
+.doc-sm {
+    color: #868e96;
+    font-size: 12px;
+}
+
+.description-tag-title {
+    margin-top: 14px;
+}
+
+li {
+    display: inline;
+    margin-left: 10px;
+}
+
+.first-name {
+    font-size: 20px;
+    font-variant: all-petite-caps;
+}
+
+.last-name, .middle-name {
+    font-size: 20px;
+    margin-left: 1px;
+    font-variant: all-petite-caps;
+}
+
+.print-button {
+     border: 1px solid #eee;
+     padding: 6px;
+     border-radius: 6px;
+     cursor: pointer;
+}
+
+.assign-tag-wrap {
+    border: 1px solid #eee;
+    padding: 6px 27px;
+    border-radius: 5px;
+}
+
+.close-form {
+    padding: 12px 0px 19px;
+}
+
+.close-icon {
+    color: #6c757d80;
+    cursor: pointer;
+}
+
+.plus-icon {
+   cursor: pointer; 
+}
+
+.doc-card {
+    padding: 10px 19px;
+    color: #333a67;
+    cursor: pointer;
+    height: 40px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    border-left: 0px solid #39b2e200;
+    border-right: 0px solid #39b2e200;
+    margin-top: 15px;
+    border-radius: 3px;
+  
+}
+
+.view-attachment {
+    margin: 5px;
+}
+
+
+.loading-tab {
+     height: 330px;
+}
+
+.passport-upload {
+    position: absolute;
+    z-index: 125;
+    left: 7px;
+    top: 116px;
+    color: #343a40cc;
+    cursor: pointer;
+}
+
+.processing-loading {
+    position: absolute;
+    z-index: 125;
+    top: 40px;
+    left: 45px;
+}
+
+.avatar-wrap {
+    margin-bottom: 21px;
+}
+
+.document-attach {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.assign-btn {
+    text-align: center;
+    margin-top: 16px;
+}

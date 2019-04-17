@@ -1,0 +1,253 @@
+<!-- <button routerLink="/quiz/list" class="btn btn-primary addtask">
+  View Quiz List &nbsp; <i class="fa fa-tasks"></i>
+</button> -->
+
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="'customLoadingTemplate'"></ngx-loading>
+<div class="row pt-4">
+  <div class="col-sm-12">
+    <div class="card pt-4 pr-4">
+        <div class="d-flex flex-row-reverse">
+            <button (click)="createQuizQuestion()" class="btn btn-primary addtask">
+              Create Questions &nbsp; <i class="fa fa-tasks"></i>
+            </button>
+            </div>
+      <div class="card-header">
+        <div class="display-4" style="font-size:1.3rem;"><b>{{quizTitle}}</b> Details</div>
+      </div>
+      <div class="card-body">
+        <form id="step_three_form" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-10 offset-md-1">
+              <fieldset>
+                <legend class="border-bottom pb-2" style="font-size: 1.1rem">Create Quiz</legend>
+                  <div class="row mb-2">
+                    <label class="col-2 col-form-label">Quiz Title</label>
+                    <div class="col-10">
+                      <input type="text" class="form-control" value="{{quizData && quizData.title ? quizData.title : ''}}" disabled>
+                    </div>
+                  </div>
+                  <div class="row mb-2">
+                    <label class="col-2 col-form-label">Quiz Description</label>
+                    <div class="col-10">
+                      <textarea rows="5" class="form-control" disabled>{{quizData && quizData.description ? quizData.description : ''}}</textarea>
+                    </div>
+                  </div>
+                  <div class="row mb-2">
+                    <label class="col-2 col-form-label">Quiz Publicity</label>
+                    <div class="col-10">
+                      <input type="text" class="form-control" value="{{quizData ? quizData.is_public && quizData.is_public == true ? 'PUBLIC' : 'PRIVATE' : ''}}" disabled>
+                    </div>
+                  </div>
+                  <div class="row mb-2" *ngIf="quizData && !quizData.is_public">
+                    <label class="col-2 col-form-label">Respondents Email Address(es)</label>
+                    <div class="col-10" >
+                      <select class="form-control" multiple disabled>
+                        <option>ade@example.com</option>
+                        <option>olu@example.com</option>
+                        <option>ike@example.com</option>
+                        <option>eze@example.com</option>
+                      </select>
+                    </div>
+                  </div>
+              </fieldset>
+              <fieldset *ngIf="quizSetting">
+                <legend  class="border-bottom mt-3 pb-2" style="font-size: 1.1rem">Quiz Settings</legend>
+                <div class="row mb-2">
+                  <label class="col-2 col-form-label">Quiz Duration</label>
+                  <div class="col-10">
+                    <div class="row">
+                      <div class="col-6">
+                        <input type="text" [value]="getHours(quizSetting.quiz_duration_in_mins) " class="form-control" disabled>
+                      </div>
+                      <div class="px-2 py-2">:</div>
+                      <div class="col">
+                        <input type="text" class="form-control" 
+                        [value]="getMinutes(quizSetting.quiz_duration_in_mins) " disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-2 col-form-label">Quiz Availability</label>
+                  <div class="col-10">
+                    <input type="text" class="form-control" 
+                    [value]="quizSetting.quiz_availability" disabled>
+                  </div>
+                </div>
+                <div *ngIf="!quizSetting.quiz_availability" class="row mb-2">
+                  <label class="col-3 col-form-label">Period of Quiz Availability</label>
+                  <div class="col-9">
+                    <div class="row mb-2">
+                      <div class="col-6">
+                        <div class="row mb-2">
+                          <label class="col-4 col-form-label">Start Date</label>
+                          <div class="col-8">
+                            <input class="form-control" type="text" id="available_start_date" value="2019-06-20" disabled>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="row mb-2">
+                          <label class="col-4 col-form-label">Start Time</label>
+                          <div class="col-8">
+                            <input class="form-control" type="text" id="available_start_time" value="08:00 AM" disabled>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-6">
+                        <div class="row mb-2">
+                          <label class="col-4 col-form-label" for="available_end_date">End Date</label>
+                          <div class="col-8">
+                            <input class="form-control" type="text" id="available_end_date" value="2019-08-20" disabled>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="row mb-2">
+                          <label class="col-4 col-form-label" for="available_end_time">End Time</label>
+                          <div class="col-8">
+                            <input class="form-control" type="text" id="available_end_time" value="11:59 PM" disabled>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                  <div class="col-7">
+                    <div class="row">
+                      <label class="col-5 col-form-label">Category of Questions</label>
+                      <div class="col">
+                        <input type="text" class="form-control" id="quiz_question_category" [value]="quizSetting.quiz_question_category" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-5">
+                    <div class="row pt-2" style="padding-left:2px;">
+                      <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" checked disabled>
+                        <span class="custom-control-label"></span>
+                        <span class="custom-control-description">Allow quiz respondents see their result after quiz ends</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <label class="col col-form-label">Question/Answer Shuffle</label>
+                  <div class="col-9">
+                    <input type="text" class="form-control" [value]="quizSetting.question_answer_shuffle" disabled>
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-6">
+                    <div class="row mt-4" style="padding-left:2px;">
+                      <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="retake_quiz" checked disabled>
+                        <span class="custom-control-label"></span>
+                        <span class="custom-control-description">Allow quiz respondents re-take the quiz</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="row" style="padding-top: 15px;">
+                      <label class="col-6 col-form-label">Number times to re-take the quiz</label>
+                      <div class="col">
+                        <input class="form-control" type="text" value="5" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-2" style="padding-left:2px;">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="navigate_quiz_back" checked disabled>
+                    <span class="custom-control-label"></span>
+                    <span class="custom-control-description">Allow quiz respondents re-answer a question</span>
+                  </label>
+                </div>
+                <div class="row mt-2" style="padding-left:2px;">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" checked disabled>
+                    <span class="custom-control-label"></span>
+                    <span class="custom-control-description">Quiz respondents must answer all questions</span>
+                  </label>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                  <label class="col-3 col-form-label">Form of Result</label>
+                  <div class="col-9">
+                    <input type="text" class="form-control" [value]="quizSetting.result_score_form" disabled>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="col-3 col-form-label">Percentage Grading Option</label>
+                  <div class="col-9">
+                    <input type="text" class="form-control" [value]="quizSetting.percentage_grading_option" disabled>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="col-3 col-form-label">Minimum Pass Score</label>
+                  <div class="col-4">
+                    <input type="text" class="form-control" name="min_score" value="50" disabled>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-3 col-form-label">Custom Grading Option</label>
+                  <div class="col-9">
+                    <div class="table-responsive">
+                      <table class="table-sm">
+                        <tbody>
+                          <tr *ngFor="let gradeOpts of quizSetting.percentage_grading_option_data">
+                            <td><input type="text" class="form-control" [value]="gradeOpts.grade_name" disabled></td>
+                            <td><input type="text" class="form-control" [value]="gradeOpts.min_grade" disabled></td>
+                            <td><input type="text" class="form-control" [value]="gradeOpts.max_grade" disabled></td>
+                            <td></td>
+                          </tr>
+                         
+                         
+                         
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-4" style="padding-left:2px;">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="use_as_default" checked disabled>
+                    <span class="custom-control-label"></span>
+                    <span class="custom-control-description">Use settings as default</span>
+                  </label>
+                </div>
+                <hr>
+              </fieldset>
+
+              <fieldset>
+                <legend class="border-bottom pb-2" style="font-size: 1.1rem">Quiz Instruction</legend>
+                  <div class="form-group mb-2">
+                    <textarea rows="5" class="form-control" disabled>{{quizData && quizData.instructions ? quizData.instructions : ''}}</textarea>
+                  </div>
+              </fieldset>
+              <hr class="mt-4 mb-4">
+              <div class="row float-right">
+                <div class="col-12">
+                  <button id="step_two_previous" (click)="saveAndGoBack()"
+                  class="btn btn-secondary loading-demo py-2 mr-3 mb-1">
+                    <i class="icon ion-ios-arrow-back pr-2"></i>
+                    Previous
+                  </button>
+                  <button (click)="onSubmit()" routerLink="/quiz/list" type="submit" id="step_three_submit" class="btn btn-success loading-demo py-2 mr-2 mb-1 text-light">Done<i class="icon ion-checkmark-round pl-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

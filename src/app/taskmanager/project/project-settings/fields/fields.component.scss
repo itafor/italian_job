@@ -1,0 +1,24 @@
+.details-header {
+    margin: 30px 15px;
+    padding: 0px;
+}
+
+.loading-tab {
+     height: 330px;
+}
+
+
+:host ::ng-deep .datatable-body-cell, .tble_action {
+   overflow-x: inherit !important;
+   padding-bottom: 10px;
+}
+
+:host ::ng-deep .visible{
+     overflow: -webkit-paged-y;
+}
+
+.wrap-details {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

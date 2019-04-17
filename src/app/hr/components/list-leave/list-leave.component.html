@@ -1,0 +1,148 @@
+<div class="card-header">
+  <nav class="navbar ruler-nav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <span>
+          <button (click)="newTabHandler()" class="btn btn-primary" id="createLeaveButton">Create
+            Leave Type <i id="icon-create-leave" class="fa fa-plus"></i></button>
+        </span></li>
+    </ul>
+  </nav>
+  <div class="card-body">
+    <ngb-tabset #leavesTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="refreshTable($event)">
+      <ngb-tab title="Leave Type" id="leaves">
+        <ng-template ngbTabContent>
+          <div class="details-header prefix-css">
+            <div>
+              <div class="text-center" *ngIf="!leaveList">
+                <div class="loading-tab">
+                  <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="leaveList">
+              <div class="text-center" *ngIf="(leaveList.length === 0)">
+                <div class="loading-tab">
+                  <h5 id="no-leave-id">No Leave Type</h5>
+                </div>
+              </div>
+            </div>
+            <div id="suspendingState-id" *ngIf="suspendingState" class="bg-info text-center status-confirmation">
+              <h5><i id="suspendingState-spinner" class="fa fa-spinner fa-spin fa-1x"></i> Loading...</h5>
+            </div>
+            <ngx-datatable *ngIf="leaveList && leaveList.length" [rows]="rows" [columnMode]="'force'"
+              [headerHeight]="40" [footerHeight]="50" [rowHeight]="'auto'" [externalPaging]="true" [count]="count"
+              [offset]="offset" [limit]="limit" (page)='onPage($event)' [reorderable]="reorderable">
+              <ngx-datatable-column name="Leave Type">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <div>
+                    <h6 class="leavename">
+                      {{row.leaveTypeSecret.name}}
+                    </h6>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Number of Days">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6  class="leavedays">
+                    {{row.leaveTypeSecret.numberOfDays}}
+                  </h6>
+                </ng-template>
+              </ngx-datatable-column>
+                <ngx-datatable-column name="Date Created">
+                  <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                    <h6 class="leavedate">
+                      {{row.createdDate | date}}
+                    </h6>
+                  </ng-template>
+                </ngx-datatable-column>
+              <ngx-datatable-column name="Action">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <div class="dropdown remove-caret" placement="left-top" ngbDropdown>
+                    <button id="drop-view" type="button" class="btn btn-secondary py-1 px-2" ngbDropdownToggle><i
+                        class="ion-ios-more"></i></button>
+                    <div class="dropdown-menu py-0" role="menu" ngbDropdownMenu>
+                      <button  id="update-leave" type="button"
+                        class="dropdown-item py-2" (click)="updateLeaveHandler(row)">
+                        Update Leave Type
+                      </button>
+                      <div class="dropdown-divider my-0"></div>
+                      <button id="delete-leave" type="button"
+                        class="dropdown-item py-2" (click)="deleteLeaveHandler(row)" >Delete Leave Type</button>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+        <ng-template ngbTabTitle>
+          <span [innerHTML]="tab.title"></span> &nbsp;
+          <span (click)="closeTab($event, tabIndex)" class="indicate--danger">
+            &times;
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <app-create-leave *ngIf="tab.type === 'NEW_LEAVE_TYPE' "
+            (leaveCreatedSuccessfulEvent)="leaveSuccessHandler($leave, tabIndex)">
+          </app-create-leave>
+          <div class="details-header"  *ngIf="tab.type ===  'UPDATE_LEAVE_TYPE'">
+            <div class="card">
+              <div class="modal-header">
+                <h4 class="modal-title" id="updateLeaveHeader">Updating {{ tab.content.leaveTypeSecret.name }}
+               </h4>
+              </div>
+              <div class="card-body">
+                <div class="text-center">
+                  <app-alert></app-alert>
+                </div>
+                <form (ngSubmit)="onUpdate($event)">
+                  <div class="form-group row">
+                    <div class="col-lg-6">
+                      <small id="leavename-label-update">Leave Type</small>
+                      <input name="leavename" class="form-control" type="text" id="leavename-update"
+                        [formControl]="form.controls['leavename']"
+                        [ngClass]="{'is-invalid': form.controls['leavename'].hasError('required') && form.controls['leavename'].touched}"
+                        placeholder="Name" />
+                      <small class="invalid-feedback errleavename"
+                        *ngIf="form.controls['leavename'].hasError('required') && form.controls['leavename'].touched">Please enter
+                        leave type</small>
+                    </div>
+                    <div class="col-lg-6">
+                      <small id="leavedays-label-update">Number of Days</small>
+                      <input name="leavedays" class="form-control" type="text" id="leavedays-update"
+                        [formControl]="form.controls['leavedays']"
+                        [ngClass]="{'is-invalid':form.controls['leavedays'].hasError('required') && form.controls['leavedays'].touched ||  form.controls['leavedays'].hasError('pattern')}"
+                        placeholder="Number of Days" />
+                      <small class="invalid-feedback errleavedays"
+                        *ngIf="form.controls['leavedays'].hasError('required') && form.controls['leavedays'].touched">Please
+                        enter number of days</small>
+                      <small class="invalid-feedback errleavedays"
+                        *ngIf="form.controls['leavedays'].hasError('pattern') && form.controls['leavedays'].touched">Leave days
+                        can only be a number</small>
+                    </div>
+                  </div>
+                  <div class="row text-center">
+                    <div class="col-lg-12">
+                      <div class="assign-btn">
+                        <button id="update-leave-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit">
+                          <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Update
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

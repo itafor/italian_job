@@ -1,0 +1,80 @@
+#name.ng-touched.ng-invalid {
+  border-color: #dc3545;
+}
+div.validation-error {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
+}
+
+.icon {
+  margin-right: 20px;
+  cursor: pointer;
+}
+#tableValue {
+  font-size: 2px;
+  opacity: 0.01;
+}
+
+.table-header {
+  background: #333;
+}
+
+#delete {
+  padding-left: 10px;
+}
+#edit {
+  padding-left: 10px;
+}
+#suspend {
+  padding-left: 10px;
+}
+#delete_customer {
+  margin-right: 10px;
+}
+#edit-suspend_customer {
+  margin-right: 10px;
+}
+#edit-customer {
+  margin-right: 10px;
+}
+.InactiveCustomer {
+  color: #6c757d6b;
+  font-variant: all-petite-caps;
+}
+@media only screen and (max-width: 600px) {
+  #delete_customer {
+    margin-right: 5px;
+  }
+  #edit-suspend_customer {
+    margin-right: 5px;
+  }
+  #edit-customer {
+    margin-right: 5px;
+  }
+}
+#delete_customer {
+  margin-right: 10px;
+}
+#edit-suspend_customer {
+  margin-right: 10px;
+}
+#edit-customer {
+  margin-right: 10px;
+}
+.InactiveCustomer {
+  color: #6c757d6b;
+  font-variant: all-petite-caps;
+}
+@media only screen and (max-width: 600px) {
+  #delete_customer {
+    margin-right: 5px;
+  }
+  #edit-suspend_customer {
+    margin-right: 5px;
+  }
+  #edit-customer {
+    margin-right: 5px;
+  }
+}

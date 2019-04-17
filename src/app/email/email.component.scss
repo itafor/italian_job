@@ -1,0 +1,131 @@
+@import "../../assets/styles/scss/components/email";
+
+:host {
+  padding: 0 !important;
+
+  .card-body {
+    padding-top: 1em;
+  }
+
+  .custom-navbar {
+    min-height: 2rem;
+    background-color: #fff;
+    border-bottom: 1px solid $card-border-color;
+
+    .nav-link {
+      color: rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .page-height {
+    height: calc(100vh - #{$header-height + 2.75rem});
+  }
+
+  .messages-container .widget-icon {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+    text-align: center;
+    display: none;
+  }
+
+  .indicate--danger {
+    color: red;
+    font-weight: 300;
+
+    &:hover {
+      font-weight: 700;
+    }
+  }
+}
+
+.list-group-item {
+  padding: 0;
+
+  &.marked {
+    border-color: #68accd;
+  }
+}
+
+.list-group-item:first-of-type {
+  border-top: 2px;
+}
+
+.list-group-item:last-of-type {
+  border-bottom: 2px;
+}
+.pagination--div {
+  flex-direction: column;
+}
+
+div[role='paginationSpinner'] {
+    position: absolute;
+    z-index: 300;
+    top: 5px;
+    right: 45%;
+    padding: 5px 10px;
+    border: 1px solid #5c6bc0;
+    background-color: #e6dddd;
+    border-radius: 4px;
+
+    span {
+      font-weight: bold;
+      color: #5c6bc0;
+    }
+}
+
+i.fa.fa-spinner.fa-spin {
+  font-size: 75px;
+}
+
+.empty--mailbox {
+  height: 200px;
+}
+
+
+.pagination--controls {
+  &__limit {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    & small {
+      margin-right: 5px;
+    }
+
+    & input {
+      width: 20%;
+    }
+  }
+}
+
+// Position button inside ngbtabset
+ngb-tabset {
+  display: block;
+  position: relative;
+}
+
+.pos--inside--tab {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  z-index: 300;
+}
+
+
+.pagination__indicator {
+  opacity: 0.7;
+  padding: 2px 5px;
+  border: 1px solid transparent;
+}
+
+.pagination__indicator:hover {
+  background-color: grey;
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.messages--metadata {
+  min-height: 60px;
+}

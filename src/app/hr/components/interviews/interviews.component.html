@@ -1,0 +1,76 @@
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        New Employee
+      </div>
+      <div class="card-body">
+        <app-alert></app-alert>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="form-group row">
+            <label for="example-text-input" class="col-2 col-form-label">Firstname</label>
+            <div class="col-10">
+              <input type="text" class="form-control" [formControl]="form.controls['firstname']"
+              [ngClass]="{'is-invalid': form.controls['firstname'].hasError('required') && form.controls['firstname'].touched}" />
+            <div class="invalid-feedback" *ngIf="form.controls['firstname'].hasError('required') && form.controls['firstname'].touched">Firstname
+              is required.</div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="example-text-input" class="col-2 col-form-label">Lastname</label>
+            <div class="col-10">
+              <input type="text" class="form-control" [formControl]="form.controls['lastname']"
+              [ngClass]="{'is-invalid': form.controls['lastname'].hasError('required') && form.controls['lastname'].touched}" />
+            <div class="invalid-feedback" *ngIf="form.controls['lastname'].hasError('required') && form.controls['lastname'].touched">Lastname
+              is required.</div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="example-search-input" class="col-2 col-form-label">Email</label>
+            <div class="col-10">
+              <input type="email" class="form-control" [formControl]="form.controls['email']"
+              [ngClass]="{'is-invalid': form.controls['email'].hasError('required') && form.controls['email'].touched}" />
+            <div class="invalid-feedback" *ngIf="form.controls['email'].hasError('required') && form.controls['email'].touched">Email
+              is required.</div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="example-tel-input" class="col-2 col-form-label">Phone</label>
+            <div class="col-10">
+              <input type="text" class="form-control" [formControl]="form.controls['phone']"
+              [ngClass]="{'is-invalid': form.controls['phone'].hasError('required') && form.controls['phone'].touched}" />
+            <div class="invalid-feedback" *ngIf="form.controls['phone'].hasError('required') && form.controls['phone'].touched">Phone
+              is required.</div>
+            
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="example-email-input" class="col-2 col-form-label">Title</label>
+            <div class="col-10">
+              <input type="email" class="form-control" [formControl]="form.controls['title']"
+              [ngClass]="{'is-invalid': form.controls['title'].hasError('required') && form.controls['title'].touched}" />
+            <div class="invalid-feedback" *ngIf="form.controls['title'].hasError('required') && form.controls['title'].touched">Title
+              is required.</div>
+            </div>
+            
+          </div>
+          <div class="form-group row">
+            <label for="example-url-input" class="col-2 col-form-label">Interview Details</label>
+            <div class="col-10">
+              <textarea  class="form-control" [formControl]="form.controls['details']"
+              [ngClass]="{'is-invalid': form.controls['details'].hasError('required') && form.controls['details'].touched}" ></textarea>
+            <div class="invalid-feedback" *ngIf="form.controls['details'].hasError('required') && form.controls['details'].touched">Details
+               required.</div>
+            </div>
+            
+          </div>
+          <div class="d-flex justify-content-center mt-4 mb-4">
+            <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Create account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+</div>

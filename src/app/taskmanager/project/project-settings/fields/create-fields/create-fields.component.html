@@ -1,0 +1,67 @@
+<div class="details-header">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="modal-header">
+          <h4 class="modal-title" id="newFieldHeader">New Field</h4>
+        </div>
+        <div class="card-body">
+          <div class="text-center">
+            <app-alert></app-alert>
+          </div>
+          <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
+            <div class="form-group">
+              <div class="form-group row">
+                <div class="col-lg-12">
+                  <input name="name" class="form-control" type="text" id="field-name"
+                    [formControl]="form.controls['name']"
+                    [ngClass]="{'is-invalid': form.controls['name'].hasError('required') && form.controls['name'].touched}"
+                    placeholder="Name" />
+                  <small class="invalid-feedback errname"
+                    *ngIf="form.controls['name'].hasError('required') && form.controls['name'].touched">Please enter
+                    field name</small>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-lg-12">
+                  <textarea name="description" class="form-control" rows="8" id="field-description"
+                    [formControl]="form.controls['description']"
+                    [ngClass]="{'is-invalid': form.controls['description'].hasError('required') && form.controls['description'].touched}"
+                    placeholder="Description"></textarea>
+                  <small class="invalid-feedback errdescription"
+                    *ngIf="form.controls['description'].hasError('required') && form.controls['description'].touched">Please
+                    enter field description</small>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-lg-12">
+                  <small id="field-type-label">Field Type</small>
+                    <select id="field-type" name="type" class="custom-select"
+                      [formControl]="form.controls['type']" placeholder="Enter Type"
+                    [ngClass]="{'is-invalid': form.controls['type'].hasError('required') && form.controls['type'].touched}">
+                      <option value="">-- Select Type --</option>
+                      <option *ngFor="let type of types; let optionIndex = index" id="type-list-{{optionIndex}}" [ngValue]="type">
+                        {{type}}
+                      </option>
+                    </select>
+                    <small class="invalid-feedback errtype"
+                      *ngIf="form.controls['type'].hasError('required') && form.controls['type'].touched">Please
+                      enter field type</small>
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col-lg-12">
+                  <div class="assign-btn">
+                    <button id="create-field-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit">
+                      <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Create Field
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

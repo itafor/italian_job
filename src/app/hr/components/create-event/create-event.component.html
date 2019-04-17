@@ -1,0 +1,73 @@
+<div class="details-header">
+  <div class="row">
+    <div class="col-lg-12 emp-form">
+      <div class="card">
+        <div class="modal-header">
+          <h4 class="modal-title" id="newEventHeader">New Event</h4>
+        </div>
+        <div class="card-body">
+          <div class="text-center">
+            <app-alert></app-alert>
+          </div>
+          <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
+            <div class="form-group">
+              <div class="form-group row">
+                <div class="col-lg-12">
+                  <input name="name" class="form-control" type="text" id="event-name"
+                    [formControl]="form.controls['name']"
+                    [ngClass]="{'is-invalid': form.controls['name'].hasError('required') && form.controls['name'].touched}"
+                    placeholder="Name" />
+                  <small class="invalid-feedback errname"
+                    *ngIf="form.controls['name'].hasError('required') && form.controls['name'].touched">Please enter
+                    event name</small>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-lg-12">
+                  <textarea name="description" class="form-control" rows="8" id="event-description"
+                    [formControl]="form.controls['description']"
+                    [ngClass]="{'is-invalid': form.controls['description'].hasError('required') && form.controls['description'].touched}"
+                    placeholder="Description"></textarea>
+                  <small class="invalid-feedback errdescription"
+                    *ngIf="form.controls['description'].hasError('required') && form.controls['description'].touched">Please
+                    enter event description</small>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-lg-6">
+                  <small id="create-startTime-label">Event Start Time</small>
+                  <input name="startTime" class="form-control" type="datetime-local" id="event-startTime"
+                    [formControl]="form.controls['startTime']"
+                    [ngClass]="{'is-invalid': form.controls['startTime'].hasError('required') && form.controls['startTime'].touched}"
+                    placeholder="Start Time" value="startTime| date:'yyyy-MM-ddTHH:mm'" />
+                  <small class="invalid-feedback errstartTime"
+                    *ngIf="form.controls['startTime'].hasError('required') && form.controls['startTime'].touched">Please
+                    enter event start time</small>
+                </div>
+                <div class="col-lg-6">
+                  <small  id="create-stopTime-label">Event Stop Time</small>
+                  <input name="stopTime" class="form-control" type="datetime-local" id="event-stopTime"
+                    [formControl]="form.controls['stopTime']"
+                    [ngClass]="{'is-invalid': form.controls['stopTime'].hasError('required') && form.controls['stopTime'].touched}"
+                    placeholder="Stop Time" value="stopTime| date:'yyyy-MM-ddTHH:mm'" />
+                  <small class="invalid-feedback errstopTime"
+                    *ngIf="form.controls['stopTime'].hasError('required') && form.controls['stopTime'].touched">Please
+                    enter event stop time</small>
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col-lg-12">
+                  <div class="assign-btn">
+                    <button id="create-event-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit">
+                      <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Create Event
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

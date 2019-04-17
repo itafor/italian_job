@@ -1,0 +1,27 @@
+<div class="details-header">
+  <div class="card">
+    <div class="modal-header">
+      <h4 class="modal-title" id="update-header-text-id">Updating {{ department.departmentSecret.name }}</h4>
+    </div>
+    <div class="card-body">
+      <div class="text-center">
+        <app-alert></app-alert>
+      </div>
+      <form (ngSubmit)="submitForm($event)">
+        <div class="form-group">
+          <div class="form-group row offset-1">
+            <label id="input-title" class="col-lg-2 col-form-label" for="example-text-input">Name</label>
+            <div class="col-lg-7">
+              <input class="form-control" id="department-update-id" type="text" [(ngModel)]="newDeptTitle"
+                name="newDeptTitle">
+            </div>
+          </div>
+          <div class="d-flex justify-content-center mt-4 mb-4">
+            <button id="update-department-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit"> <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i> Update
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

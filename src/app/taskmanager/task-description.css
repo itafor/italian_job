@@ -1,0 +1,5 @@
+.task__description--container:hover {
+  --base_padding__y: 0.325rem;
+  --base_padding__x: 0.75rem;
+  padding: calc(var(--base_padding__y) - 1px) calc(var(--base_padding__x) - 1px)
+}

@@ -1,0 +1,47 @@
+<div>
+  <!--
+  <h4 class="modal-title text-center">{{ formTitle }}</h4>
+  -->
+  <!--
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>-->
+</div>
+
+<!-- For second step department -->
+<div class="modal-body">
+  <!-- <p><ngb-progressbar value="150" type="info"></ngb-progressbar></p> -->
+  <app-quiz-create-step-one
+    (nextStageEvent)="handleChangeInStage($event)"
+    *ngIf="currentFormIndex === 0"
+  >
+  </app-quiz-create-step-one>
+  <app-form2
+    *ngIf="currentFormIndex === 1"
+    (nextStageEvent)="handleChangeInStage($event)"
+  ></app-form2>
+  <app-three
+    *ngIf="currentFormIndex === 2"
+    (nextStageEvent)="handleChangeInStage($event)"
+  ></app-three>
+  <app-fourth
+    *ngIf="currentFormIndex === 3"
+    (nextStageEvent)="handleChangeInStage($event)"
+  ></app-fourth>
+  <app-list
+    *ngIf="currentFormIndex === 4"
+    (nextStageEvent)="handleChangeInStage($event)"
+  ></app-list>
+  <app-setquestions
+    *ngIf="currentFormIndex === 5"
+    (nextStageEvent)="handleChangeInStage($event)"
+  ></app-setquestions>
+  <!-- Add submit button here, or next button. -->
+</div>
+<!--
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+</div>
+-->
+
+<!-- for third department -->

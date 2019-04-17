@@ -1,0 +1,38 @@
+#name.ng-touched.ng-invalid {
+    border-color: #dc3545;
+    }
+    div.validation-error {
+        width:100%;
+        margin-top: .25rem;
+        font-size: 80%;
+        color: #dc3545;
+    }
+
+    #amountPaidViaBankdiv{
+        margin-left: -150px;
+    }
+#cashAccountDiv{
+    margin-top: 20px;
+}
+    
+    #amountPaidViaCarddiv{
+        margin-left: -150px;
+    }
+    
+    @media only screen and (max-width: 1200px) {
+        #delete_sale{
+            margin-right: 5px;
+            }
+        #amountPaidViaBankdiv{
+            margin-left: -100px;
+            }
+            #amountPaidViaBankinput{
+                width: 100px;
+            }
+            #amountPaidViaCarddiv{
+                margin-left: -90px;
+                }
+                #amountPaidViaCardinput{
+                    width: 100px;
+                }
+      }

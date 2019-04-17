@@ -1,0 +1,80 @@
+@import "../../../assets/styles/scss/components/taskboard_variables";
+
+.full-screen {
+  display: flex;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: -1;
+}
+
+.space-from-edge {
+  margin: 14px;
+  min-height: 100%;
+}
+.card-header {
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 10%;
+  align-items: center;
+}
+
+.task__meta__container {
+  display: flex;
+  font-size: 16px;
+  color: #616060;
+  cursor: pointer;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.task__watchers {
+  display: flex;
+  align-items: center;
+  color: $primary__text__color;
+  background-color: #f4f4f4;
+  margin-top: 0px;
+  border-radius: 3px;
+  padding: 3px 10px 0px 10px;
+  &:hover, &:focus, &.active {
+    background-color: $primary__text__color !important;
+    color: #f4f4f4 !important;
+  }
+}
+
+.force__disable {
+  pointer-events: none !important;
+  &_wrapper {
+    cursor: not-allowed !important;
+  }
+}
+
+.overlay-backdrop {
+  background-color: #333;
+}
+
+.task__preview--header.project {
+  color: $secondary-color;
+  .header {
+    &__project {
+      font-weight: bold;
+    }
+    &__task-unique-key {
+      font-weight: 300;
+    }
+  }
+}
+
+
+a.project--link {
+  color: $secondary-color;
+  font-weight: bolder;
+  &:hover {
+    text-decoration: underline;
+  }
+}

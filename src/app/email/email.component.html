@@ -1,0 +1,85 @@
+<div role="paginationSpinner" *ngIf="downloadFeedback.show">
+  <span [ngClass]="downloadFeedback.class">{{ downloadFeedback.text }}</span>
+</div>
+<div class="mx-2 my-2 card">
+  <!-- <div class="card-header"> -->
+      <button class="btn btn-primary pos--inside--tab" (click)="composeMailHandler()">{{ buttonText | async }} &nbsp; <i class="fa fa-plus"></i></button>
+  <!-- </div> -->
+  <div class="card-body">
+      <ngb-tabset #myMailTabset="ngbTabset" [destroyOnHide]="false">
+          <ngb-tab title="Inbox">
+            <ng-template ngbTabContent>
+              <app-email-inbox
+              (selectedMail)="handleMailSelection($event)"></app-email-inbox>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab title="Newsletters">
+            <ng-template ngbTabContent>
+              <app-email-newsletter
+              (selectedMail)="handleMailSelection($event)"></app-email-newsletter>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab title="Alerts">
+              <ng-template ngbTabContent>
+                <app-email-alert
+                (selectedMail)="handleMailSelection($event)"></app-email-alert>
+              </ng-template>
+            </ngb-tab>
+          <ngb-tab title="Outbox | Pending">
+              <ng-template ngbTabContent>
+                  <mat-sidenav-container class="page-height app-inner card card-block p-0 m-0 rounded-0 shadow-none">
+                      <mat-sidenav #mailnav [mode]="isOver() ? 'over' : 'side'" [opened]="!isOver()" class="email-panel pl-xs pr-xs">
+                        <div class="messages-container">
+                          <div (click)="onSelect(message, false, i)"
+                           *ngFor="let message of outbox; let i = index; let first = first;"
+                            [class.selected]="message === selectedMessage" [ngClass]="{'border-top-0': first}" class="list-group-item list-group-item-action border-left-0 border-right-0 rounded-0 flex-column align-items-start">
+                           <app-email-summary  [mail]="message"
+                           [mailboxType]="sent"></app-email-summary>
+                          </div>
+                        </div>
+                      </mat-sidenav>
+                    </mat-sidenav-container>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Drafts">
+              <ng-template ngbTabContent>
+                  <mat-sidenav-container class="page-height app-inner card card-block p-0 m-0 rounded-0 shadow-none">
+                      <mat-sidenav #mailnav [mode]="isOver() ? 'over' : 'side'" [opened]="!isOver()" class="email-panel pl-xs pr-xs">
+                        <div class="messages-container">
+                          <div (click)="onSelect(message, true)"
+                           *ngFor="let message of drafts; let i = index; let first = first;"
+                            [class.selected]="message === selectedMessage" [ngClass]="{'border-top-0': first}" class="list-group-item list-group-item-action border-left-0 border-right-0 rounded-0 flex-column align-items-start">
+                           <app-email-summary  [mail]="message"
+                           [mailboxType]="sent"></app-email-summary>
+                          </div>
+                        </div>
+                      </mat-sidenav>
+                    </mat-sidenav-container>
+              </ng-template>
+            </ngb-tab>
+          <ngb-tab *ngFor="let item of openTabs; let index=index" id="{{tabIdForIndex(index)}}">
+            <ng-template ngbTabTitle>
+              <span [innerHTML]="item.title"></span> &nbsp;
+              <span (click)="closeTab($event, index)" class="indicate--danger">
+                  &times;
+              </span>
+            </ng-template>
+            <ng-template ngbTabContent>
+              <ng-container *ngIf="item.type === 'NEW_MAIL' ">
+                  <app-create-email (sendMailEvent)="sendMailEventHandler($event)"
+                  [tabIndex]="index" [mailSender]="user.username"
+                  (addDraftEvent)="draftHandler($event)"
+                  (discardEvent)="handleDiscardEvent(index)"
+                  [initMailObj]="item.content"></app-create-email>
+              </ng-container>
+              <ng-container *ngIf="item.type  === 'EXISTING_MAIL' ">
+                  <app-email-view [mail]="item.content" (sendMailEvent)="sendMailEventHandler($event)"
+                  [loggedInUserEmail]="user.username"
+                  [page]="item.page"
+                  (downloadFeedbackEvent)="downloadFeedbackHandler($event)"></app-email-view>
+              </ng-container>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+  </div>
+</div>

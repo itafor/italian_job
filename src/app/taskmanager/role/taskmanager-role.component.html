@@ -1,0 +1,165 @@
+<div class="taskboard-wrapper" style="padding-bottom: 20px">
+  <button (click)="open(content)" class="btn btn-primary" id="createRole"  style="background-color: #fff !important;  border: 1px solid #5c6bc0; color: #5c6bc0;"> Create Role <i id="icon-create-role" class="fa fa-plus"></i></button>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="header-create-role">Create New Role </h4>
+    <button id="close-create-role-modal" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="submitForm()">
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="form-group row">
+          <label id="labelname-create-role"  class="col-2 col-form-label" for="example-text-input"> Name </label>
+          <div class="col-10">
+            <input id="input-create-role"  class="form-control col-title err-max" type="text"
+              [formControl]="form.controls['roleName']" value="{{role_name}}">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label id="labelcapability-create-role"  class="col-2 col-form-label" for="example-text-input"> Capability </label>
+          <div class="col-10 row">
+            <div *ngFor="let capability of capabilityList;  let optionIndex = index">
+              <div class="col-6">
+                <div class="form-check">
+                  <label class="form-check-label"  id="checklist-create-role-{{optionIndex}}">
+                    <input (change)="toggleCapability($event)" [attr.data-value]="capability" type="checkbox" class="form-check-input" value="{{capability}}">
+                    {{capability}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="submit-create-role" class="btn btn-primary" type="submit" [disabled]="!form.valid || !rowsCapablity.length">Create
+        <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #editrole let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edit Project </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="submitEditForm()">
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="alert alert-danger center_msg" *ngIf="tasknameInputMaxErr">
+          <span>Maximum of 50 characters exceeded.</span>
+        </div>
+        <div class="form-group row">
+          <label id="modal-label" class="col-2 col-form-label" for="example-text-input"> Name: </label>
+          <div class="col-10 proj-input">
+            <input class="proj-input form-control proj-name col-title err-max"
+              id="example-text-input" type="text" [formControl]="form.controls['roleName']">
+          </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-2 col-form-label" for="example-text-input"> Capability: </label>
+            <div class="col-10 row">
+              <div *ngFor="let capability of capabilityList">
+                <div class="col-6">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input (change)="toggleCapability($event)"
+                      [attr.data-value]="capability" type="checkbox" [checked]="rowsCapablity.indexOf(capability) > -1"  class="form-check-input" value="{{capability}}">
+                      {{capability}}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div id="modal-submitbtn" class="modal-footer role-modal-btn" style="text-align:center">
+      <div class="role-modal-btn">
+        <button id="submiteditproject" class="btn btn-primary" type="submit" [disabled]="!form.valid">
+          <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>Update
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #contentdelete let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Deleting Project</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="submitDeleteForm()">
+      <div class="modal-body">
+        <div class="form-group">
+          <div class="form-group row">
+            <label id="modal-label" class="col-12 col-form-label" for="example-text-input" style="text-align: center;">
+              <h3>Are you sure you want to delete <br><b style="color: #5c6bc0">{{selectedRole.roleSecret.name}}</b>
+                Project </h3>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div id="modal-submitbtn" class="modal-footer tsk-modal-btn" style="display: flex; float: right;">
+        <button class="btn btn-primary" (click)="modal.dismiss('Cross click')"
+          style="background-color: white; color: inherit; margin-right: 10px;">No
+        </button>
+        <button class="btn btn-primary" type="submit" style="background-color: #ef5350; border-color: #ef5350">Yes
+          <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>
+        </button>
+      </div>
+    </form>
+  </ng-template>
+
+<div id="table" class="details-header">
+    <div>
+        <div *ngIf="roleloader">
+            <div>
+                <div id="loader">
+                  </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!roleloader">
+          <h4 class="noroles" *ngIf="(roleList.length === 0)" id="empty-role-list">No Roles</h4>
+    </div>
+  <ngx-datatable  class="columntable"  *ngIf="roleList && roleList.length" [rows]="rows" [columnMode]="'force'" [headerHeight]="40" [footerHeight]="50"
+    [rowHeight]="'auto'" [externalPaging]="true" [count]="count" [offset]="offset" [limit]="limit" (page)='onPage($event)'>
+    <ngx-datatable-column name="Role Name">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template class="tab-column">
+        <h6 (click)="navigatetoprojectboard(row)">{{row.roleSecret.name}}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Date Created">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6>{{row.createdTime | date}}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Time Created">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6>{{row.createdTime | date:'shortTime'}}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Action">
+        <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+          <span class="action-span">
+            <i id="editanyproject" (click)="editarole(row, editrole)" class="icon fa fa-pencil fa-1.5x text-primary"
+              title="Edit"></i>
+            <i id="deleteanyproject" (click)="opendelete(row, contentdelete)" class="icon fa fa-trash fa-1.5x text-danger"
+              title="Delete"></i>
+          </span>
+        </ng-template>
+      </ngx-datatable-column>
+  </ngx-datatable>
+</div>
+

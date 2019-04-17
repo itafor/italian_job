@@ -1,0 +1,70 @@
+#edit {
+  padding-left: 10px;
+}
+
+#delete_expense {
+  margin-right: 10px;
+}
+#tableValue {
+  font-size: 2px;
+  opacity: 0.01;
+}
+
+#delete_expense {
+  margin-right: 10px;
+}
+#tableValue {
+  font-size: 2px;
+  opacity: 0.01;
+}
+.creteButton{
+  margin-left: 720px;
+  margin-top: -25px;
+}
+// .fa-plus{
+//   background: #ffffff;
+//   border-radius: 50%;
+//   color: #00688b;
+//   font-size: 12px;
+// }
+.fa-download{
+  color: green;
+}
+.dropdown-toggle::after {
+  display:none;
+}
+.dottedMenu{
+  z-index: 20;
+}
+div.dropdown-menu.py-0.show{
+  width: 100px;
+  height: 48;
+}
+.dropdown-item{
+  width:50px;
+}
+//widget-icon rounded-circle
+#downloadUploadlabel {
+  display: block;
+  // font: 13px Arial, Helvetica, sans-serif;
+  color: #888;
+  margin-bottom: 2px;
+}
+.fontAwesome{ font-family: 'Helvetica', FontAwesome, sans-serif; }
+.deleteCeate{
+float: right;
+}
+.expenseFilter{
+float: left;
+}
+#deleteCreate{
+  margin-top: -30px;
+}
+@media only screen and (max-width: 600px) {
+  #delete_expense {
+    margin-right: 5px;
+  }
+}
+textarea {
+  resize: none;
+}

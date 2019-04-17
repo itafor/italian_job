@@ -1,0 +1,68 @@
+ <div class="card">
+
+   <div class="card-body">
+      <form [formGroup]="form">
+          <div class="example-container">
+              <mat-form-field >
+                <input matInput placeholder="To" [formControl]="f['to']" [ngbTypeahead]="suggestContacts" data-name="recipients">
+              </mat-form-field>
+
+              <mat-form-field >
+                  <input matInput placeholder="CC" [formControl]="f['cc']" [ngbTypeahead]="suggestContacts" data-name="cc">
+              </mat-form-field>
+
+                <mat-form-field >
+                    <input matInput placeholder="BCC" [formControl]="f['bcc']" [ngbTypeahead]="suggestContacts" data-name="bcc">
+                </mat-form-field>
+
+                  <mat-form-field >
+                      <input matInput placeholder="Subject" [formControl]="f['subject']" data-name="subject">
+                  </mat-form-field>
+
+                  <input hidden (change)="onFileSelected()" #attachmentRef type="file" multiple data-name="attachments">
+          </div>
+
+          <editor [init]="rtEditorConfig" [formControl]="f['mailBody']" #editor
+          (onFocusIn)="scrollIntoView()"
+          data-name="content"></editor>
+          <div class="my-2 mx-2">
+
+          </div>
+      </form>
+   </div>
+    <div class="card-footer flex-column" >
+        <div *ngIf="attachments.length" class="attachment__container">
+            <h3 class="my-2 d-flex justify-content-around"> {{ attachmentDescription }}
+              <span (click)="toggleView()" class="cursor__pointer hover__dark-bg text-muted"
+              data-function="switchView"
+              title="{{ viewIconTitle }}"><i class="{{  viewIcon }}"></i></span>
+            </h3>
+            <div class="attachment" *ngFor="let file of attachments; let fileIndex = index;"
+            [ngClass]=" { 'uploaded': false, 'collapsed': attachmentDetailsCollapsed(), 'expanded': !attachmentDetailsCollapsed() }  ">
+              <span class="attachment__name"> {{ file.name }} </span>
+              <div class="attachment__meta">
+                  <span class="attachment__size"> {{ file.size | fileSize }} </span>
+                  <span (click)="removeAttachment(fileIndex)" title="Remove this attachment"
+                  class="cursor__pointer remove ml-3 my-auto"></span>
+              </div>
+          </div>
+       </div>
+       <div class="d-flex w-100 justify-content-start flex-row my-3">
+          <button class="btn btn-primary" [disabled]="apiCallMade"
+          (click)="sendMessage()">
+          <i class="fa fa-spin fa-spinner" *ngIf="apiCallMade"></i>
+          <i class="icon ion-android-send" *ngIf="!apiCallMade"></i>
+          &nbsp;
+          Send
+        </button>
+        <span class="create__mail--action" data-name="attachmentCTA"><i class="icon ion-android-attach"
+          (click)="refFileInput.nativeElement.click()"></i></span>
+        <span class="create__mail--action danger"
+        data-name="discardCTA"
+        title="Discard Composition"
+        (click)="handleDiscard()"><i class="icon ion-ios-trash"></i></span>
+        <span class="create__mail--action"><i class="icon ion-android-more-vertical"></i></span>
+        <span *ngIf="savingDraft" class="ml-2 my-auto">Saving...</span>
+        <span *ngIf="attachments.length" class="ml-2 my-auto" data-function="totalSize">{{ sizeOfAttachments | fileSize }} of attachments</span>
+       </div>
+    </div>

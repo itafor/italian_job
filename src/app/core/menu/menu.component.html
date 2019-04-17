@@ -1,0 +1,20 @@
+<ul class="navigation" appAccordion>
+   <div *ngFor="let menu of allMenus">
+      <li class="navigation-item" appAccordionLink >
+        <a class="navigation-link" appAccordionToggle href="javascript:;" >
+          <i class="icon {{menu.icon}} mr-3"></i>
+          <span class="title mr-auto">{{menu.name}}</span>
+
+          <i class ="menu-caret icon ion-ios-arrow-down"></i>
+        </a>
+        <ul class="navigation-submenu" *ngFor="let sub of menu.sub" >
+          <li class="navigation-item"  routerLinkActive="open">
+            <a [routerLink]="fullUrl(menu.state, sub.state)" class="navigation-link relative">{{sub.name}}</a>
+          </li>
+        </ul>
+      </li>
+
+    </div>
+</ul>
+
+ 

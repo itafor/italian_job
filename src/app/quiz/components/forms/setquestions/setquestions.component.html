@@ -1,0 +1,181 @@
+<h3 id="select">Select Your Preferred Question</h3>
+
+
+<div class="d-flex justify-content-center mt-4 mb-4">
+  <select class="pl-4 custom-select col-md-6" (change)="setvalue($event)">
+    <option selected>Open this select menu</option>
+    <option id="multiple" value="radio">Multiple Choice (Radio Button)</option>
+    <option id="trueorfalse" value="true">Multiple Choice (True / False)</option>
+    <option id="yesorno" value="yes">Multiple Choice (Yes / No)</option>
+    <option id="fill" value="blank">Fill-in-the-Blank</option>
+  </select>
+</div>
+
+<!--Multiple Choice Radio Button(Default)-->
+<div *ngIf="choose">
+  <ng-container *ngIf="choose === 'radio' ">
+    <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-10">
+            <div class="card">
+
+
+
+              <div class="col-5">
+                <h6 id="multiplequestion" class="pl-3 pt-5">Question</h6>
+                <textarea id="form-quiz-create-one-description" cols="25" rows="3" class="form-control" formControlName="question"></textarea>
+              </div>
+              <small class="alert" *ngIf="!form.controls['question'].valid && form.controls['question'].touched">*This
+                is
+                Required</small>
+              <div class="col-6 d-inline content-align-center">
+                <h6 id="answers" class="pt-5 pl-3">Answers</h6>
+                <input id="optiona" name="validate" type="radio" class="pl-3 pt-5" />A
+                <!-- <small>Correct</small>-->
+                <textarea id="form-quiz-create-one-description" cols="50" rows="2" class="form-control"></textarea>
+                <br>
+                <input id="optionb" name="validate" type="radio" class="pl-3 pt-5" />B
+                <!-- <small>Correct</small>-->
+                <textarea id="form-quiz-create-one-description" cols="25" rows="2" class="form-control"></textarea>
+                <br>
+                <input id="optionc" name="validate" type="radio" class="pl-3 pt-5" />C
+                <!-- <small>Correct</small>-->
+                <textarea id="form-quiz-create-one-description" cols="25" rows="2" class="form-control"></textarea>
+                <br>
+                <input id="optiond" name="validate" type="radio" class="pl-3 pt-5 pb-5" />D
+                <!-- <small>Correct</small>-->
+                <textarea id="form-quiz-create-one-description" cols="25" rows="2" class="form-control"></textarea>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary text-right" id="button" type="submit" [disabled]="form.invalid" id="left">Save and
+        Close</button>
+
+      <button class="btn btn-primary" type="submit" id="right">Save and New</button>
+    </form>
+  </ng-container>
+
+
+
+
+
+
+  <br><br>
+  <!--Multiple Choice True or False-->
+
+
+  <ng-container *ngIf="choose === 'true' ">
+    <form class="fblock" [formGroup]="form">
+
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-10">
+            <div class="card">
+              <div class="col-5">
+                <h6 id="questionb" class="pl-3 pt-5">Question</h6>
+                <textarea id="form-quiz-create-one-description" cols="25" rows="3" class="form-control" formControlName="question"></textarea>
+              </div>
+              <small class="alert" *ngIf="!form.controls['question'].valid && form.controls['question'].touched">*This
+                is
+                Required</small>
+              <div class="col-6 d-inline content-align-center">
+                <h6 id="answersb" class="pt-5 pl-3">Answers</h6>
+                <input id="false" name="radio" type="radio" class="pl-3 pt-5" />
+                <input type="text" id="form-quiz-create-one-description" cols="25" rows="2" class="form-control" value="FALSE">
+                <br>
+                <input id="true" name="radio" type="radio" class="pl-3 pt-5" />
+                <input type="text" id="form-quiz-create-one-description" cols="25" rows="2" class="form-control" value="TRUE" />
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary text-right" id="button" type="submit" [disabled]="!form.valid" id="left">Save and
+        Close</button>
+
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid" id="right">Save and New</button>
+    </form>
+  </ng-container>
+
+
+
+
+  <!--Multiple Choice Yes or No-->
+
+
+  <ng-container *ngIf="choose === 'yes' ">
+    <form class="fblock" [formGroup]="form">
+
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-10">
+            <div class="card">
+              <div class="col-5">
+                <h6 id="questionc" class="pl-3 pt-5">Question</h6>
+                <textarea id="form-quiz-create-one-description" cols="25" rows="3" class="form-control" formControlName="question"></textarea>
+              </div>
+              <small class="alert" *ngIf="!form.controls['question'].valid && form.controls['question'].touched">*This
+                is
+                Required</small>
+              <div class="col-6 d-inline content-align-center">
+                <h6 id="answerc" class="pt-5 pl-3">Answers</h6>
+                <input id="radioyes" name="radio" type="radio" class="pl-3 pt-5" />
+                <input type="text" id="form-quiz-create-one-description" cols="25" rows="2" class="form-control" value="YES">
+                <br>
+                <input id="radiono" name="radio" type="radio" class="pl-3 pt-5" />
+                <input type="text" id="form-quiz-create-one-description" cols="25" rows="2" class="form-control" value="NO" />
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary text-right" id="button" type="submit" [disabled]="form.invalid" id="left">Save and
+        Close</button>
+
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid" id="right">Save and New</button>
+    </form>
+  </ng-container>
+
+
+  <!--Fill in the blank-->
+
+
+  <ng-container *ngIf="choose === 'blank' ">
+    <form class="fblock" [formGroup]="form">
+
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-10">
+            <div class="card">
+              <div class="col-5">
+                <h6 id="questiond" class="pl-3 pt-5">Question</h6>
+                <textarea id="form-quiz-create-one-description" cols="25" rows="3" class="form-control" formControlName="question"></textarea>
+              </div>
+              <small class="alert" *ngIf="!form.controls['question'].valid && form.controls['question'].touched">*This
+                is
+                Required</small>
+              <br><br>
+              <div class="col-6 d-inline content-align-center">
+                <input type="text" id="form-quiz-create-one-description" cols="25" rows="2" class="form-control"
+                  placeholder="Fill in the correct answer" />
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary text-right" id="button" type="submit" [disabled]="form.invalid" id="left">Save and
+        Close</button>
+
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid" id="right">Save and New</button>
+    </form>
+  </ng-container>
+</div>

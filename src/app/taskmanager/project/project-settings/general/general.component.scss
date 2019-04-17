@@ -1,0 +1,48 @@
+.details-header {
+    margin: 30px 15px;
+    padding: 0px;
+}
+
+#project-title {
+    text-transform: capitalize;
+}
+
+.description-text {
+    background-color: #eeeeee5c;
+    padding: 18px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+.add-descr-wrap {
+    padding: 6px 27px;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.head-tag {
+    padding-bottom: 10px;
+    font-size: 12px;
+    color: #868e96;
+}
+
+.close-form {
+    padding-bottom: 14px;
+    cursor: pointer;
+}
+
+.add-plus {
+    cursor: pointer;
+}
+
+.description-tag {
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.project-created-details {
+    padding-top: 8px;
+    text-transform: capitalize;
+    color: rgb(52, 58, 64);
+}

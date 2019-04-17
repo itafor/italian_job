@@ -1,0 +1,262 @@
+<!-- <div class="card-header">Quiz Manager - Create Quiz</div> -->
+<div class="modal-body" style="padding: 0">
+  <button
+    class="pb-3"
+    class="btn btn-lg btn-primary float-right"
+    *ngIf="show"
+    (click)="openModal()"
+  >
+    <span>Create Quiz</span><i class="ion-ios-plus mx-2"></i>
+  </button>
+
+  <div *ngIf="showWizard">
+    <app-create-quiz></app-create-quiz>
+  </div>
+</div>
+
+<div *ngIf="showList" class="pt-5">
+  <!-- <h2 class="text-center mt-5 text-info">
+    List of Available Quiz
+  </h2> -->
+
+  <ngx-datatable
+    *ngIf="quizList && quizList.length"
+    [rows]="rows"
+    [columnMode]="'force'"
+    [headerHeight]="40"
+    [footerHeight]="50"
+    [rowHeight]="'auto'"
+    [externalPaging]="true"
+    [count]="count"
+    [offset]="offset"
+    [limit]="limit"
+    (page)="onPage($event)"
+  >
+    <ngx-datatable-column name="Title">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6 [ngClass]="{ roleActive: row.active }">{{ row.title }}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Is it public">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6
+          [ngClass]="{ roleActive: row.active }"
+          class="badge py-1 px-2 border border-primary text-primary text-uppercase rounded-0"
+        >
+          {{ row.is_public }}
+        </h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Status">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6
+          [ngClass]="{ roleActive: row.active }"
+          class="badge badge-primary py-1 px-2 text-uppercase rounded-0"
+        >
+          {{ row.status }}
+        </h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Description">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6>{{ row.description }}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Action">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6 [ngClass]="{ roleAction: row.active }">
+          <span class="action-span">
+            <i
+              class="icon fa fa-trash fa-1.5x text-danger"
+              placement="auto"
+              ngbTooltip="Delete Quiz"
+            ></i>
+            <i
+              class="icon fa fa-pencil fa-1.5x text-info"
+              placement="auto"
+              ngbTooltip="Update Quiz"
+            ></i>
+          </span>
+        </h6>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+
+  <ngx-loading
+    [show]="loading"
+    [config]="{ backdropBorderRadius: '3px' }"
+    [template]="customLoadingTemplate"
+  ></ngx-loading>
+</div>
+
+<!-- 
+<div class="row mt-4 mb-3">
+    <div class="col-10">
+        <h4 class="display-4" style="font-size: 1.5rem;">List of Quizzes</h4>
+    </div>
+    <div class="col-2 text-center">
+        <a href="quiz-home#" class="btn btn-primary">Create Quiz<i class="icon ion-plus-round pl-2"></i></a>
+    </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th width="500px">Quiz Title</th>
+              <th>Publicity</th>
+              <th>Status</th>
+              <th>Creation Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-break">A Quiz to Determine Nothing but Everything</td>
+              <td>
+                <span class="badge py-1 px-2 border border-primary text-primary text-uppercase rounded-0">Private</span>
+              </td>
+              <td>
+                <span class="badge badge-primary py-1 px-2 text-uppercase rounded-0">Draft</span>
+              </td>
+              <td>
+                11th February, 2019
+              </td>
+              <td>
+                <a href="quiz-home#" class="text-primary" data-toggle="tooltip" data-placement="top" title="View" style="font-size: 1.3125rem;"><i class="icon ion-eye mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit" style="font-size: 1.3125rem;"><i class="icon ion-edit mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-danger" data-toggle="tooltip" data-placement="right" title="Delete" style="font-size: 1.3125rem;"><i class="icon ion-trash-b mb-2 mr-2"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-break">A Quiz to Determine All that there is to Test. Only valid for people of this world as well as people of the Chessy Way Galaxy</td>
+              <td>
+                <span class="badge py-1 px-2 border border-success text-success text-uppercase rounded-0">Public</span>
+              </td>
+              <td>
+                <span class="badge badge-success py-1 px-2 text-uppercase rounded-0 text-light">Active</span>
+              </td>
+              <td>
+                23rd March, 2019
+              </td>
+              <td>
+                <a href="quiz-home#" class="text-primary" data-toggle="tooltip" data-placement="top" title="View" style="font-size: 1.3125rem;"><i class="icon ion-eye mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit" style="font-size: 1.3125rem;"><i class="icon ion-edit mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-danger" data-toggle="tooltip" data-placement="right" title="Delete" style="font-size: 1.3125rem;"><i class="icon ion-trash-b mb-2 mr-2"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-break">Are you sure you want to create a Quiz? This Quiz is HARD</td>
+              <td>
+                <span class="badge py-1 px-2 border border-primary text-primary text-uppercase rounded-0">Private</span>
+              </td>
+              <td>
+                <span class="badge badge-info py-1 px-2 text-uppercase rounded-0">Pending</span>
+              </td>
+              <td>
+                11th January, 2019
+              </td>
+              <td>
+                <a href="quiz-home#" class="text-primary" data-toggle="tooltip" data-placement="top" title="View" style="font-size: 1.3125rem;"><i class="icon ion-eye mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit" style="font-size: 1.3125rem;"><i class="icon ion-edit mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-danger" data-toggle="tooltip" data-placement="right" title="Delete" style="font-size: 1.3125rem;"><i class="icon ion-trash-b mb-2 mr-2"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-break">A Quiz/Examination for the Peopel of Photizzo with Mr. Deji and the Adminstrator</td>
+              <td>
+                <span class="badge py-1 px-2 border border-success text-success text-uppercase rounded-0">Public</span>
+              </td>
+              <td>
+                <span class="badge badge-danger py-1 px-2 text-uppercase rounded-0">Closed</span>
+              </td>
+              <td>
+                14th February, 2019
+              </td>
+              <td>
+                <a href="quiz-home#" class="text-primary" data-toggle="tooltip" data-placement="top" title="View" style="font-size: 1.3125rem;"><i class="icon ion-eye mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit" style="font-size: 1.3125rem;"><i class="icon ion-edit mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-danger" data-toggle="tooltip" data-placement="right" title="Delete" style="font-size: 1.3125rem;"><i class="icon ion-trash-b mb-2 mr-2"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-break">A Dummy Quiz called "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."</td>
+              <td>
+                <span class="badge py-1 px-2 border border-primary text-primary text-uppercase rounded-0">Private</span>
+              </td>
+              <td>
+                <span class="badge badge-success py-1 px-2 text-uppercase rounded-0 text-light">Active</span>
+              </td>
+              <td>
+                1st February, 2019
+              </td>
+              <td>
+                <a href="quiz-home#" class="text-primary" data-toggle="tooltip" data-placement="top" title="View" style="font-size: 1.3125rem;"><i class="icon ion-eye mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-info" data-toggle="tooltip" data-placement="bottom" title="Edit" style="font-size: 1.3125rem;"><i class="icon ion-edit mb-2 mr-2"></i></a>
+                <a href="quiz-home#" class="text-danger" data-toggle="tooltip" data-placement="right" title="Delete" style="font-size: 1.3125rem;"><i class="icon ion-trash-b mb-2 mr-2"></i></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <ngx-datatable
+    *ngIf="quizList && quizList.length"
+    [rows]="rows"
+    [columnMode]="'force'"
+    [headerHeight]="40"
+    [footerHeight]="50"
+    [rowHeight]="'auto'"
+    [externalPaging]="true"
+    [count]="count"
+    [offset]="offset"
+    [limit]="limit"
+    (page)="onPage($event)"
+  >
+    <ngx-datatable-column name="Title">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6 [ngClass]="{ roleActive: row.active }">{{ row.title }}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Status">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6 [ngClass]="{ roleActive: row.active }">{{ row.status }}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Description">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6>{{ row.description }}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Action">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6 [ngClass]="{ roleAction: row.active }">
+          <span class="action-span">
+            <i
+              class="icon fa fa-trash fa-1.5x text-danger"
+              placement="auto"
+              ngbTooltip="Delete Quiz"
+            ></i>
+            <i
+              class="icon fa fa-pencil fa-1.5x text-info"
+              placement="auto"
+              ngbTooltip="Update Quiz"
+            ></i>
+          </span>
+        </h6>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+
+  <ngx-loading
+    [show]="loading"
+    [config]="{ backdropBorderRadius: '3px' }"
+    [template]="customLoadingTemplate"
+  ></ngx-loading>
+</div>
+
+
+ -->

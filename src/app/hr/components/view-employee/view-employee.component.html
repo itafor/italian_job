@@ -1,0 +1,338 @@
+<div class="loading-bar" *ngIf="!employeeInfo">
+  <div class="text-center">
+    <div class="loading-tab">
+      <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Fetching...</h5>
+    </div>
+  </div>
+</div>
+<ng-container *ngIf="employeeInfo">
+  <div class="details-header">
+    <div class="container">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-2">
+              <div class="avatar-wrap">
+                <img class="avatar" src="/assets/images/avatar_profile.png" id="passport-avatar" />
+                <div class="processing-loading"><i *ngIf="processing" class="fa fa-spinner fa-spin fa-5x"></i></div>
+                <span (click)="addPassport($event)" class="passport-upload"><i id="camera-upload"
+                    class="fa fa-camera fa-2x" placement="auto" ngbTooltip="Change Passport"></i></span>
+                <form>
+                  <input hidden *ngIf="addPassport" name="passportPhoto" type="file" class="custom-file-input"
+                    id="passportupload" (change)="onChangeUploadPassport($event)"
+                    accept="image/x-png,image/gif,image/jpeg">
+                </form>
+              </div>
+            </div>
+            <div class="col-md-12 col-lg-8">
+              <div>
+                <ul class="basic-info">
+                  <li id="employee-info-firstname">
+                    <strong class="first-name">{{employeeInfo.employeeSecret.firstname}}</strong>
+                  </li>
+                  <li class="last-name" id="employee-info-lastname">
+                    {{employeeInfo.employeeSecret.lastname}}
+                  </li>
+                  <li class="middle-name" id="employee-info-middlename">
+                    {{employeeInfo.employeeSecret.middlename}}
+                  </li>
+                  <p>
+                    <small *ngIf="unassignedRole" class="role-tag"
+                      id="empty-role-tag-text-sm"><em>(Unassigned)</em></small>
+                    <span *ngIf="newAssignedRole">
+                      <span *ngFor="let role of employeeInfo.roles"
+                        class="role-tag-assigned"><em>{{role.roleSecret.name}}</em>
+                      </span>
+                    </span>
+                  </p>
+
+                </ul>
+                <ul class="basic-info">
+                  <small><i id="email-tag-icon" class="fa fa-envelope text-primary"></i></small>
+                  <li id="employee-info-personalemail">
+                    {{employeeInfo.employeeSecret.personalEmail}}
+                  </li>,
+                  <li id="employee-info-companyemail">
+                    {{employeeInfo.employeeSecret.companyEmail}}
+                  </li>
+                </ul>
+                <ul class="basic-info">
+                  <small><i id="address-tag-icon" class="fa fa-address-book text-primary"></i></small>
+                  <li id="employee-info-houseaddress">
+                    {{employeeInfo.employeeSecret.houseAddress}}
+                  </li>
+                </ul>
+                <ul class="basic-info">
+                  <small><i id="phone-tag-icon" class="fa fa-phone text-primary"></i></small>
+                  <li id="employee-info-phoneone">{{employeeInfo.employeeSecret.phone1}}</li>,
+                  <li id="employee-info-phonetwo">{{employeeInfo.employeeSecret.phone2}}</li>
+                </ul>
+              </div>
+              <div class="other-info">
+                <hr />
+                <div class="row doc-tag">
+                  <div class="col-lg-4 description-tag-title">
+                    <p class="doc-sm" id="department-tag-text">DEPARTMENT</p>
+                  </div>
+                  <div class="col-lg-8 text-right description-tag-title">
+                    <p class="doc-sm"><i id="add-department-plus-icon" (click)="assignDepartmentHandler()"
+                        class="fa fa-plus fa-1x plus-icon" placement="auto" ngbTooltip="Assign Department"></i>
+                    </p>
+                  </div>
+                </div>
+                <div class="row doc-tag">
+                  <div id="department-added" class="col-lg-12 description-tag-title">
+                    <div *ngIf="assignDept" class="assign-tag-wrap">
+                      <div class="text-right close-form"><i id="add-department-close-icon"
+                          (click)="closeDepartmentHandler()" class="fa fa-close close-icon" placement="auto"
+                          ngbTooltip="Close"></i></div>
+                      <app-assign-department [employeeData]="employeeInfo"
+                        (assignDepartmentSuccessfulEvent)="closeDepartmentHandler()"></app-assign-department>
+                    </div>
+                    <div>
+                      <span *ngIf="unassignedDept" style="color: #80808073;" id="empty-department-tag-text">Unassigned
+                      </span>
+                      <span *ngIf="newAssignedDept">
+                        <span *ngFor="let dept of employeeInfo.departments">
+                          {{dept.departmentSecret.name}}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="other-info">
+                <hr />
+                <div class="row doc-tag">
+                  <div class="col-lg-4 description-tag-title">
+                    <p class="doc-sm" id="role-tag-text">ROLE</p>
+                  </div>
+                  <div class="col-lg-8 text-right description-tag-title">
+                    <p class="doc-sm"><i id="add-role-plus-icon" (click)="assignRoleHandler()"
+                        class="fa fa-plus fa-1x plus-icon" placement="auto" ngbTooltip="Assign Role"></i>
+                    </p>
+                  </div>
+                </div>
+                <div class="row doc-tag">
+                  <div id="role-added" class="col-lg-12 description-tag-title">
+                    <div *ngIf="assignRole" class="assign-tag-wrap">
+                      <div class="text-right close-form"><i id="add-role-close-icon" (click)="closeRoleHandler()"
+                          class="fa fa-close close-icon" placement="auto" ngbTooltip="Close"></i></div>
+                      <app-assign-role [employeeData]="employeeInfo" (assignRoleSuccessfulEvent)="closeRoleHandler()">
+                      </app-assign-role>
+                    </div>
+                    <div>
+                      <span *ngIf="unassignedRole" style="color: #80808073;" id="empty-role-tag-text">Unassigned</span>
+                      <span *ngIf="newAssignedRole">
+                        <span *ngFor="let role of employeeInfo.roles">
+                          {{role.roleSecret.name}}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="other-info">
+                <hr />
+                <div class="row doc-tag">
+                  <div class="col-lg-4 description-tag-title">
+                    <p class="doc-sm" id="leavedays-tag-text">LEAVE DAYS</p>
+                  </div>
+                  <div class="col-lg-8 text-right description-tag-title">
+                    <p class="doc-sm"><i id="add-leavedays-plus-icon" (click)="assignLeaveDaysHandler()"
+                        class="fa fa-plus fa-1x plus-icon" placement="auto" ngbTooltip="Assign Leave Days"></i>
+                    </p>
+                  </div>
+                </div>
+                <div class="row doc-tag">
+                  <div id="leavedays-added" class="col-lg-12 description-tag-title">
+                    <div *ngIf="assignLeave" class="assign-tag-wrap">
+                      <div class="text-right close-form"><i id="add-leavedays-close-icon" (click)="closeLeaveDaysHandler()"
+                          class="fa fa-close close-icon" placement="auto" ngbTooltip="Close"></i></div>
+                      <div>
+                        <form (ngSubmit)="submitForm($event)">
+                          <div class="form-group">
+                            <div class="form-group">
+                              <div>
+                                <input type="number" name="numberOfLeaveDays" class="custom-select"
+                                  [class.is-invalid]="!newNumberOfLeaveDays  && numberOfLeaveDays.touched" (change)="validateLeaveDaysNumber($event)"
+                                  #numberOfLeaveDays="ngModel" [(ngModel)]="newNumberOfLeaveDays" id="assigned-numberOfLeaveDays-id">
+                              </div>
+                              <div class="assign-btn">
+                                <button id="assign-leavedays-submit" [disabled]="confirmBtnDisabled()" class="btn btn-primary"
+                                  type="submit"><i *ngIf="submitting" class="fa fa-spinner fa-spin"></i> Assign
+                                </button>
+                              </div>
+                            </div>
+
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div>
+                      <span *ngIf="unassignedLeaveDays" style="color: #80808073;" id="empty-leavedays-tag-text">Unassigned</span>
+                      <span *ngIf="newAddedLeaveDays">
+                        <span *ngIf="employeeInfo.employeeSecret?.numberOfLeaveDays">
+                          {{ employeeInfo.employeeSecret?.numberOfLeaveDays}} Days
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="other-info">
+                <hr />
+                <div class="row doc-tag">
+                  <div class="col-lg-4 description-tag-title">
+                    <p class="doc-sm" id="document-tag-text">DOCUMENT</p>
+                  </div>
+                  <div class="col-lg-8 text-right description-tag-title">
+                    <p class="doc-sm"><i id="add-document-plus-icon" (click)="addAttachmentHandler()"
+                        class="fa fa-plus fa-1x plus-icon" placement="auto" ngbTooltip="Add Attachment"></i>
+                    </p>
+                  </div>
+                </div>
+                <div class="row doc-tag">
+                  <div id="attachment-added" class="col-lg-12 description-tag-title">
+                    <div *ngIf="addAttachment" class="assign-tag-wrap">
+                      <div class="text-right close-form"><i id="add-document-close-icon"
+                          (click)="closeAttachmentHandler()" class="fa fa-close close-icon" placement="auto"
+                          ngbTooltip="Close"></i></div>
+                      <app-attachment [employeeData]="employeeInfo"
+                        (addDocumentSuccessfulEvent)="closeAttachmentHandler()"></app-attachment>
+                    </div>
+                    <div>
+                      <span *ngIf="!newAddedDocs" style="color: #80808073;" id="empty-document-tag-text">No
+                        Attachment</span>
+                      <div *ngIf="newAddedDocs">
+                        <div *ngFor="let attachment of newAddedDocs">
+                          <div class="doc-card">
+                            <a target="_blank" href="{{attachment.url}}">
+                              <div class="view-attachment">
+                                <b>{{attachment.filename}}</b>
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="other-info">
+                <hr />
+                <div class="row doc-tag">
+                  <div class="col-lg-4 description-tag-title">
+                    <p class="doc-sm" id="payslip-tag-text">PAYSLIPS</p>
+                  </div>
+                  <div class="col-lg-8 text-right description-tag-title">
+                    <p class="doc-sm"><i id="add-payslip-plus-icon" (click)="addPayslipHandler()"
+                        class="fa fa-plus fa-1x plus-icon" placement="auto" ngbTooltip="Add Payslip"></i>
+                    </p>
+                  </div>
+                </div>
+                <div id="payslip-added" class="row doc-tag">
+                  <div class="col-lg-12 description-tag-title">
+                    <div *ngIf="addPayslip" class="assign-tag-wrap">
+                      <div class="text-right close-form"><i id="add-payslip-close-icon" (click)="closePayslipHandler()"
+                          class="fa fa-close close-icon" placement="auto" ngbTooltip="Close"></i></div>
+                      <form [formGroup]="form" (ngSubmit)="uploadPayslip($event)">
+                        <div class="form-group">
+                          <div class="form-group row">
+                            <div class="col-lg-12">
+                              <div class="custom-file">
+                                <input name="payslip" type="file" class="custom-file-input"
+                                  [formControl]="form.controls['payslip']" accept="application/pdf"
+                                  id="payslip-upload-payslip" (change)="onChangePayslip($event.target.files)"
+                                  [ngClass]="{'is-invalid': form.controls['payslip'].hasError('required') && form.controls['payslip'].touched}">
+                                <label class="custom-file-label document-attach" #labelImport for="payslip"> Choose
+                                  file</label>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <div class="col-lg-6">
+                              <input name="payslipmonth" (change)="onChangePayslipMonth($event)" class="form-control"
+                                type="text" id="payslip-upload-payslipmonth"
+                                [formControl]="form.controls['payslipmonth']"
+                                [ngClass]="{'is-invalid': form.controls['payslipmonth'].hasError('required') && form.controls['payslipmonth'].touched}"
+                                placeholder="Month" />
+                              <small class="invalid-feedback"
+                                *ngIf="form.controls['payslipmonth'].hasError('required') && form.controls['payslipmonth'].touched">Please
+                                enter month</small>
+                            </div>
+                            <div class="col-lg-6">
+                              <input name="payslipyear" (change)="onChangePayslipYear($event)" class="form-control"
+                                type="text" id="payslip-upload-payslipyear" [formControl]="form.controls['payslipyear']"
+                                [ngClass]="{'is-invalid': form.controls['payslipyear'].hasError('required') && form.controls['payslipyear'].touched}"
+                                placeholder="Year" />
+                              <small class="invalid-feedback"
+                                *ngIf="form.controls['payslipyear'].hasError('required') && form.controls['payslipyear'].touched">Please
+                                enter year</small>
+                            </div>
+                          </div>
+                          <div class="row text-center">
+                            <div class="col-lg-12">
+                              <div class="assign-btn">
+                                <button id="add-payslip-submit" [disabled]="isBtnDisabled()" class="btn btn-primary"
+                                  type="submit">Add
+                                  <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div>
+                      <span *ngIf="!newAddedPayslip" style="color: #80808073;" id="empty-payslip-tag-text">No
+                        Payslips</span>
+                      <div *ngIf="newAddedPayslip">
+                        <div class="table-responsive">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th> Month </th>
+                                <th> Year </th>
+                                <th> File </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let payslip of newAddedPayslip">
+                                <td> {{ payslip.month }} </td>
+                                <td> {{  payslip.year }} </td>
+                                <td><a href="{{payslip.payslip[0].url}}"
+                                    target="_blank">{{payslip.payslip[0].filename}}</a></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="other-info">
+                <hr />
+                <div class="row doc-tag">
+                  <div class="col-lg-4 description-tag-title">
+                    <p class="doc-sm" id="other-info-tag-text">OTHER INFORMATION</p>
+                  </div>
+                  <div class="col-lg-8 text-right description-tag-title">
+                    <p class="doc-sm"><i id="add-other-info-plus-icon" class="fa fa-plus fa-1x plus-icon"
+                        placement="auto" ngbTooltip="Add"></i>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 col-lg-2 text-right">
+              <button id="view-control-edit-info" class="btn btn-primary" (click)="editEmployee()">Edit Info <i
+                  id="edit-tag-icon" class="fa fa-edit"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

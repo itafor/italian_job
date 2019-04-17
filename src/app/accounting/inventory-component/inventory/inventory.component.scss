@@ -1,0 +1,47 @@
+.InactiveInventory  {
+    color: #6c757d6b;
+    // font-variant: all-petite-caps;
+}
+.activeVendor  {
+    color: green;
+    font-variant: all-petite-caps;
+    background-color: grey;
+}
+datatable-row-wrapper{
+    background-color: coral;
+}
+:host ::ng-deep datatable-body-row {
+    background-color: rgb(245, 241, 241);
+  }
+
+.col-form-label{
+    display: inline;
+    padding: 0px;
+    color: #9b9b9b;
+}
+// .form-control {
+//   font-family: inherit;
+//   width: 100%;
+//   border: 0;
+//   border-bottom: 1px solid #d2d2d2;
+//   border-radius: 0%;
+//   outline: 0;
+//   font-size: 16px;
+//   color: #212121;
+//   padding: 7px 0;
+//   background: transparent;
+//   padding-bottom: 6px;
+//   transition: border-color 0.2s;
+// }
+// .form-control:focus {
+//     box-shadow: none;
+//     padding-bottom: 6px;
+//     border-bottom: 2px solid #5c6bc0;  
+// }
+textarea{
+    resize: none;
+}
+.validation-error {
+    font-size: 80%;
+    color: #ef5350;
+}

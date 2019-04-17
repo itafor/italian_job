@@ -1,0 +1,33 @@
+<nav class="navbar custom-navbar main-brand">
+  <a class="navbar-brand mr-auto" [routerLink]="['/']">
+    <b>QUABBLY</b>
+  </a>
+</nav>
+
+<!-- main navigation -->
+<nav class="menu">
+  <app-menu></app-menu>
+</nav>
+
+<!-- /main navigation -->
+
+<nav class="navbar custom-navbar sidebar-footer">
+  <ul class="navbar-nav row no-gutters w-100">
+    <li class="nav-item col-4 ml-0 docked-hidden">
+      <a [routerLink]="['/email']" class="nav-link m-auto" container="body" ngbTooltip="Inbox">
+        <i class="icon ion-ios-filing"></i>
+      </a>
+    </li>
+    <li class="nav-item col-4 ml-0 docked-hidden">
+      <a [routerLink]="['/social']" class="nav-link m-auto" container="body" ngbTooltip="Profile">
+        <i class="icon ion-ios-person"></i>
+      </a>
+    </li>
+    <li class="nav-item col-4 ml-0">
+      <a class="nav-link m-auto" container="body" ngbTooltip="Sign out" (click)="logout($event)">
+        <i class="icon ion-log-out"></i>
+      </a>
+    </li>
+
+  </ul>
+</nav>

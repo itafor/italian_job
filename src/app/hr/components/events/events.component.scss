@@ -1,0 +1,43 @@
+.details-header {
+    margin: 30px 16px;
+}
+
+.loading-tab {
+     height: 330px;
+}
+
+.icon{
+     margin-right: 30px;
+     cursor: pointer;
+}
+
+.eventInactive  {
+  color: #6c757d6b;
+  font-variant: all-petite-caps;
+}
+
+.eventActive  {
+    color: rgba(0,0,0,.87);
+    font-variant: all-petite-caps;
+}
+
+.eventAction  {
+     color: #6c757d6b;
+}
+
+
+.status-confirmation {
+  padding: 10px 0px;
+  color: #fff;
+  border-radius: 5px;
+  transition-timing-function: ease;
+}
+
+:host ::ng-deep .datatable-body-cell, .tble_action {
+   overflow-x: inherit !important;
+   padding-bottom: 10px;
+}
+
+:host ::ng-deep .visible{
+     overflow: -webkit-paged-y;
+}

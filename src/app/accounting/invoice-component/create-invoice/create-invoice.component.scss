@@ -1,0 +1,12 @@
+
+.invoiceCalculation{
+    font-family: 'Courier New', Courier, monospace
+}
+
+label i {
+  cursor: pointer;
+
+  &:hover {
+    transform: scaleY(1.3);
+  }
+}

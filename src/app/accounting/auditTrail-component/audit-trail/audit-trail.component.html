@@ -1,0 +1,622 @@
+<div class="card-header">
+  <div class="card-body">
+    <ngb-tabset #invoiceTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="forceResize($event, 'viewInvoice')">
+      <ngb-tab title="Audit Trail" id="viewAuditTrail">
+        <ng-template ngbTabContent>
+          <div class="details-header">
+            <h2 id="tableValue">{{tableValue}}</h2>
+            <div class="text-center" *ngIf="auditTrailList && (auditTrailList.length === 0)">
+              <div class="loading-tab">
+                <i class="fa fa-frown-o fa-2x text-secondary"></i><br />
+                <h5 id="no-invoice">Nothing found</h5>
+              </div>
+            </div>
+            <div class="text-center" *ngIf="!(auditTrailList)">
+              <div class="loading-tab">
+                <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+              </div>
+            </div>
+
+            <ngx-datatable *ngIf="auditTrailList && auditTrailList.length" [rows]="rows" [columnMode]="'force'"
+            [headerHeight]="40" [footerHeight]="50" [rowHeight]="'auto'" [externalPaging]="true"
+            [count]="count" [offset]="offset" [limit]="limit" (page)='onPage($event)'>
+            <ngx-datatable-column name="Description">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template
+                    class="tab-column">
+                    <h6>{{row.secret.description}}</h6>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Action Type">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                    <h6>{{row.secret.actionType}}</h6>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Schema Name">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                    <h6>{{row.schemaName}}</h6>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Date Created">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                    <h6>{{row.createdAt  | date }}</h6>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Action">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                    <span class="action-span">
+                      <i (click)="showAuditTrail(content,row)" class="icon fa fa-eye fa-1.5x text-info"
+                      ngbTooltip="View Audit Trail" id="viewAuditTrail"></i>
+                    </span>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+
+
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab *ngFor="let tab of openTabs; let tabIndex = index" id="{{ tabIdForIndex(tabIndex) }}">
+        <ng-template ngbTabTitle>
+          <span [innerHTML]="tab.title"></span> &nbsp;
+          <span (click)="closeTab($event, tabIndex)" class="indicate--danger">
+            &times;
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <app-list-audit-trail *ngIf="tab.type === 'VIEW_INVOICE' " [AuditTrailData]="tab.content">
+          </app-list-audit-trail>
+
+          <div class="details-header" *ngIf="tab.type ===  'NEW_PAGE' ">
+            <div class="col-md-12" *ngIf="invoiceToView.schemaName === 'invoice'">
+              <span>Description: <small>{{invoiceToView.secret.description}}</small></span><br>
+              <span>Record Name: <small>{{invoiceToView.schemaName}}</small></span> &nbsp;
+              <span>Date Created: <small>{{invoiceToView.createdAt | date }}</small></span>
+            </div>
+            <div class="col-md-12" *ngIf="invoiceToView.schemaName === 'vendor'">
+              <span>Description: <small>{{invoiceToView.secret.description}}</small></span><br>
+              <span>Record Name: <small>{{invoiceToView.schemaName}}</small></span> &nbsp;
+              <span>Date Created: <small>{{invoiceToView.createdAt | date }}</small></span>
+            </div>
+            <div class="col-md-12" *ngIf="invoiceToView.schemaName === 'customer'">
+              <span>Description: <small>{{invoiceToView.secret.description}}</small></span><br>
+              <span>Record Name: <small>{{invoiceToView.schemaName}}</small></span> &nbsp;
+              <span>Date Created: <small>{{invoiceToView.createdAt | date }}</small></span>
+            </div>
+            <div class="col-md-12" *ngIf="invoiceToView.schemaName === 'sale'">
+              <span>Description: <small>{{invoiceToView.secret.description}}</small></span><br>
+              <span>Record Name: <small>{{invoiceToView.schemaName}}</small></span> &nbsp;
+              <span>Date Created: <small>{{invoiceToView.createdAt | date }}</small></span>
+            </div>
+
+            <div class="col-md-12" *ngIf="invoiceToView.schemaName === 'expense'">
+              <span>Description: <small>{{invoiceToView.secret.description}}</small></span><br>
+              <span>Record Name: <small>{{invoiceToView.schemaName}}</small></span> &nbsp;
+              <span>Date Created: <small>{{invoiceToView.createdAt | date }}</small></span>
+            </div>
+            <div class="col-md-12" *ngIf="invoiceToView.schemaName === 'expensecategory'">
+              <span>Description: <small>{{invoiceToView.secret.description}}</small></span><br>
+              <span>Record Name: <small>{{invoiceToView.schemaName}}</small></span> &nbsp;
+              <span>Date Created: <small>{{invoiceToView.createdAt | date }}</small></span>
+            </div>
+
+            <div class="col-md-12" *ngIf="invoiceToView.schemaName === 'incomecategory'">
+              <span>Description: <small>{{invoiceToView.secret.description}}</small></span><br>
+              <span>Record Name: <small>{{invoiceToView.schemaName}}</small></span> &nbsp;
+              <span>Date Created: <small>{{invoiceToView.createdAt | date }}</small></span>
+            </div>
+
+            <div class="col-md-12" *ngIf="invoiceToView.schemaName === 'bank'">
+              <span>Description: <small>{{invoiceToView.secret.description}}</small></span><br>
+              <span>Record Name: <small>{{invoiceToView.schemaName}}</small></span> &nbsp;
+              <span>Date Created: <small>{{invoiceToView.createdAt | date }}</small></span>
+            </div>
+            <div class="col-md-12" *ngIf="invoiceToView.schemaName === 'settings'">
+              <span>Description: <small>{{invoiceToView.secret.description}}</small></span><br>
+              <span>Record Name: <small>{{invoiceToView.schemaName}}</small></span> &nbsp;
+              <span>Date Created: <small>{{invoiceToView.createdAt | date }}</small></span>
+            </div>
+            
+            <div class="card" id="invoice_to_print">
+              <div class="card-boday">
+                <div class="container" *ngIf="invoiceToView.schemaName === 'invoice'">
+                  <div class="col-md-12">
+                    <div class="col-md-4">
+                      <h3 id="invoice">Invoice</h3>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+
+                    <div class="col-md-4 float-left">
+                      <table>
+                        <thead>
+                          <th id="from">From</th>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <span class="names"> {{invoiceToView.secret.newEntity.senderName}}</span>
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.newEntity.senderEmail}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.newEntity.senderPhoneNumber}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.newEntity.senderBusinessPhoneNumber}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.newEntity.senderAddress}}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div class="col-md-4 float-left" id="receiver_info">
+                      <table>
+                        <thead>
+                          <th id="to">To</th>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <span class="names">{{invoiceToView.secret.newEntity.receiverName}}</span>
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.newEntity.receiverEmail}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.newEntity.receiverPhoneNumber}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              {{invoiceToView.secret.newEntity.receiverAddress}}
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-md-4 float-right" id="invoice_detai">
+                      <table>
+                        <thead>
+                          <th id="invoicedetail">Invoice Details</th>
+                        </thead>
+                        <tbody>
+                          <tr class="invoice_content">
+                            <td>
+                              No: {{invoiceToView.secret.newEntity.invoiceNumber}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              Date: {{invoiceToView.secret.newEntity.invoiceDate | date}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              Due Date: {{invoiceToView.secret.newEntity.invoiceDueDate | date}}
+                            </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td>
+                              Terms: {{invoiceToView.secret.newEntity.invoiceTerms}}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-md-12" id="itemDiv">
+
+                    <table id="itemTable">
+                      <thead id="invoiceheader">
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+                      </thead>
+                      <tbody *ngFor="let item of invoiceToView.secret.newEntity.items">
+                        <tr class="invoice_content">
+                          <td>{{item.itemDescription}}</td>
+                          <td><span>&#8358;</span> {{item.price}}</td>
+                          <td>{{item.quantity}}</td>
+                          <td><span>&#8358;</span> {{item.amount}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="col-md-7 float-left">
+                      <table>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                    <hr>
+                    <div class="col-md-5 float-right">
+                      <table class="table table-striped">
+                        <tbody>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation"> SubTotal:</td>
+                            <td><span>&#8358;</span> {{invoiceToView.secret.newEntity.subTotal}}</td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation"> Tax:</td>
+                            <td> {{invoiceToView.secret.newEntity.tax}} % </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation"> Total:</td>
+                            <td> <span>&#8358;</span>
+                              {{invoiceToView.secret.newEntity.subTotal}}</td>
+
+                          </tr>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation">
+                              Amount Paid:
+                            </td>
+                            <td><span>&#8358;</span> {{invoiceToView.secret.newEntity.amountPaid}} </td>
+                          </tr>
+                          <tr class="invoice_content">
+                            <td class="invoiceCalculation"> Balance Due:</td>
+                            <td><span>&#8358;</span>
+                              {{invoiceToView.secret.newEntity.balanceDue}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div> <!-- invoice ends -->
+
+                <div class="container" *ngIf="invoiceToView.schemaName === 'vendor'">
+                  <div class="col-md-12">
+                    <table class="table table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th id="from">Name</th>
+                          <th id="from">Email</th>
+                          <th id="from">Phone Number</th>
+                          <th id="from">Address</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <span class="names">{{invoiceToView.secret.newEntity.name}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.email}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.phoneNumber}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.address}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div> <!-- vendor ends -->
+
+                <div class="container" *ngIf="invoiceToView.schemaName === 'customer'">
+                  <div class="col-md-12">
+                    <table class="table table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th id="from">Name</th>
+                          <th id="from">Email</th>
+                          <th id="from">Phone Number</th>
+                          <th id="from">Address</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <span class="names">{{invoiceToView.secret.newEntity.name}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.email}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.phoneNumber}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.address}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div> <!-- customer ends -->
+
+
+
+
+                
+                <div class="container" *ngIf="invoiceToView.secret.actionType ==='delete' ">
+                  <div class="col-md-12">
+                    <table class="table table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th id="from">Name</th>
+                          <th id="from">Email</th>
+                          <th id="from">Phone Number</th>
+                          <th id="from">Address</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <span class="names">{{invoiceToView.secret.previousEntity.name}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.previousEntity.email}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.previousEntity.phoneNumber}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.previousEntity.address}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div> <!-- delete customer ends -->
+
+
+                <div class="container" *ngIf="invoiceToView.schemaName === 'expensecategory'">
+                  <div class="col-md-12">
+                    <table class="table table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th id="from">Name</th>
+                          <th id="from">Category</th>
+                          <th id="from">Parent Category</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <span class="names">{{invoiceToView.secret.newEntity.name}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.categoryType}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.parentCategory}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div> <!-- expense category ends -->
+
+
+                <div class="container" *ngIf="invoiceToView.schemaName === 'incomecategory'">
+                  <div class="col-md-12">
+                    <table class="table table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th id="from">Name</th>
+                          <th id="from">Category</th>
+                          <th id="from">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <span class="names">{{invoiceToView.secret.newEntity.name}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.categoryType}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.description}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div> <!-- income category ends -->
+                <div class="container" *ngIf="invoiceToView.schemaName === 'bank'">
+                  <div class="col-md-12">
+                    <table class="table table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th id="from">Bank Name</th>
+                          <th id="from">Account Name</th>
+                          <th id="from">Account Number</th>
+                          <th id="from">Branch</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <span class="names">{{invoiceToView.secret.newEntity.bankName}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.accountName}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.accountNumber}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.branch}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div> <!-- bank  ends -->
+
+                <div class="container" *ngIf="invoiceToView.schemaName === 'settings'">
+                  <div class="col-md-12">
+                    <table class="table table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th id="from">procurementApprovers</th>
+                          <th id="from">enableApprovalForProcurement</th>
+                          <th id="from">EnablerequisitionApprover</th>
+                          <th id="from">RequisitionApprovers</th>
+                          <th id="from">enableBankTransferCharge</th>
+                          <th id="from">enableBankTransferCharge</th>
+                          <th id="from">Charge Category</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                            <td>
+                                {{invoiceToView.secret.newEntity.enableApprovalForProcurement}}
+                            </td>
+                          <td>
+                              {{invoiceToView.secret.newEntity.procurementApprovers}}
+                          </td>
+
+                          <td>
+                              {{invoiceToView.secret.newEntity.enablerequisitionApprover}}
+                          </td>
+                        <td>
+                            {{invoiceToView.secret.newEntity.requisitionApprovers}}
+                        </td>
+                        
+                          
+                          <td>
+                            {{invoiceToView.secret.newEntity.enableBankTransferCharge}}
+                          </td>
+
+                          <td>
+                              <span>{{invoiceToView.chargeCategory}}</span>
+                            </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div> <!-- settings  ends -->
+
+
+
+
+                <div class="container" *ngIf="invoiceToView.schemaName === 'sale'">
+                  <div class="col-md-12">
+                    <table class="table table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th id="from">Description</th>
+                          <th id="from">Category</th>
+                          <th id="from">Bank Account</th>
+                          <th id="from">ATM Received</th>
+
+                          <th id="from">Payment Type</th>
+                          <th id="from">Credit Amount</th>
+                          <th id="from">Cash Received</th>
+                          <th id="from">Customer</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <span class="names">{{invoiceToView.secret.newEntity.saleDescription}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.category}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.bankAccount}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.amountReceivedViaBank}}
+                          </td>
+
+                          <td>
+                            <span class="names">{{invoiceToView.secret.newEntity.paymentType}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.creditAmount}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.cashReceived}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.customer}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div> <!-- sales ends -->
+
+
+                <div class="container" *ngIf="invoiceToView.schemaName === 'expense'">
+                  <div class="col-md-12">
+                    <table class="table table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th id="from">Description</th>
+                          <th id="from">Category</th>
+                          <th id="from">Bank Account</th>
+                          <th id="from">AMT Paid</th>
+
+                          <th id="from">Payment Type</th>
+                          <th id="from">Credit Amount</th>
+                          <th id="from">Cash Received</th>
+                          <th id="from">Vendor</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <span class="names">{{invoiceToView.secret.newEntity.expenseDescription}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.category}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.bankAccount}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.amountPaidViaBank}}
+                          </td>
+
+                          <td>
+                            <span class="names">{{invoiceToView.secret.newEntity.paymentType}}</span>
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.creditAmount}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.cashPaid}}
+                          </td>
+                          <td>
+                            {{invoiceToView.secret.newEntity.vendor}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div> <!-- expense ends -->
+              </div>
+            </div>
+            <button type="button" (click)="captureScreen()" *ngIf="invoiceToView.schemaName === 'invoice'">Download and
+              Print</button>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+.validation-error{
+    color: red;
+}
+#tableValue{
+    font-size: 2px;
+    opacity: 0.01;
+}
+#delete-bank{
+margin-right: 10px;
+}
+
+
+@media only screen and (max-width: 600px) {
+    #delete_bank{
+        margin-right: 5px;
+        }
+  }

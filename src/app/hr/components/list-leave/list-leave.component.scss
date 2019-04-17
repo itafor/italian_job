@@ -1,0 +1,25 @@
+.details-header {
+    margin: 30px 15px;
+    padding: 0px;
+}
+
+
+:host ::ng-deep .datatable-body-cell, .tble_action {
+   overflow-x: inherit !important;
+   padding-bottom: 10px;
+}
+
+:host ::ng-deep .visible{
+     overflow: -webkit-paged-y;
+}
+
+.loading-tab {
+     height: 330px;
+}
+
+.status-confirmation {
+  padding: 10px 0px;
+  color: #fff;
+  border-radius: 5px;
+  transition-timing-function: ease;
+}

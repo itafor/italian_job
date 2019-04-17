@@ -1,0 +1,74 @@
+<nav class="navbar custom-navbar bg-faded main-header px-3">
+
+  <a href="javascript:;" class="nav-link pl-0 d-lg-none" (click)="toggleSidenav.emit()">
+    <i class="icon ion-android-menu"></i>
+  </a>
+
+  <span class="navbar-heading mr-3">{{heading}}</span>
+
+  <form class="form-search form-inline ml-3 d-none d-sm-block">
+    <div class="d-flex align-items-center">
+      <i class="icon ion-ios-search mr-2"></i>
+      <input class="form-control border-0 no-bg fw-300" type="text" placeholder="Search...">
+    </div>
+  </form>
+
+  <span class="mr-auto"></span>
+
+  <ul class="navbar-nav">
+    <li class="nav-item" ngbDropdown placement="bottom-right">
+      <a href="javascript:;" class="nav-link" ngbDropdownToggle>
+        <span class="widget-icon rounded-circle bg-secondary text-white d-none d-md-inline-block">{{firstLetterFirstname}} {{firstLetterLastname}}</span>
+        <span class="ml-2">{{firstname}} {{lastname}}</span>
+      </a>
+      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right">
+        <a (click)="dashboard()" class="dropdown-item" href="javascript:;">
+          <span>Dashboard</span>
+        </a>
+        <a (click)="open(content)" class="dropdown-item" href="javascript:;">
+          <span>Change Password</span>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a (click)="logout()" class="dropdown-item" href="javascript:;">
+          <span>Signout</span>
+        </a>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Upload File</h4>
+    <button id="uploadfiles" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form (ngSubmit)="submitChangePassword()">
+      <div class="form-group row">
+        <label class="col-2 col-form-label" for="example-text-input">Old Password:</label>
+        <div class="col-10">
+          <input name="oldPassword" [(ngModel)]="oldPassword" class="form-control col-title err-max" id="example-text-input" type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-2 col-form-label" for="example-text-input">New Password:</label>
+        <div class="col-10">
+          <input name="newPassword" [(ngModel)]="newPassword" class="form-control col-title err-max" id="example-text-input" type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-2 col-form-label" for="example-text-input">Confirm Password:</label>
+        <div class="col-10">
+          <input name="confirmPassword" [(ngModel)]="confirmPassword" class="form-control col-title err-max" id="example-text-input" type="text">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" [disabled]="disableBtn" class="btn btn-dark"> 
+          <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i> Update
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

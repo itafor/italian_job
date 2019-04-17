@@ -1,0 +1,41 @@
+<div class="card-header">
+    <nav class="navbar ruler-nav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <span>
+                    <button (click)="newTabHandler()" class="btn btn-primary" id="createinventoryCategoryButton">Create
+                        Inventory Category &nbsp; <i class="fa fa-plus"></i></button>
+                </span></li>
+        </ul>
+    </nav>
+    <div class="card-body">
+        <ngb-tabset #inventoryCategoryTabSet="ngbTabset" [destroyOnHide]="false">
+
+            <ngb-tab title="InventoryCategory">
+                <ng-template ngbTabContent>
+                    <div class="details-header prefix-css">
+                        <div *ngIf="suspendingState" class="bg-info text-center status-confirmation">
+                            <h5> <i class="fa fa-spinner fa-spin fa-1x"></i> Loading...</h5>
+                        </div>
+                        
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+                <ng-template ngbTabTitle>
+                    <span [innerHTML]="tab.title"></span> &nbsp;
+                    <span (click)="closeTab($event, index)" class="indicate--danger">
+                        &times;
+                    </span>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <app-create-inventory-category *ngIf="tab.type === 'NEW_INVENTORY_CATEGORY' " (inventoryCategorySuccessHandler)="inventoryCategorySuccessHandler($event, tabIndex)"></app-create-inventory-category>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

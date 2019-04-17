@@ -1,0 +1,253 @@
+
+<div class="row" id="create_questions">
+  <div class="col-sm-12">
+    <div class="card">
+        <div class="d-flex flex-row-reverse p-2">
+            <button (click)="onQuestion()" class="btn btn-primary addtask">
+              View | Questions &nbsp; <i class="fa fa-tasks"></i>
+            </button>
+            </div>
+      <div class="card-header">
+        <div class="display-4" style="font-size:1.3rem;">Create Question</div>
+      </div>
+
+      <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-10 offset-md-1">
+              <div class="form-group row mb-4">
+                <label for="type" class="col-2 col-form-label">Question Type</label>
+                <div class="col-10">
+                  <select [formControl]="f.type" value="Multiplechoice" class="form-control" id="type" name="type" required (click)="setvalue($event)">
+                      <option *ngFor="let type of questionType" 
+                     [value]="type.name">{{type.label}}</option>
+                    <!-- <option value="multiple_choice_radio">Multiple Choice (Radio) Question</option>
+                    <option  value="multiple_choice_yes_no">Multiple Choice Yes/No </option>
+                    <option  value="multiple_choice_true_false">Multiple Choice True/False</option>
+                    <option value="multiple_choice_checkbox">Multiple Choice checkbox</option>
+                    <option value="multiple_choice_fill_in_the_gap">Multiple Choice Fill in the gap</option> -->
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label for="name" class="col-2 col-form-label">Question Name</label>
+                <div class="col-10">
+                  <textarea [formControl]="f.name" class="form-control" name="name" id="name" rows="3" placeholder="Who is the President of your country?"></textarea>
+                </div>
+              </div>
+
+              <ng-container *ngIf="choose === 'multiple_choice_checkbox' ">
+                  <div class="form-group row mb-4">
+                      <label for="options" class="col-2 col-form-label">Question Options</label>
+                      <div class="col-10">
+                        <div class="table-responsive">
+                          <table class="table-sm" id="options">
+                            <thead>
+                              <tr>
+                                <th style="width: 4.9rem;">Option Key</th>
+                                <th style="width: 29rem;">Question Option</th>
+                                <th style="width: 5.7rem;">Is an answer?</th>
+                                <th style="width: 5.7rem;"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let mcqOption of f['mcqOpts'].controls; let optIndex = index;"
+                              [formGroup]="mcqOption">
+                                <td>
+                                  <input class="form-control text-center" type="text" name="" id="" formControlName="label" >
+                                  
+                                </td>
+                                <td>
+                                  <textarea name="" class="form-control" id="" rows="1" formControlName="text"></textarea>
+                                </td>
+                                <td class="text-center col-xs-2">
+                                    <label class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" formControlName="isAnswer">
+                                        <span class="custom-control-label"></span>
+                                      </label>
+                                </td>
+                                <td>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+            </ng-container>
+              
+
+              <ng-container *ngIf="choose === 'multiple_choice_radio' ">
+                  <div class="form-group row mb-4">
+                      <label for="options" class="col-2 col-form-label">Question Options</label>
+                      <div class="col-10">
+                        <div class="table-responsive">
+                            <table class="table-sm" id="options">
+                                <thead>
+                                  <tr>
+                                    <th style="width: 4.9rem;">Option Key</th>
+                                    <th style="width: 29rem;">Question Option</th>
+                                    <th style="width: 5.7rem;">Is an answer?</th>
+                                    <th style="width: 5.7rem;"></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let mcqOption of f['mcqOpts'].controls; let optIndex = index;"
+                                  [formGroup]="mcqOption">
+                                    <td>
+                                      <input class="form-control text-center" type="text" name="radio"  formControlName="label" >
+                                    </td>
+                                    <td>
+                                      <textarea name="" class="form-control" id="" rows="1" formControlName="text"></textarea>
+                                    </td>
+                                    <td class="text-center col-xs-2">
+                                        <label class="custom-control custom-checkbox">
+                                            <input type="radio" class="custom-control-input" formControlName="isAnswer" name="isAnswer" value="radio">
+                                            <span class="custom-control-label"></span>
+                                          </label>
+                                    </td>
+                                    <td>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+
+              
+              <ng-container *ngIf="choose === 'multiple_choice_true_false' ">
+              <div class="form-group row mb-4">
+                <label for="options" class="col-2 col-form-label">Question Options</label>
+                <div class="col-10">
+                  <div class="table-responsive">
+                    <table class="table-sm" id="options">
+                      <thead>
+                        <tr>
+                          <th style="width: 4.9rem;">Option Key</th>
+                          <th style="width: 29rem;">Question Option</th>
+                          <th style="width: 5.7rem;">Is an answer?</th>
+                          <th style="width: 5.7rem;"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let doubleOption of f['douOpts'].controls; let optIndex = index;" [formGroup]="doubleOption">
+                          <td>
+                            <input formControlName="label" class="form-control text-center" type="text" name="" id="" value="A" >
+                          </td>
+                          <td>
+                            <input formControlName="text" type="text" value="TRUE" name=""  class="form-control" id="" rows="1" >
+                          </td>
+                         
+                          <td class="text-center col-xs-2">
+                            <label class="custom-control custom-checkbox">
+                              <input formControlName="isAnswer" type="checkbox" class="custom-control-input" name="isAnswer" id="" value="options">
+                              <span class="custom-control-label"></span>
+                            </label>
+                            
+                          </td>
+                          <td>
+                          </td>
+                        </tr>
+                        
+                      
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+              
+              <ng-container *ngIf="choose === 'multiple_choice_yes_no' ">
+              <div class="form-group row mb-4">
+                <label for="options" class="col-2 col-form-label">Question Options</label>
+                <div class="col-10">
+                  <div class="table-responsive">
+                    <table class="table-sm" id="options">
+                      <thead>
+                        <tr>
+                          <th style="width: 4.9rem;">Option Key</th>
+                          <th style="width: 29rem;">Question Option</th>
+                          <th style="width: 5.7rem;">Is an answer?</th>
+                          <th style="width: 5.7rem;"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let YesNoOptions of f['yesnoOpts'].controls; let optIndex = index;" [formGroup]="YesNoOptions">
+                          <td>
+                            <input formControlName="label" class="form-control text-center" type="text" name="" id="" value="A" >
+                          </td>
+                          <td>
+                            <input formControlName="text" type="text" value="YES" name=""  class="form-control" id="" rows="1" >
+                          </td>
+                          <td class="text-center col-xs-2">
+                            <label class="custom-control custom-checkbox">
+                              <input formControlName="isAnswer" type="checkbox" class="custom-control-input" name="yesno" id="" value="options">
+                              <span class="custom-control-label"></span>
+                              </label>
+                          </td>
+                          <td>
+                          </td>
+                        </tr>
+                        
+                       
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+
+
+
+              <ng-container *ngIf="choose.includes('fill_in') ">
+                <div class="form-group row mb-4">
+                  <label for="answers" class="col-2 col-form-label">Answer</label>
+                  <div class="col-10">
+                    <textarea [formControl]="f.questionAnswer" name="answers" id="answers" class="form-control" rows="1" required></textarea>
+                  </div>
+                </div>
+  
+            </ng-container>
+
+
+
+
+
+
+              
+
+              <div class="form-group row mb-4">
+                <label class="col-2 col-form-label">Score To Assign</label>
+                <div class="col-4">
+                  <div class="input-group">
+                    <input [formControl]="f.score" type="number" class="form-control" name="score" id="score" placeholder="20">
+                    <div class="input-group-append">
+                      <span class="input-group-text">Percentage</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row float-right">
+                <div class="col-12">
+                    <button (click)="saveAndGoBack()" id=""
+                    class="btn btn-secondary loading-demo py-2 mr-3 mb-1">
+                    <i class="icon ion-ios-arrow-back pr-2"></i>
+                    Save and Close
+                  </button>
+                  <button type="submit" id="create_question_button" class="btn btn-success loading-demo text-light">Create<i class="icon ion-plus-round pl-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,179 @@
+<div class="taskboard-wrapper">
+  <span  *ngIf="projectList.length" class="project-tag">Projects</span>
+  <span *ngIf="projectList.length" class="project-badge-count">{{projectList.length }}</span>
+  <button id="addproject" (click)="open(content)" class="btn" *ngIf="auth.isAdmin  && !loading && !loadingError && !projectloader"
+    style="background-color: #fff !important;  color: #ccc; font-size: 14px; font-weight: 400;"><i id="icon-create-project"
+      class="fa  fa-plus-circle" style="color: #02a024;
+    font-size: 14px;"></i> Create Project</button>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="header-create-project">Create New Project </h4>
+    <button id="close-create-project-modal" type="button" class="close" aria-label="Close"
+      (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="submitForm()">
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="alert alert-danger center_msg" *ngIf="projectInputMaxErr">
+          <span>Maximum of 50 characters exceeded.</span>
+        </div>
+        <div class="form-group row">
+          <label id="label-create-project" class="col-2 col-form-label" for="example-text-input"> Name </label>
+          <div class="col-10 proj-input">
+            <input (keyup)="int(projname)" class="proj-input form-control proj-name col-title err-max"
+              id="input-create-project" type="text" [formControl]="form.controls['projectName']"
+              value="{{project_name}}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer tsk-modal-btn" style="text-align:center">
+      <button id="submit-create-project" class="btn btn-primary" type="submit"
+        [disabled]="!form.valid || disableCreateProject">
+        <i *ngIf="submitting" class="fa fa-spin fa-spinner"></i> Create
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #contentedit let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edit Project </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="submitEditForm()">
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="alert alert-danger center_msg" *ngIf="tasknameInputMaxErr">
+          <span>Maximum of 50 characters exceeded.</span>
+        </div>
+        <div class="form-group row">
+          <label id="modal-label" class="col-2 col-form-label" for="example-text-input"> Name: </label>
+          <div class="col-10 proj-input">
+            <input (keyup)="int(projname)" class="proj-input form-control proj-name col-title err-max"
+              id="example-text-input" type="text" [formControl]="form.controls['projectName']" value="{{project_name}}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modal-submitbtn" class="modal-footer tsk-modal-btn" style="text-align:center">
+      <div class="tsk-modal-btn">
+        <button id="submitcreateproject" class="btn btn-primary" type="submit" [disabled]="!form.valid || disableBtn">
+          <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>Update
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #contentdelete let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Deleting Project</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="submitDeleteForm()">
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="form-group row">
+          <label id="modal-label" class="col-12 col-form-label" for="example-text-input" style="text-align: center;">
+            <h3>Are you sure you want to delete <br><b style="color: #5c6bc0">{{selectedProject.projectSecret.name}}</b>
+              Project </h3>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div id="modal-submitbtn" class="modal-footer tsk-modal-btn" style="display: flex; float: right;">
+      <button class="btn btn-primary" (click)="modal.dismiss('Cross click')"
+        style="background-color: white; color: inherit; margin-right: 10px;">No
+      </button>
+      <button class="btn btn-primary" type="submit" style="background-color: #ef5350; border-color: #ef5350">Yes
+        <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<div id="table" class="details-header" *ngIf="!loadingError">
+  <div>
+    <div *ngIf="projectloader">
+      <div>
+        <div id="loader">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!projectloader">
+    <h4 id="empty-project-list" class="noprojects" *ngIf="(projectList.length === 0)">No Projects</h4>
+  </div>
+
+  <div class="row" *ngIf="projectList.length">
+    <div class="col-md-3" style="padding-bottom: 12px;" *ngFor="let project of projectList" data-role="project_details_card">
+      <div class="card boder-primary project-card-body" style="height: 201px">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-10" style="min-height: 71px;">
+              <div class="head-tag">
+                <span class="widget-icon rounded-circle text-white d-none d-md-inline-block text-capitalize" role="initials">
+                  {{getProjectInitial(project.projectSecret.name)}}</span>
+              </div>
+            </div>
+            <div class="col-sm-2 text-right" *ngIf="auth.isAdmin">
+              <span class="remove-caret show dropdown text-right" ngbDropdown>
+                <button id="drop-view" class="btn btn-light py-1 px-2 dropdown-toggle" type="button"
+                  style="background-color: white;border: #fff;font-size: 29px; color: #ccc" ngbDropdownToggle><i
+                    class="ion-ios-more"></i>
+                </button>
+                <span class="dropdown-menu py-0" role="menu" ngbDropdownMenu>
+                  <button (click)="openedit(project, contentedit)" id="edit-project" type="button"
+                    class="dropdown-item"><i class="fa fa-edit fa-1.5x text-secondary" id="edit-project-icon"></i>
+                    Edit</button>
+                  <button (click)="projectSettings(project)" id="projectsettings-id" type="button" class="dropdown-item py-2"><i
+                      class="fa fa-cog fa-1.5x text-secondary" id="projectsettings-icon"></i> Settings</button>
+                  <button (click)="opendelete(project, contentdelete)" id="delete-project" type="button"
+                    class="dropdown-item py-2"><i class="fa fa-trash fa-1.5x text-secondary" id="delete-project-icon"></i>
+                    Delete</button>
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="row project-created-time">
+            <div class="col-md-12">
+              <small>Created</small>
+              <p><small>{{project.createdTime | date: 'medium'}}</small></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <h4 class="project-name-details" (click)="navigatetoprojectboard(project)">{{project.projectSecret.name}}
+              </h4>
+            </div>
+            <div class="col-md-2  project-star">
+              <i class="fa fa-star fa-1.5x"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 text-center my-auto"  style="padding-bottom: 12px;" *ngIf="auth.isAdmin">
+      <div class="card card-block d-flex" style="height: 200px;  background-color: #868e962e; border-radius: 10px">
+        <div (click)="open(content)" class="card-body align-items-center d-flex justify-content-center" style="font-size: 16px; cursor: pointer;">
+          <span class="empty-project-plus-circle"><i class="fa  fa-plus-circle" style="color: #02a024;"></i></span>
+          Create Project
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="loadingError" class="d-flex align-items-center justify-content-center" style="height: 100%;">
+  <p class="alert alert-danger"> {{ loadingError }} </p>
+</div>

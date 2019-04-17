@@ -1,0 +1,87 @@
+
+.icon{
+     margin-right: 30px;
+     cursor: pointer;
+}
+
+.details-header {
+    margin: 30px 15px;
+    padding: 0px;
+}
+
+.employeeInactive  {
+     color: #6c757d6b;
+     font-variant: all-petite-caps;
+
+}
+
+.employeeAction  {
+     color: #6c757d6b;
+  
+}
+
+.employeeInactive-email  {
+     color: #6c757d6b;
+    
+}
+
+.linkEmployee-firstname {
+     color: rgba(0,0,0,.87);
+     font-variant: all-petite-caps;
+}
+
+.employeeInactive-first {
+     color: #6c757d6b;
+     font-variant: all-petite-caps; 
+   
+}
+
+.linkemployee-other {
+     color: rgba(0,0,0,.87);
+     font-variant: all-petite-caps; 
+     
+}
+.linkemployee-email {
+     color: rgba(0,0,0,.87);
+    
+}
+
+.status-confirmation {
+     padding: 10px;
+     color: #fff;
+     border-radius: 5px;
+     transition-timing-function: ease;
+}
+
+.create-btn {
+    color: #fff;
+    background-color: #4150a8;
+    border-color: #3d4c9f;
+    border: none;
+    height: 37px;
+    padding: 0.25rem 0.5rem;
+    font-size: 15px;
+    line-height: 1.5;
+    border-radius: 1.4rem;
+    cursor: pointer;
+}
+
+.loading-tab {
+     height: 330px;
+}
+
+
+.center_icon {
+	text-align: center;
+}
+
+:host ::ng-deep .datatable-body-cell, .tble_action {
+   overflow-x: inherit !important;
+   padding-bottom: 10px;
+}
+
+:host ::ng-deep .visible{
+     overflow: -webkit-paged-y;
+}
+
+

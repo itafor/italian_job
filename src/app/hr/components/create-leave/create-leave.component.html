@@ -1,0 +1,44 @@
+<div class="details-header">
+  <div class="card">
+    <div class="modal-header">
+      <h4 class="modal-title" id="newLeaveHeader">New Leave Type</h4>
+    </div>
+    <div class="card-body">
+      <div class="text-center">
+        <app-alert></app-alert>
+      </div>
+      <form (ngSubmit)="submitForm($event)">
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <small id="leavename-label">Leave Type</small>
+            <input name="leavename" class="form-control" type="text" id="leavename" [formControl]="form.controls['leavename']"
+              [ngClass]="{'is-invalid': form.controls['leavename'].hasError('required') && form.controls['leavename'].touched}"
+              placeholder="Name" />
+            <small class="invalid-feedback errleavename"
+              *ngIf="form.controls['leavename'].hasError('required') && form.controls['leavename'].touched">Please enter leave type</small>
+          </div>
+            <div class="col-lg-6">
+              <small id="leavedays-label">Number of Days</small>
+              <input name="leavedays" class="form-control" type="text" id="leavedays" [formControl]="form.controls['leavedays']"
+                [ngClass]="{'is-invalid':form.controls['leavedays'].hasError('required') && form.controls['leavedays'].touched ||  form.controls['leavedays'].hasError('pattern')}"
+                placeholder="Number of Days" />
+              <small class="invalid-feedback errleavedays"
+                *ngIf="form.controls['leavedays'].hasError('required') && form.controls['leavedays'].touched">Please
+                enter  number of days</small>
+              <small class="invalid-feedback errleavedays"
+                      *ngIf="form.controls['leavedays'].hasError('pattern') && form.controls['leavedays'].touched">Leave days can only be a number</small>
+              </div>
+        </div>
+        <div class="row text-center">
+          <div class="col-lg-12">
+            <div class="assign-btn">
+              <button id="create-leave-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit">
+                <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Create
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,178 @@
+<div class="card-header">
+    <nav class="navbar ruler-nav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <span>
+                    <button (click)="newTabHandler()" class="btn btn-primary" id="createEmployeeButton">Create Employee
+                        <i id="icon-create-employee" class="fa fa-plus"></i></button>
+                </span></li>
+        </ul>
+    </nav>
+    <div class="card-body">
+        <ngb-tabset #employeesTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="refreshTable($event)">
+            <ngb-tab title="Employees" id="employees">
+                <ng-template ngbTabContent>
+                    <div class="details-header">
+                        <div>
+                            <div class="text-center" *ngIf="!employeeList">
+                                <div class="loading-tab">
+                                    <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="employeeList">
+                            <div class="text-center" *ngIf="(employeeList.length === 0)">
+                                <div class="loading-tab">
+                                    <h5 id="no-employee-id">No Employee</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="suspendingState" class="bg-info text-center status-confirmation">
+                            <h5 id="action-loading-text"> <i class="fa fa-spinner fa-spin fa-1x"></i> Loading...</h5>
+                        </div>
+                        <ngx-datatable *ngIf="employeeList && employeeList.length" [rows]="rows" [columnMode]="'force'"
+                            [headerHeight]="40" [footerHeight]="50" [rowHeight]="'auto'" [externalPaging]="true"
+                            [count]="count" [offset]="offset" [limit]="limit" (page)='onPage($event)'
+                            [rowClass]="getRowClass">
+                            <ngx-datatable-column name="Firstname">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template
+                                    class="tab-column">
+                                    <h6 [ngClass]="{'employeeInactive-first' : !row.active, 'linkEmployee-firstname': row.active }"
+                                        placement="auto" ngbTooltip="View Profile"><a
+                                            (click)="viewEmployeeHandler(row)">{{row.employeeSecret.firstname}}</a></h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Lastname">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6
+                                        [ngClass]="{'employeeInactive' : !row.active, 'linkemployee-other': row.active  }">
+                                        {{row.employeeSecret.lastname}}</h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Personal Email">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6
+                                        [ngClass]="{'employeeInactive-email' : !row.active, 'linkemployee-email': row.active  }">
+                                        {{row.employeeSecret.personalEmail}}</h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Department">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6
+                                        [ngClass]="{'employeeInactive' : !row.active, 'linkemployee-other': row.active  }">
+                                        <span *ngFor="let dept of row.departments">{{dept.departmentSecret.name}}</span>
+                                        <span *ngIf="!row.departments.length">Unassigned</span>
+                                    </h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Role">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6
+                                        [ngClass]="{'employeeInactive' : !row.active, 'linkemployee-other': row.active  }">
+                                        <span *ngFor="let role of row.roles">{{role.roleSecret.name}}</span>
+                                        <span *ngIf="!row.roles.length">Unassigned</span>
+                                    </h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Action" class="tble_action">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <div class="dropdown remove-caret" placement="left-top" ngbDropdown>
+                                        <button id="drop-view" type="button" class="btn btn-secondary py-1 px-2"
+                                            ngbDropdownToggle><i class="ion-ios-more"></i></button>
+                                        <div class="dropdown-menu py-0" role="menu" ngbDropdownMenu>
+                                            <button (click)="viewEmployeeHandler(row)" id="view-employee" type="button"
+                                                class="dropdown-item py-2">View Employee</button>
+                                            <div class="dropdown-divider my-0"></div>
+                                            <button (click)="linkUserHandler(row)" id="linking-user" type="button"
+                                                class="dropdown-item py-2">Link User</button>
+                                            <div class="dropdown-divider my-0"></div>
+                                            <button (click)="suspend(row)" *ngIf="row.active" id="suspend-id"
+                                                type="button" class="dropdown-item py-2">Suspend Employee</button>
+                                            <button (click)="unsuspend(row)" *ngIf="!row.active" id="unsuspend-id"
+                                                type="button" class="dropdown-item py-2">Unsuspend Employee</button>
+                                            <div class="dropdown-divider my-0"></div>
+                                            <button (click)="deleteConfirmHandler(row)" id="delete-id" type="button"
+                                                class="dropdown-item py-2">Delete Employee</button>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                        </ngx-datatable>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+                <ng-template ngbTabTitle>
+                    <span [innerHTML]="tab.title"></span> &nbsp;
+                    <span (click)="closeTab($event, tabIndex)" class="indicate--danger">
+                        &times;
+                    </span>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <app-create-employee *ngIf="tab.type === 'NEW_EMPLOYEE' "
+                        (employeeCreatedSuccessfulEvent)="employeeSuccessHandler($event, tabIndex)">
+                    </app-create-employee>
+                    <app-view-employee *ngIf="tab.type === 'VIEW_EMPLOYEE' " [employeeData]="tab.content"
+                        (updateEmployeeEvent)="updateEmployeeEventHandler($event, tabIndex)"></app-view-employee>
+                    <app-edit-employee *ngIf="tab.type === 'UPDATE_EMPLOYEE' " [employeeData]="tab.content"
+                        (employeeUpdatedSuccessfulEvent)="employeeSuccessHandler($event, tabIndex, tab.id)">
+                    </app-edit-employee>
+                    <div class="details-header" *ngIf="tab.type ===  'USER_LINKUP'">
+                        <div class="card">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="assign-user-id">Linking To
+                                    {{ tab.content.employeeSecret.firstname }} {{ tab.content.employeeSecret.lastname }}
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <app-alert></app-alert>
+                                </div>
+                                <form (ngSubmit)="linkUpForm($event)">
+                                    <div class="form-group">
+                                        <div class="form-group row offset-1">
+                                            <label id="employee-input-title"
+                                                class="col-lg-2 col-form-label">Employee</label>
+                                            <div class="col-lg-7">
+                                                <input class="form-control" id="employee-id" type="text"
+                                                    [(ngModel)]="employeeName" name="employeeName" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row  offset-1">
+                                            <label id="user-input-title" class="col-lg-2 col-form-label">User</label>
+                                            <div class="col-lg-7">
+                                                <select id="linked-user-id" name="user" class="custom-select"
+                                                    [class.is-invalid]="userHasError  && user.touched"
+                                                    (change)="validateUserEmail(user.value)" #user="ngModel"
+                                                    [(ngModel)]="userId">
+                                                    <option value="default">-- Select User Email --</option>
+                                                    <option *ngFor="let user of userIdList; let optionIndex = index; let userid of userId"
+                                                        id="user-list-{{optionIndex}}" value="{{ userid.uuid}}">
+                                                        {{user.email}}
+                                                    </option>
+                                                </select>
+                                                <small class="text-danger"
+                                                    [class.d-none]="!userHasError || user.untouched">Please select an
+                                                    email</small>
+                                            </div>
+                                        </div>
+                                        <div class="center_icon">
+                                            <button id="link-user-submit" [disabled]="isBtnDisabled()"
+                                                class="btn btn-primary" type="submit"><i *ngIf="loading"
+                                                    class="fa fa-spinner fa-spin"></i> Link
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

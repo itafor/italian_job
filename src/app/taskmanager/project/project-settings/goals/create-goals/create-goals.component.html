@@ -1,0 +1,73 @@
+<div class="details-header">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="modal-header">
+          <h4 class="modal-title" id="newGoalHeader">New Goal</h4>
+        </div>
+        <div class="card-body">
+          <div class="text-center">
+           <app-alert></app-alert>
+          </div>
+          <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
+            <div class="form-group">
+              <div class="form-group row">
+                <div class="col-lg-12">
+                  <input name="name" class="form-control" type="text" id="goal-name"
+                    [formControl]="form.controls['name']"
+                    [ngClass]="{'is-invalid': form.controls['name'].hasError('required') && form.controls['name'].touched}"
+                    placeholder="Name" />
+                  <small class="invalid-feedback errname"
+                    *ngIf="form.controls['name'].hasError('required') && form.controls['name'].touched">Please enter
+                    goal name</small>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-lg-12">
+                  <textarea name="description" class="form-control" rows="8" id="goal-description"
+                    [formControl]="form.controls['description']"
+                    [ngClass]="{'is-invalid': form.controls['description'].hasError('required') && form.controls['description'].touched}"
+                    placeholder="Description"></textarea>
+                  <small class="invalid-feedback errdescription"
+                    *ngIf="form.controls['description'].hasError('required') && form.controls['description'].touched">Please
+                    enter goal description</small>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-lg-6">
+                  <small id="goal-startDate-label">Goal Start Date</small>
+                  <input name="startDate" class="form-control" type="date" id="goal-startDate"
+                    [formControl]="form.controls['startDate']"
+                    [ngClass]="{'is-invalid': form.controls['startDate'].hasError('required') && form.controls['startDate'].touched}"
+                    placeholder="Start Date" value="startDate| date:'yyyy-MM-ddTHH:mm'" />
+                  <small class="invalid-feedback errstartDate"
+                    *ngIf="form.controls['startDate'].hasError('required') && form.controls['startDate'].touched">Please
+                    enter goal start date</small>
+                </div>
+                <div class="col-lg-6">
+                  <small id="goal-stopDate-label">Goal Stop Date</small>
+                  <input name="stopDate" class="form-control" type="date" id="goal-stopDate"
+                    [formControl]="form.controls['stopDate']"
+                    [ngClass]="{'is-invalid': form.controls['stopDate'].hasError('required') && form.controls['stopDate'].touched}"
+                    placeholder="Stop Date" value="stopDate| date:'yyyy-MM-ddTHH:mm'" />
+                  <small class="invalid-feedback errstopDate"
+                    *ngIf="form.controls['stopDate'].hasError('required') && form.controls['stopDate'].touched">Please
+                    enter goal stop date</small>
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col-lg-12">
+                  <div class="assign-btn">
+                    <button id="create-goal-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit">
+                      <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Create Goal
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

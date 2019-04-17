@@ -1,0 +1,217 @@
+<div class="card-header">
+  <div class="card-body">
+    <ngb-tabset #leavesTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="refreshTable($event)">
+      <ngb-tab title="Leaves" id="leaves">
+        <ng-template ngbTabContent>
+          <div class="details-header prefix-css">
+            <nav class="navbar ruler-nav">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                </li>
+              </ul>
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <span>
+                    <button (click)="newTabHandler()" class="btn btn-primary" id="createRequestLeave">Request
+                      Leave <i id="icon-create-btn" class="fa fa-plus-circle"></i></button>
+                  </span></li>
+              </ul>
+            </nav>
+            <!-- <div>
+              <div class="text-center" *ngIf="!leaveList">
+                <div class="loading-tab">
+                  <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="leaveList">
+              <div class="text-center" *ngIf="(leaveList.length === 0)">
+                <div class="loading-tab">
+                  <h5 id="no-leave-id">No Leave</h5>
+                </div>
+              </div>
+            </div> -->
+            <div id="suspendingState-id" *ngIf="suspendingState" class="bg-info text-center status-confirmation">
+              <h5><i id="suspendingState-spinner" class="fa fa-spinner fa-spin fa-1x"></i> Loading...</h5>
+            </div>
+            <ngx-datatable [rows]="rows" [columnMode]="'force'" [headerHeight]="40" [footerHeight]="50"
+              [rowHeight]="'auto'" [externalPaging]="true" [count]="count" [offset]="offset" [limit]="limit"
+              (page)='onPage($event)' [reorderable]="reorderable">
+              <ngx-datatable-column name="Leave Request">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <div>
+                    <h6 class="leavename">
+
+                    </h6>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Number of Days">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6 class="leavedays">
+
+                  </h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Date Requested">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6 class="leavedate">
+
+                  </h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Action">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <div class="dropdown remove-caret" placement="left-top" ngbDropdown>
+                    <button id="drop-view" type="button" class="btn btn-secondary py-1 px-2" ngbDropdownToggle><i
+                        class="ion-ios-more"></i></button>
+                    <div class="dropdown-menu py-0" role="menu" ngbDropdownMenu>
+                      <button id="update-leave" type="button" class="dropdown-item py-2"
+                        (click)="updateLeaveHandler(row)">
+                        Update Leave Type
+                      </button>
+                      <div class="dropdown-divider my-0"></div>
+                      <button id="delete-leave" type="button" class="dropdown-item py-2"
+                        (click)="deleteLeaveHandler(row)">Delete Leave Type</button>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+        <ng-template ngbTabTitle>
+          <span [innerHTML]="tab.title"></span> &nbsp;
+          <span (click)="closeTab($event, tabIndex)" class="indicate--danger">
+            &times;
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <div class="details-header" *ngIf="tab.type ===  'CREATE_REQUEST_LEAVE'">
+            <div class="card">
+              <div class="modal-header">
+                <h4 class="modal-title" id="newRequestLeaveHeader">New Request Leave
+                </h4>
+              </div>
+              <div class="card-body">
+                <div class="text-center">
+                  <app-alert></app-alert>
+                  <div *ngIf=" 'paid' || 'unpaid' " >
+                    <div *ngIf="displayErr" id="alert-msg" class="alert alert-danger">Start Date Can Not Be Weekend</div>
+                  </div>
+                </div>
+                <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
+                  <div class="form-group">
+                    <div class="section text-center category-sec" id="leavecategoryheader">Choose Leave Category</div>
+                    <div class="form-group row">
+                      <div class="col-md-4">
+                      </div>
+                      <div class="col-md-3">
+                        <div id="openPaid" class="custom-control custom-radio custom-control-inline">
+                          <input (click)="processPaidCategory()" name="category" type="radio"
+                            class="custom-control-input" id="Paid" value="paid"
+                            [formControl]="form.controls['category']"
+                            [ngClass]="{'is-invalid': form.controls['category'].hasError('required') && form.controls['category'].touched}">
+                          <label id="checkedPaid" class="custom-control-label" for="Paid">Paid</label>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div id="openUnpaid" class="custom-control custom-radio custom-control-inline">
+                          <input (click)="processUnpaidCategory()" name="category" type="radio"
+                            class="custom-control-input" id="Unpaid" value="unpaid"
+                            [formControl]="form.controls['category']"
+                            [ngClass]="{'is-invalid': form.controls['category'].hasError('required') && form.controls['category'].touched}">
+                          <label id="checkedUnPaid" class="custom-control-label" for="Unpaid">Unpaid</label>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                      </div>
+                    </div>
+                  </div>
+                  <section *ngIf="paid">
+                    <div class="text-center">
+                      <div class="row">
+                        <div class="form-group col-md-6 offset-3">
+                          <input name="numberOfDays" type="number" placeholder="Number of days e.g(12)"
+                            class="form-control" id="paid-days" [formControl]="form.controls['numberOfDays']"
+                            [ngClass]="{'is-invalid': form.controls['numberOfDays'].hasError('required') && form.controls['numberOfDays'].touched ||  form.controls['numberOfDays'].hasError('pattern') }">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-6 offset-3">
+                          <small id="label-paid">Start Date</small>
+                          <div class="form-group">
+                            <ngb-datepicker id="paid-date-picker" name="date" #dp [formControl]="form.controls['date']"
+                              [minDate]="getNgDateFormat()" (select)="dateUpdated($event)">
+                            </ngb-datepicker>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-lg-12 text-center">
+                        <button id="paid-btn-submit" [disabled]="isBtnDisabled()" class="btn btn-primary"><i *ngIf="loading"
+                            class="fa fa-spinner fa-spin"></i> Request</button>
+                      </div>
+                    </div>
+                  </section>
+                </form>
+                <form [formGroup]="unpaidform" (ngSubmit)="submitForm($event)">
+                  <section *ngIf="unpaid">
+                    <div class="text-center">
+                      <div class="row">
+                        <div class="form-group col-md-6 offset-3">
+                          <select id="unpaid-select-field"  (change)="validateLeaveType($event)" name="leaveTypesId" [formControl]="unpaidform.controls['leaveTypesId']"
+                            class="form-control">
+                            <option *ngIf="!leaveTypesList">Loading...</option>
+                            <option value="default">--Select Leave Type--</option>
+                            <option
+                              *ngFor="let leaves of leaveTypesList; let optionIndex = index; let leavetypesId of leaveTypesId"
+                              id="leavetypeslist-{{optionIndex}}" value="{{ leavetypesId.id}}">
+                              {{leaves.leaveTypeSecret.name}} ({{leaves.leaveTypeSecret.numberOfDays}})days</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-6 offset-3">
+                          <input id="numberOfDays-unpaid" name="numberOfDays" type="number" placeholder="Number of days e.g(12)"
+                            class="form-control"  [formControl]="unpaidform.controls['numberOfDays']"
+                            [ngClass]="{'is-invalid': unpaidform.controls['numberOfDays'].hasError('required') && unpaidform.controls['numberOfDays'].touched ||  form.controls['numberOfDays'].hasError('pattern') }">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-6 offset-3">
+                          <textarea class="form-control" id="comment-unpaid" name="comment"
+                            placeholder="Comment(optional)" rows="4"
+                            [formControl]="unpaidform.controls['comment']"></textarea>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-6 offset-3">
+                          <small id="label-unpaid">Start Date</small>
+                          <div class="form-group">
+                            <ngb-datepicker  id="unpaid-date-picker" name="date" #dp [formControl]="unpaidform.controls['date']"
+                              [minDate]="getNgDateFormat()" (select)="dateUpdated($event)">
+                            </ngb-datepicker>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-lg-12 text-center">
+                        <button  id="unpaid-btn-submit" [disabled]="confirmBtnDisabled()" class="btn btn-primary"><i *ngIf="loading"
+                            class="fa fa-spinner fa-spin"></i> Request</button>
+                      </div>
+                    </div>
+                  </section>
+                </form>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="loading-bar" *ngIf="!taskList">
+  <div class="text-center">
+    <div class="loading-tab">
+      <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Fetching...</h5>
+    </div>
+  </div>
+</div>
+<ng-container *ngIf="taskList">
+<div class="details-header">
+  <div>
+    <span *ngIf="!emptyTasks" style="color: #80808073;" id="empty-goal-task">No Assigned Task</span>
+    <div *ngIf="emptyTasks">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th> Task Key </th>
+              <th> Task Summary </th>
+              <th> Status </th>
+              <th> Priority </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of newAssignedTaskList">
+              <td (click)="navigateToTaskPage(task)">{{task.taskUniqueKey}}</td>
+              <td (click)="navigateToTaskPage(task)">{{task.taskSecret.summary}}</td>
+              <td (click)="navigateToTaskPage(task)">
+                <span class="status-display">
+                  {{  statusForTask(task) || 'Unknown'}}
+                </span></td>
+              <td (click)="navigateToTaskPage(task)">
+                <span  [style]="styleForPriority(task.taskSecret.priority) | sanitizeTaskStyle">{{ task.taskSecret.priority || 'NONE'  }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-container>
+

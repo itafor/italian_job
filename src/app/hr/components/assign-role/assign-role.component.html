@@ -1,0 +1,39 @@
+<div>
+  <div class="text-center" *ngIf="!roleList">
+    <div class="loading-tab">
+      <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Fetching data</h5>
+    </div>
+  </div>
+</div>
+<div *ngIf="roleList">
+  <div class="text-center" *ngIf="(roleList.length === 0)">
+    <div class="loading-tab">
+      <h5 id="no-assigned-role">No Role</h5>
+    </div>
+  </div>
+</div>
+<div *ngIf="roleList && roleList.length" class="assign-role-wrap">
+  <form (ngSubmit)="submitForm($event)">
+    <div class="form-group">
+      <div class="form-group">
+        <div>
+          <select name="role" class="custom-select" [class.is-invalid]="roleHasError  && role.touched"
+            (change)="validateRole(role.value)" #role="ngModel" [(ngModel)]="newRole" id="assigned-role-id">
+            <option value="default">-- Select Role --</option>
+            <option id="role-list-{{optionIndex}}" *ngFor="let role of roleList;  let optionIndex = index"
+              value="{{ role.id}}">
+              {{role.roleSecret.name }}
+            </option>
+          </select>
+          <small class="text-danger" [class.d-none]="!roleHasError || role.untouched">Please select a
+            role</small>
+        </div>
+        <div class="assign-btn">
+          <button id="assign-role-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit"><i *ngIf="submitting" class="fa fa-spinner fa-spin"></i> Assign
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>

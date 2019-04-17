@@ -1,0 +1,671 @@
+<!-- Quiz Wizrd Step One Begins -->
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="display-4" style="font-size:1.3rem;">Create Quiz</div>
+      </div>
+
+      <div class="card-body">
+        <form id="step_one_form">
+          <div class="row">
+            <div class="col-md-10 offset-md-1">
+              <div class="form-group row">
+                <label for="title" class="col-2 col-form-label">Title</label>
+                <div class="col-10">
+                  <input class="form-control" type="text" id="title" name="title" value="" min="3" max="255"
+                    placeholder="Quiz Title" required>
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label for="description" class="col-2 col-form-label">Description</label>
+                <div class="col-10">
+                  <textarea class="form-control" id="description" name="description" rows="3"
+                    placeholder="This quiz is for..." min="3"></textarea>
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label for="is_public" class="col-2 col-form-label">Quiz Publicity</label>
+                <div class="col-10">
+                  <select class="form-control" name="is_public" id="is_public" required>
+                    <option selected value="">Who should access this quiz?</option>
+                    <option value="true">General Public</option>
+                    <option value="false">Specific Individuals</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label for="recipients" class="col-2 col-form-label">Respondents Email Address(es)</label>
+                <div class="col-10">
+                  <textarea class="form-control" id="recipients" name="recipients" required></textarea>
+                </div>
+              </div>
+
+              <div class="row float-right">
+                <div class="col-12">
+                  <button type="button" id="step_one_submit" class="btn btn-primary loading-demo py-2">Next<i
+                      class="icon ion-ios-arrow-forward pl-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Quiz Wizrd Step One Ends -->
+
+<!-- Quiz Wizrd Step Two Begins -->
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="display-4" style="font-size:1.3rem;">Quiz Settings</div>
+      </div>
+
+      <div class="card-body">
+        <form id="step_two_form">
+          <div class="row">
+            <div class="col-md-10 offset-md-1">
+              <div class="form-group row">
+                <label for="duration" class="col-2 col-form-label">Quiz Duration</label>
+                <div class="col-10">
+                  <div class="row">
+                    <div class="col-6">
+                      <select class="form-control" name="duration_hour" id="duration" required>
+                        <option value="">Hour</option>
+                        <!-- <option  *ngFor="let item of createRange(23)">{{item}}</option> -->
+                        <option value="00">00</option>
+                        <option value="01" selected>01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                      </select>
+                    </div>
+                    <div class="px-2 py-2">:</div>
+                    <div class="col">
+                      <select class="form-control" name="duration_hour" id="duration" required>
+                        <option value="">Minute</option>
+                        <option value="00">00</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30" selected>30</option>
+                        <option value="31">31</option>
+                        <option value="32">32</option>
+                        <option value="33">33</option>
+                        <option value="34">34</option>
+                        <option value="35">35</option>
+                        <option value="36">36</option>
+                        <option value="37">37</option>
+                        <option value="38">38</option>
+                        <option value="39">39</option>
+                        <option value="40">40</option>
+                        <option value="41">41</option>
+                        <option value="42">42</option>
+                        <option value="43">43</option>
+                        <option value="44">44</option>
+                        <option value="45">45</option>
+                        <option value="46">46</option>
+                        <option value="47">47</option>
+                        <option value="48">48</option>
+                        <option value="49">49</option>
+                        <option value="50">50</option>
+                        <option value="51">51</option>
+                        <option value="52">52</option>
+                        <option value="53">53</option>
+                        <option value="54">54</option>
+                        <option value="55">55</option>
+                        <option value="56">56</option>
+                        <option value="57">57</option>
+                        <option value="58">58</option>
+                        <option value="59">59</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row mt-4">
+                <label for="quiz_availability" class="col-2 col-form-label">Quiz Availability</label>
+                <div class="col-10">
+                  <select class="form-control" name="quiz_availability" id="quiz_availability" required>
+                    <option value="exam_always_available">Quiz is always available</option>
+                    <option value="exam_available_at_specific_time">Quiz is available at a specified period</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row mt-4">
+                <label for="quiz_available_at" class="col-3 col-form-label">Period of Quiz Availability</label>
+                <div class="col-9">
+                  <div class="row mb-2">
+                    <div class="col-6">
+                      <div class="form-group row">
+                        <label class="col-4 col-form-label" for="available_start_date">Start Date</label>
+                        <div class="col-8">
+                          <input class="form-control" type="date" name="available_start_date" id="available_start_date">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group row">
+                        <label class="col-4 col-form-label" for="available_start_date">Start Time</label>
+                        <div class="col-8">
+                          <input class="form-control" type="time" name="available_start_time" id="available_start_time">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-2">
+                    <div class="col-6">
+                      <div class="form-group row">
+                        <label class="col-4 col-form-label" for="available_end_date">End Date</label>
+                        <div class="col-8">
+                          <input class="form-control" type="date" name="available_end_date" id="available_end_date">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group row">
+                        <label class="col-4 col-form-label" for="available_end_time">End Time</label>
+                        <div class="col-8">
+                          <input class="form-control" type="time" name="available_end_time" id="available_end_time">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="mt-5 mb-4">
+
+              <div class="row mt-4">
+                <div class="col-7">
+                  <div class="form-group row mt-4">
+                    <label for="quiz_question_category" class="col-5 col-form-label">Category of Questions</label>
+                    <div class="col">
+                      <select class="form-control" name="quiz_question_category" id="quiz_question_category" required>
+                        <option value="multiple_choice">Multiple Choice Questions</option>
+                        <option value="fill_in_the_gap">Fill in the Gap Questions</option>
+                        <option value="mixed">Both Multiple Choice and Fill in the Gap Questions</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div class="form-group row mt-4 pt-2" style="padding-left:2px;">
+                    <label class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="display_result_after_quiz" id="display_result_after_quiz" checked required>
+                      <span class="custom-control-label"></span>
+                      <span class="custom-control-description">Allow quiz respondents see their result after quiz ends</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row mt-4">
+                <label for="question_answer_shuffle" class="col col-form-label">Question/Answer Shuffle</label>
+                <div class="col-9">
+                  <select class="form-control" name="question_answer_shuffle" id="question_answer_shuffle" required>
+                    <option value="dont_shuffle">Do not Shuffle</option>
+                    <option value="shuffle_questions_only">Shuffle Questions only</option>
+                    <option value="shuffle_questions_answers">Shuffle both Questions and Answer</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-6">
+                  <div class="form-group row mt-4" style="padding-left:2px;">
+                    <label class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="retake_quiz" id="retake_quiz " checked required>
+                      <span class="custom-control-label"></span>
+                      <span class="custom-control-description">Allow quiz respondents re-take the quiz</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group row" style="padding-top: 15px;">
+                    <label for="times_to_retake_quiz" class="col-6 col-form-label">Number times to re-take the quiz</label>
+                    <div class="col">
+                      <input class="form-control" type="number" id="times_to_retake_quiz" name="times_to_retake_quiz" value="5" min="1" max="10">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row mt-4" style="padding-left:2px;">
+                <label class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="navigate_quiz_back" id="navigate_quiz_back" checked required>
+                  <span class="custom-control-label"></span>
+                  <span class="custom-control-description">Allow quiz respondents re-answer a question</span>
+                </label>
+              </div>
+
+              <div class="form-group row mt-4" style="padding-left:2px;">
+                <label class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="attempt_all_questions" id="attempt_all_questions" checked required>
+                  <span class="custom-control-label"></span>
+                  <span class="custom-control-description">Quiz respondents must answer all questions</span>
+                </label>
+              </div>
+
+              <hr class="mt-5 mb-4">
+
+              <div class="form-group row mb-4">
+                <label for="result_score_form" class="col-3 col-form-label">Form of Result</label>
+                <div class="col-9">
+                  <select class="form-control" name="result_score_form" id="result_score_form" required>
+                    <option value="result_score_in_percentage">Result in Percentage</option>
+                    <option value="result_score_in_points">Result in Points</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label for="percentage_grading_option" class="col-3 col-form-label">Percentage Grading Option</label>
+                <div class="col-9">
+                  <select class="form-control" name="percentage_grading_option" id="percentage_grading_option" required>
+                    <option value="pass_fail">Pass/Fail Percentage Grading</option>
+                    <option value="custom_grading">Custom Percentage Grading</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label for="pass_fail_custom_grading" class="col-3 col-form-label">Minimum Pass Score</label>
+                <div class="col-4">
+                  <input type="number" class="form-control" id="pass_fail_custom_grading" name="min_score" placeholder="50" value="50">
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label for="custom_grading" class="col-3 col-form-label">Custom Grading Option</label>
+                <div class="col-9">
+                  <div class="table-responsive">
+                    <table class="table-sm">
+                      <tbody>
+                        <tr>
+                          <td><input type="text" class="form-control" name="" id="" placeholder="Grade Name"></td>
+                          <td><input type="number" class="form-control" name="" id="" placeholder="50"></td>
+                          <td><input type="number" class="form-control" name="" id="" placeholder="100"></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><input type="text" class="form-control" name="" id="" placeholder="Grade Name"></td>
+                          <td><input type="number" class="form-control" name="" id="" placeholder="0"></td>
+                          <td><input type="number" class="form-control" name="" id="" placeholder="49"></td>
+                          <td style="display: flex;">
+                            <button type="button" class="btn btn-secondary mr-2 mb-1">Add</button>
+                            <button type="button" class="btn btn-danger mr-1 mb-1">Delete</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="mt-5 mb-4">
+
+              <div class="form-group row mt-4" style="padding-left:2px;">
+                <label class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="use_as_default" id="use_as_default" checked required>
+                  <span class="custom-control-label"></span>
+                  <span class="custom-control-description">Use settings as default</span>
+                </label>
+              </div>
+
+              <div class="row float-right">
+                <div class="col-12">
+                  <button type="button" id="step_two_previous" class="btn btn-secondary loading-demo py-2 mr-3 mb-1"><i class="icon ion-ios-arrow-back pr-2"></i>Previous</button>
+                  <button type="button" id="step_two_submit" class="btn btn-primary loading-demo py-2 mr-2 mb-1">Next<i class="icon ion-ios-arrow-forward pl-2"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Quiz Wizrd Step Two Ends -->
+
+<!-- Quiz Wizrd Step Three Begins -->
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="display-4" style="font-size:1.3rem;">Quiz Instructions</div>
+      </div>
+
+      <div class="card-body">
+        <form id="step_three_form">
+          <div class="row">
+            <div class="col-md-10 offset-md-1">
+              <div class="form-group mb-4">
+                <textarea class="form-control" id="description" name="description" rows="10"
+                  placeholder="The instructions for the quiz comes here..."></textarea>
+              </div>
+
+              <div class="row float-right">
+                <div class="col-12">
+                  <button type="button" id="step_two_previous" class="btn btn-secondary loading-demo py-2 mr-3 mb-1"><i class="icon ion-ios-arrow-back pr-2"></i>Previous</button>
+                  <button type="button" id="step_two_submit" class="btn btn-primary loading-demo py-2 mr-2 mb-1">Next<i class="icon ion-ios-arrow-forward pl-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Quiz Wizrd Step Three Ends -->
+
+<!-- Quiz Wizrd Step Four Begins -->
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="display-4" style="font-size:1.3rem;">Quiz Details</div>
+      </div>
+
+      <div class="card-body">
+        <form id="step_three_form">
+          <div class="row">
+            <div class="col-md-10 offset-md-1">
+              <fieldset>
+                <legend class="border-bottom pb-2" style="font-size: 1.1rem">Create Quiz</legend>
+                  <div class="row mb-2">
+                    <label class="col-2 col-form-label">Quiz Title</label>
+                    <div class="col-10">
+                      <input type="text" class="form-control" value="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." disabled>
+                    </div>
+                  </div>
+                  <div class="row mb-2">
+                    <label class="col-2 col-form-label">Quiz Description</label>
+                    <div class="col-10">
+                      <textarea rows="5" class="form-control" disabled>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</textarea>
+                    </div>
+                  </div>
+                  <div class="row mb-2">
+                    <label class="col-2 col-form-label">Quiz Publicity</label>
+                    <div class="col-10">
+                      <input type="text" class="form-control" value="Specific Individuals" disabled>
+                    </div>
+                  </div>
+                  <div class="row mb-2">
+                    <label class="col-2 col-form-label">Respondents Email Address(es)</label>
+                    <div class="col-10">
+                      <select class="form-control" multiple disabled>
+                        <option>ade@example.com</option>
+                        <option>olu@example.com</option>
+                        <option>ike@example.com</option>
+                        <option>eze@example.com</option>
+                      </select>
+                    </div>
+                  </div>
+              </fieldset>
+
+              <fieldset>
+                <legend class="border-bottom mt-3 pb-2" style="font-size: 1.1rem">Quiz Settings</legend>
+                <div class="row mb-2">
+                  <label class="col-2 col-form-label">Quiz Duration</label>
+                  <div class="col-10">
+                    <div class="row">
+                      <div class="col-6">
+                        <input type="text" class="form-control" value="02" disabled>
+                      </div>
+                      <div class="px-2 py-2">:</div>
+                      <div class="col">
+                        <input type="text" class="form-control" value="30" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-2 col-form-label">Quiz Availability</label>
+                  <div class="col-10">
+                    <input type="text" class="form-control" value="Quiz is available at a specified period" disabled>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-3 col-form-label">Period of Quiz Availability</label>
+                  <div class="col-9">
+                    <div class="row mb-2">
+                      <div class="col-6">
+                        <div class="row mb-2">
+                          <label class="col-4 col-form-label">Start Date</label>
+                          <div class="col-8">
+                            <input class="form-control" type="text" id="available_start_date" value="2019-06-20" disabled>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="row mb-2">
+                          <label class="col-4 col-form-label">Start Time</label>
+                          <div class="col-8">
+                            <input class="form-control" type="text" id="available_start_time" value="08:00 AM" disabled>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-6">
+                        <div class="row mb-2">
+                          <label class="col-4 col-form-label" for="available_end_date">End Date</label>
+                          <div class="col-8">
+                            <input class="form-control" type="text" id="available_end_date" value="2019-08-20" disabled>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="row mb-2">
+                          <label class="col-4 col-form-label" for="available_end_time">End Time</label>
+                          <div class="col-8">
+                            <input class="form-control" type="text" id="available_end_time" value="11:59 PM" disabled>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                  <div class="col-7">
+                    <div class="row">
+                      <label class="col-5 col-form-label">Category of Questions</label>
+                      <div class="col">
+                        <input type="text" class="form-control" id="quiz_question_category" value="Multiple Choice Questions" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-5">
+                    <div class="row pt-2" style="padding-left:2px;">
+                      <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" checked disabled>
+                        <span class="custom-control-label"></span>
+                        <span class="custom-control-description">Allow quiz respondents see their result after quiz ends</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <label class="col col-form-label">Question/Answer Shuffle</label>
+                  <div class="col-9">
+                    <input type="text" class="form-control" value="Do not Shuffle" disabled>
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-6">
+                    <div class="row mt-4" style="padding-left:2px;">
+                      <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="retake_quiz" checked disabled>
+                        <span class="custom-control-label"></span>
+                        <span class="custom-control-description">Allow quiz respondents re-take the quiz</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="row" style="padding-top: 15px;">
+                      <label class="col-6 col-form-label">Number times to re-take the quiz</label>
+                      <div class="col">
+                        <input class="form-control" type="text" value="5" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-2" style="padding-left:2px;">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="navigate_quiz_back" checked disabled>
+                    <span class="custom-control-label"></span>
+                    <span class="custom-control-description">Allow quiz respondents re-answer a question</span>
+                  </label>
+                </div>
+                <div class="row mt-2" style="padding-left:2px;">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" checked disabled>
+                    <span class="custom-control-label"></span>
+                    <span class="custom-control-description">Quiz respondents must answer all questions</span>
+                  </label>
+                </div>
+                <hr>
+                <div class="row mb-2">
+                  <label class="col-3 col-form-label">Form of Result</label>
+                  <div class="col-9">
+                    <input type="text" class="form-control" value="Result in Percentage" disabled>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="col-3 col-form-label">Percentage Grading Option</label>
+                  <div class="col-9">
+                    <input type="text" class="form-control" value="Custom Percentage Grading" disabled>
+                  </div>
+                </div>
+
+                <div class="row mb-2">
+                  <label class="col-3 col-form-label">Minimum Pass Score</label>
+                  <div class="col-4">
+                    <input type="text" class="form-control" name="min_score" value="50" disabled>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <label class="col-3 col-form-label">Custom Grading Option</label>
+                  <div class="col-9">
+                    <div class="table-responsive">
+                      <table class="table-sm">
+                        <tbody>
+                          <tr>
+                            <td><input type="text" class="form-control" value="Grade A" disabled></td>
+                            <td><input type="text" class="form-control" value="70" disabled></td>
+                            <td><input type="text" class="form-control" value="100" disabled></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td><input type="text" class="form-control" value="Grade B" disabled></td>
+                            <td><input type="text" class="form-control" value="60" disabled></td>
+                            <td><input type="text" class="form-control" value="69" disabled></td>
+                          </tr>
+                          <tr>
+                            <td><input type="text" class="form-control" value="Grade C" disabled></td>
+                            <td><input type="text" class="form-control" value="50" disabled></td>
+                            <td><input type="text" class="form-control" value="59" disabled></td>
+                          </tr>
+                          <tr>
+                            <td><input type="text" class="form-control" value="Grade F" disabled></td>
+                            <td><input type="text" class="form-control" value="0" disabled></td>
+                            <td><input type="text" class="form-control" value="49" disabled></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-4" style="padding-left:2px;">
+                  <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="use_as_default" checked disabled>
+                    <span class="custom-control-label"></span>
+                    <span class="custom-control-description">Use settings as default</span>
+                  </label>
+                </div>
+                <hr>
+              </fieldset>
+
+              <fieldset>
+                <legend class="border-bottom pb-2" style="font-size: 1.1rem">Quiz Instrcutions</legend>
+                  <div class="form-group mb-2">
+                    <textarea rows="5" class="form-control">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores cupiditate, earum facere. Laboriosam rem earum a laborum eveniet non minima harum aliquam nulla tempora asperiores cumque nihil, alias, maiores ullam? Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</textarea>
+                  </div>
+              </fieldset>
+              <hr class="mt-4 mb-4">
+              <div class="row float-right">
+                <div class="col-12">
+                  <button type="button" id="step_three_previous" class="btn btn-secondary loading-demo py-2 mr-3 mb-1"><i class="icon ion-ios-arrow-back pr-2"></i>Previous</button>
+                  <button type="button" id="step_three_submit" class="btn btn-success loading-demo py-2 mr-2 mb-1">Done<i class="icon ion-checkmark-round pl-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Quiz Wizrd Step Four Ends -->

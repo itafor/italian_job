@@ -1,0 +1,40 @@
+<div class="assign-link-wrap">
+  <form [formGroup]="form" enctype="multipart/form-data" (ngSubmit)="uploadDocument($event)">
+    <div class="form-group">
+      <div class="form-group row">
+        <div class="col-lg-6">
+          <div class="custom-file">
+            <input name="token" type="file" class="custom-file-input" [formControl]="form.controls['token']"
+              id="document-upload-token" (change)="onFileChange($event.target.files)"
+              [ngClass]="{'is-invalid': form.controls['token'].hasError('required') && form.controls['token'].touched}">
+            <label id="document-upload-label" class="custom-file-label document-attach" #labelImport for="link"> Choose
+              file</label>
+            <small class="invalid-feedback  errtoken"
+              *ngIf="form.controls['token'].hasError('required') && form.controls['token'].touched">Please select a
+              file</small>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <input name="description" (change)="onChangeAttachmentDescription($event)" class="form-control" type="text"
+            id="document-upload-description" [formControl]="form.controls['description']"
+            [ngClass]="{'is-invalid': form.controls['description'].hasError('required') && form.controls['description'].touched}"
+            placeholder="Description" />
+          <small class="invalid-feedback  errdescription"
+            *ngIf="form.controls['description'].hasError('required') && form.controls['description'].touched">Please
+            enter a
+            description</small>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col-lg-12">
+          <div class="assign-btn">
+            <button id="document-upload-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit">Add
+              <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>

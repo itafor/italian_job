@@ -1,0 +1,22 @@
+[
+    {
+        "department": "Finance",
+        "date": "14 Jan, 2019",
+        "time": "4:20pm"
+    },
+    {
+        "department": "Software",
+        "date": "15 Jan, 2019",
+        "time": "8:20am"
+    },
+    {
+        "department": "Product",
+        "date": "16 Jan, 2019",
+        "time": "9:00am"
+    },
+    {
+        "department": "Collections",
+        "date": "17 Jan, 2019",
+        "time": "12:20pm"
+    }
+]

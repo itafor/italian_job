@@ -1,0 +1,79 @@
+<div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="display-4" style="font-size:1.3rem;">Create Quiz</div>
+        </div>
+
+        <div class="card-body">
+          <div>
+          <form id="step_one_form" [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-md-10 offset-md-1">
+                <div class="form-group row">
+                  <label class="col-2 col-form-label">Title</label>
+                  <div class="col-10">
+                    <input class="form-control" type="text" [formControl]="f['title']"
+                      placeholder="Quiz Title">
+                  </div>
+                </div>
+                <div class="alert" *ngIf="!form.controls['title'].valid && form.controls['title'].touched">{{ requiredPrompt }}</div>
+
+                <div class="form-group row mb-4">
+                  <label class="col-2 col-form-label">Description</label>
+                  <div class="col-10">
+                    <textarea class="form-control" [formControl]="f['description']" id="description" rows="3"
+                      placeholder="This quiz is for..."></textarea>
+                  </div>
+                </div>
+
+                <div class="form-group row mb-4">
+                  <label class="col-2 col-form-label">Quiz Publicity</label>
+                  <div class="col-10">
+                    <select class="form-control" [formControl]="f['is_public']">
+                      <option [selected]=" getStartingChecked() ===   '' ">--Who should access this quiz?--</option>
+                      <option [attr.value]="true"  [selected]=" getStartingChecked() ===   'true' " >Public</option>
+                      <option [attr.value]="false" [selected]="  getStartingChecked() === 'false'  ">Specific Individuals</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="alert" *ngIf="!form.controls['is_public'].valid && form.controls['is_public'].touched">{{ requiredPrompt }}</div>
+
+
+                <div
+                [ngClass]="  {'d-none': hideRecipientField() } ">
+                <div class="form-group row mb-4">
+                  <label class="col-2 col-form-label">Respondents Email</label>
+                  <div class="col-10">
+                    <div class="parsed__container">
+                      <div class="parsed" *ngFor="let email of parser.formattedInputs; let index=index;">
+                        <span class="parsed__email">{{ email }}</span>
+                        <span class="parsed__close" (click)="removeAndUpdateValidity(index)">&times;</span>
+                      </div>
+                    </div>
+                    <textarea class="form-control" [formControl]="f['recipients']" id="recipients"
+                    (keyup)="parseField()" placeholder="Enter the email addresses of recipients, separate email addresses by a comma"></textarea>
+                    <div class="invalid-feedback d-block" *ngIf="f['recipients'].hasError('pattern') && f['recipients'].touched">
+                      The recipient email you are typing isn't a valid email adress
+                    </div>
+                  </div>
+                </div>
+                </div>
+
+
+                <div class="row float-right">
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-primary loading-demo py-2"
+                    [disabled]="!form.valid">
+                    <i *ngIf="loading" class="fa fa-spinner fa-spin"></i>  Next<i class="icon ion-ios-arrow-forward pl-2"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

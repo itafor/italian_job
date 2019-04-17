@@ -1,0 +1,23 @@
+#name.ng-touched.ng-invalid {
+    border-color: #dc3545;
+    }
+    div.validation-error {
+        width:100%;
+        margin-top: .25rem;
+        font-size: 80%;
+        color: #dc3545;
+    }
+ #tableValue{
+    font-size: 2px;
+    opacity: 0.01;
+    }
+#delete_expense_cat{
+    margin-right: 10px;
+    }
+    
+    
+    @media only screen and (max-width: 600px) {
+        #delete_expense_cat{
+            margin-right: 5px;
+            }
+      }

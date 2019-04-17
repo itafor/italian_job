@@ -1,0 +1,64 @@
+<div class="messages--metadata d-flex align-items-center justify-content-center">
+    <ng-container *ngIf="!paginationObj.loading && !error && messages.length">
+        <app-email-actions (mailNavToggleEvent)="mailnav.toggle()" [navPane]="true"
+        (bulkSelectEvent)="bulkSelectionHandler($event)"
+        [allChecked]="allSelected"
+        (bulkActionEvent)="bulkActionHandler($event)"></app-email-actions>
+        <div class="pagination--controls">
+          <div class="pagination--controls__limit">
+              <small>Number of mails to fetch</small>
+              <input class="form-control" type="number" min="3" step="5" [(ngModel)]="paginationObj.limit" disabled>
+          </div>
+        </div>
+        <small class="mr-1 pagination__indicator" (click)="loadPrevious()"
+        *ngIf="paginationObj.offset > 1 && !paginationObj.loading">
+          <i class="fa fa-chevron-left"></i>
+        </small>
+        <small *ngIf="messages" [attr.data-start-and-end]="messagesShowingIndex"
+        [attr.data-total-messages]="totalMessages"
+        id="sentElePaginationMeta">
+          {{ messagesShowingIndex }} of {{ totalMessages }} mails
+        </small>
+        <small class="ml-1 pagination__indicator" (click)="loadNext()"
+        *ngIf="!paginationObj.endOfMails && !paginationObj.loading">
+            <i class="fa fa-chevron-right"></i>
+          </small>
+    </ng-container>
+      <div class="spinner" *ngIf="uiFeedback.show" role="paginationSpinner">
+        <span>{{ uiFeedback.text }}.</span>
+      </div>
+  </div>
+<mat-sidenav-container class="page-height app-inner card card-block p-0 m-0 rounded-0 shadow-none">
+    <mat-sidenav #mailnav class="email-panel pl-xs pr-xs"
+    [mode]="isOver() ? 'over' : 'side'" [opened]="!isOver()" >
+        <ng-container *ngIf="messages && messages.length">
+            <div class="messages-container" @mailEnter id="sent">
+                <div (click)="clickedMail(message, i)"
+                *ngFor="let message of messagesInView; let i = index;"
+                  [class.selected]="message === selectedMessage"
+                  [ngClass]="{'marked': mailIsChecked(message.id)}"
+                  class="list-group-item list-group-item-action border-left-0 border-right-0 rounded-0 flex-column align-items-start">
+                  <app-email-summary [mail]="message"
+                  (mailMetaUpdateEvent)="metaDataUpdateHandler($event)"
+                  [mailboxType]="sent"
+                  [ngClass]="  {'unread': !message.read, 'marked': mailIsChecked(message.id)}  "
+                  (mailDeleteEvent)="handleMailDeletion($event)"
+                  [inBulkMail]="mailIsChecked(message.id)"></app-email-summary>
+                </div>
+                <div></div>
+              </div>
+              <div class="my-3 d-flex justify-content-center align-items-center pagination--div" *ngIf="messages && messages.length">
+                <small *ngIf="paginationObj.endOfMails">You are at the end of your mails</small>
+              </div>
+        </ng-container>
+        <div *ngIf="noMails()" class="d-flex justify-content-center align-items-center empty--mailbox">
+          <p class="lead" *ngIf="!paginationObj.loading && !error">You have no sent mails. Click compose to send a mail.</p>
+          <p class="lead alert alert-danger" *ngIf="error">{{ error }}</p>
+        </div>
+        <div class="my-3 d-flex justify-content-center align-items-center" *ngIf="!messages">
+          <div class="spinner" *ngIf="paginationObj.loading" role="initSpinner">
+            <i class="fa fa-spinner fa-spin"></i>
+          </div>
+        </div>
+    </mat-sidenav>
+  </mat-sidenav-container>

@@ -1,0 +1,426 @@
+<div style="display: flex; width: 100%; height: 100%; justify-content: center; align-items: center;"
+*ngIf="ui.loading || ui.error">
+  <div id="loader" *ngIf="ui.loading">
+  </div>
+  <div *ngIf="!ui.loading && ui.error">
+    <p class="lead alert alert-danger">{{ ui.error }}</p>
+  </div>
+</div>
+<ng-container *ngIf="!ui.loading && task && task.taskSecret">
+  <div class="card space-from-edge">
+    <div class="card-header" style="margin: 0">
+      <div>
+        <span class="task__preview--header project" style="padding-left: 0.75rem;">
+          <a routerLink="/taskmanager/project/{{ projectId }}" class="project--link" title="Go to Board">
+            <span class="header__project-name">{{ projectName || 'Project Name' }}</span>
+          </a>
+          >> <span class="header__task-unique-key">{{ task.taskUniqueKey }}</span>
+        </span>
+      </div>
+      <div class="task__meta__container">
+        <span *ngIf="apiCallState.watchers.loading" class="mr-2">
+          <i class="fa fa-spinner fa-spin"></i>
+        </span>
+        <span *ngIf="apiCallState.watchers.message" class="indicate mr-2"
+        [ngClass]="  { 'indicate--error': apiCallState.watchers.error,
+        'indicate--success': !apiCallState.watchers.error }  ">
+          {{  apiCallState.watchers.message  }}
+        </span>
+        <div [ngClass]="{ 'force__disable_wrapper': apiCallState.watchers.loading }">
+            <div class="task__watchers" (click)="updateWatchers()"
+            [ngClass]=" {'active': amIWatchingThisTask, 'force__disable':  apiCallState.watchers.loading } "
+            [attr.title]="toolTip">
+              <i id="watchers" class="fa" [ngClass]=" {'fa-eye':  !amIWatchingThisTask, 'fa-eye-slash': amIWatchingThisTask } "></i>
+              <span style="margin-left: 10px;">
+                {{ uiFriendlyWatchers() }}
+              </span>
+            </div>
+        </div>
+          <div style="margin-left: 30px;">
+            <span style="color: #ef5350; font-size: 13px;" title="Delete Task" role="deletetask"
+            (click)="confirmDeleteTask(deleteModalContent)" *ngIf="auth.isAdmin">
+              <b id="deletethistask"> Delete Task </b>
+            </span>
+          </div>
+        </div>
+    </div>
+
+    <div class="card-body row">
+      <div class="col-8">
+        <div class="the-task-summary inputheader" [ngClass]=" {'height--100px': editingState.summary} "
+        style="margin-left: 0;" (click)="startEditingSummary()">
+          <span [ngClass]="  { 'd-none': editingState.summary } "
+          class="editheader adjust-form-control card-text"> {{  task.taskSecret.summary }}</span>
+          <span *ngIf="apiCallState.taskSummary.loading" class="pos__inside"><i class="fa fa-spinner fa-spin"></i></span>
+            <span *ngIf="apiCallState.taskSummary.message"
+            class="ml-3 indicate pos__inside"
+            [ngClass]=" { 'indicate--error': apiCallState.taskSummary.error,
+             'indicate--success': !apiCallState.taskSummary.error } "> {{ apiCallState.taskSummary.message }} </span>
+          <input type="text" [ngClass]=" { 'd-none': !editingState.summary } "
+          class="editheader form-control position-relative"
+          value="{{  task.taskSecret.summary }}"
+          ref-taskSummaryInput (keyup)="checkForEnter($event, updateTaskSummary)" >
+          <span class="task__status--underneath">{{ columnName }}</span>
+
+        </div>
+        <div class="task__summary--confirmation">
+          <div class="taskdetailicon d-none">
+              <i id="uploadanattachment" (click)="openAttachmentModal()" ngbTooltip="Add Attachment" container="body"
+                class="btn fa fa-paperclip"></i>
+              <i id="showsubtaskfieldicon" (click)="initSubTaskCreation()" ngbTooltip="Create SubTask"  container="body"
+              class="btn fa fa-tasks"></i>
+          </div>
+          <div class="taskheaderactionicons" *ngIf="editingState.summary" >
+            <i id="acceptheaderchanges" (click)="updateTaskSummary(taskSummaryInput.value)"
+              class="btn fa fa-check"></i>
+            <i id="rejectheaderchanges" (click)="finishEditingSummary()"
+            class="btn fa fa-times"></i>
+          </div>
+      </div>
+        <div class="position-relative" style="margin-top: 30px;">
+          <span *ngIf="apiCallState.taskDescription.loading" class="pos__inside" style="top: -20px;"><i class="fa fa-spinner fa-spin"></i></span>
+          <span *ngIf="apiCallState.taskDescription.message"
+          class="ml-3 indicate pos__inside"
+          [ngClass]=" { 'indicate--error': apiCallState.taskDescription.error,
+          'indicate--success': !apiCallState.taskDescription.error } "> {{ apiCallState.taskDescription.message }} </span>
+          <div [innerHTML]="task.taskSecret.description | sanitizeTaskHtml"
+          *ngIf="!editingState.description && task.taskSecret.description"
+          (click)="startEditingDescription()"
+          class="task__description--container">
+          </div>
+          <div *ngIf="!editingState.description && !task.taskSecret.description"
+          (click)="startEditingDescription()"
+          class="task__description--container">
+            <p class="lead text-muted none__yet task-manager__text">No Description yet...</p>
+          </div>
+          <div *ngIf="editingState.description" class="w-100 mt-2"
+          data-role="descriptionupdate" style="padding-left: 0.75em;">
+            <app-editor-with-buttons [data]="task.taskSecret.description"
+            (cancel)="finishEditingDescription()"
+            (submit)="updateDescription($event)"></app-editor-with-buttons>
+          </div>
+        </div>
+        <div class="section__container">
+          <div class="row subtasks__container" style="margin-left: 0;margin-right: 0;">
+            <div class="row header__container" style="margin-left: 0; margin-right: 0;">
+              <div class="task-detail-sub-header col-11" style="margin-left: unset;padding-left:0; ">
+                <span class="mr-2 secondary__color"> <i class="fa fa-tasks"></i></span>SubTasks
+                <span *ngIf="apiCallState.subTask.loading"><i class="fa fa-spinner fa-spin"></i></span>
+                <span *ngIf="apiCallState.subTask.message"
+                class="ml-3 indicate"
+                [ngClass]=" { 'indicate--error': apiCallState.subTask.error, 'indicate--success': !apiCallState.subTask.error } "> {{ apiCallState.subTask.message }} </span>
+              </div>
+              <div class="subtask-action-btn" *ngIf="!ui.addingSubtask" (click)="toggleCreateSubTask()">
+                <div id="addsubtaskbutton" class="notifier">
+                  <span><i class="fa fa-plus"></i></span>
+                </div>
+              </div>
+              <div class="subtask-action-btn" *ngIf="ui.addingSubtask" (click)="toggleCreateSubTask()">
+                <div id="addsubtaskbutton" class="notifier">
+                  <span><i class="fa fa-minus"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12" *ngIf="ui.addingSubtask" style="margin-bottom: 50px;">
+              <div class="col-12" style="position: absolute; margin-left: -14px;">
+                <input class="inty input-desc" type="text" placeholder="What needs to be done?"
+                style="width: 102%; padding-right: 80px; margin-top: 0;" (keyup)="checkForEnter($event, addSubTask)" autofocus />
+                <div
+                  style="display: flex; position: relative; bottom: 28px; float: right; left: -8px; font-size: 15px;">
+                  <i id="savesubtask" class="fa fa-check" (click)="addSubTask($event.target.parentElement.previousElementSibling.value)"
+                    style="cursor: pointer; color: #333a67 !important;"></i>
+                  <i id="cancelsubtask" class="fa fa-times" (click)="toggleCreateSubTask()"
+                    style="margin-left: 17px; cursor: pointer; color: #ef5350;"></i>
+                </div>
+              </div>
+            </div>
+            <div class="list-group  subtasks">
+              <div class="list-group-item subtask" *ngFor="let subtask of task.taskSecret.subTasks; let subTaskIndex = index;"
+              (click)="openSubtaskModal(subtask, subTaskIndex)" >
+                <span class="indicator" data-role="subtaskupdate">
+                <i class="fa fa-circle" title="view subtask"></i>
+                </span>
+                <p class="lead task-manager__text" style="line-height: 100%;font-weight: 600;margin-top: auto; margin-bottom: auto;"> {{ subtask.summary }}  </p>
+                <p class="time__details">
+                    <span style="font-size: 13px; line-height: 100%;color: #999;">{{subtask.createdTime | date : 'd MMM' }} </span>
+                </p>
+                <span class="user__widget--icon" style="line-height: 20px;width:unset;height:unset;">{{ initialsOf(subtask.userName) }}</span>
+              </div>
+              <p class="lead text-muted q-ml-20 none__yet" *ngIf="!task.taskSecret.subTasks?.length"> No subtasks for this task yet... </p>
+            </div>
+          </div>
+        </div>
+        <div class="section__container">
+          <div class="row header__container" style="margin-left: 0; margin-right: 0;">
+              <div class="task-detail-sub-header" style="margin-left:0; padding-left: 0;">
+                  <span class="mr-2 secondary__color"> <i class="fa fa-paperclip" style="margin: unset;"></i></span> Attachments
+                  <span *ngIf="apiCallState.attachments.loading"><i class="fa fa-spinner fa-spin"></i></span>
+                  <span *ngIf="apiCallState.attachments.message"
+                  class="ml-3 indicate"
+                  [ngClass]=" { 'indicate--error': apiCallState.attachments.error,
+                   'indicate--success': !apiCallState.attachments.error } "> {{ apiCallState.attachments.message }} </span>
+                </div>
+                <div class="subtask-action-btn" (click)="openAttachmentModal()">
+                  <div id="addattachmentCTA" class="notifier">
+                    <span><i class="fa fa-plus"></i></span>
+                  </div>
+                </div>
+          </div>
+          <div class="row" style="margin-left: 0px;" data-role="attachments">
+            <div data-role="attachment" class="attachment__container" *ngFor="let attachment of task.taskSecret.attachments">
+              <div class="image">
+                <i class="{{  iconForAttachment(attachment) }} t__maskable"></i>
+                <span class="download">
+                  <a target="_blank" title="Download {{attachment.filename}}"
+                  href="{{ _taskService.getAttachUrlWithToken(attachment.url) }}" style="cursor: pointer;">
+                      <i class="fa fa-cloud-download"></i>
+                  </a>
+                </span>
+                <span class="t__maskable" style="text-transform: uppercase;">
+                  {{  uiFileTypeForAttachment(attachment) }}
+                </span>
+              </div>
+              <div class="details">
+                <span>{{attachment.filename}}</span>
+                <span>Added {{  attachment.created | date: 'd MMM' }} at {{  attachment.created | date: 'h:mm a' }}</span>
+                <span class="deleteable" title="Delete attachment"
+                (click)="confirmDeleteAttachment(attachment)">Delete</span>
+              </div>
+            </div>
+            <p class="lead text-muted q-ml-20 none__yet" data-role="noattachments"
+            *ngIf="!task.taskSecret.attachments?.length"> No attachments in this task yet... </p>
+          </div>
+        </div>
+        <div class="section__container">
+            <div class="row header__container" style="margin-left: 0; margin-right: 0;">
+                  <div class="task-detail-sub-header" style="margin-left:0; padding-left: 0;">
+                    <span class="mr-2 secondary__color"> <i class="fa fa-bars" style="margin: unset;"></i></span> Fields
+                    <span *ngIf="apiCallState.fields.loading"><i class="fa fa-spinner fa-spin"></i></span>
+                    <span *ngIf="apiCallState.fields.message"
+                    class="ml-3 indicate"
+                    [ngClass]=" { 'indicate--error': apiCallState.fields.error,
+                     'indicate--success': !apiCallState.fields.error } "> {{ apiCallState.fields.message }} </span>
+                  </div>
+                  <div class="subtask-action-btn position-relative" (click)="toggleShowFieldsDropdown()"
+                  *ngIf="unsetFields.length">
+                    <div id="addattachmentCTA" class="notifier">
+                      <span><i class="fa" [ngClass]="  { 'fa-plus': !showUnsetFields, 'fa-minus': showUnsetFields }  "></i></span>
+                    </div>
+                    <div class="dropdown-menu py-0" role="menu" [ngClass]=" {'show': showUnsetFields }"
+                    style="left: -150px;width: 100%;">
+                        <button class="dropdown-item py-2" *ngFor="let field of unsetFields;">{{ field.fieldsSecret.name }}</button>
+                    </div>
+                  </div>
+            </div>
+            <div class="row" style="margin-left: 0px;" data-role="fields">
+
+            </div>
+            <p class="lead text-muted q-ml-20 none__yet"
+            *ngIf="!fields?.length"> No fields specified in this project. Add
+              <a routerLink="/taskmanager/project/settings/{{ projectId }}/fields/{{ projectId }}">here</a></p>
+        </div>
+        <div class="section__container">
+          <div class="row" style="margin-left: 0;margin-right:0;">
+            <div class="row header__container" style="margin-left:0; margin-right: 0;">
+              <div class="task-detail-sub-header" style="padding-left: 0; margin-left: 0px;">
+                <span class="mr-2 secondary__color"> <i class="fa fa-comment"></i></span>
+                Comments</div>
+            </div>
+            <div id="commentarea" style="margin-top: 20px;width: 100%;margin-left:0;margin-bottom: 30px;" class="position-relative">
+                  <textarea id="taskcomment" class="addcommentarea form-control col-10"
+                  placeholder="Add comment..." rows="1" ref-commentBox ></textarea>
+                    <button id="savecomment"
+                      class="btn btn-block"
+                      (click)="postComment(commentBox)"
+                      [disabled]="ui.commentLoading">
+                          <i *ngIf="ui.commentLoading" class="fa fa-spinner fa-spin"></i> Save
+                    </button>
+                    <span aria-hidden="true" class="commentarea__formatting"> Formatting Help: &nbsp;
+                    <b>*bold*</b>&nbsp;<i >_italics_</i>&nbsp; ~strike~ <code >`code`</code>&nbsp;<code >```preformatted```</code></span>
+            </div>
+            <div class="task-comments__container" style="width: 100%;">
+              <app-quabbly-comment-component
+              *ngFor="let comment of task.taskSecret.comments;let commentIndex = index;"
+              [comment]="comment" [authorizedToModifyComment]="authorization(comment)"
+              (deleteInitiated)="confirmDeleteComment($event, commentIndex)"
+              (commentUpdated)="updateComment($event, comment.uuid, commentIndex)"
+              [error]="comment['error']" [errorTimeout]="500">
+              </app-quabbly-comment-component>
+                <div style="visibility: hidden; height: 2px; width: 100%;" id="taskmanager-modal-refScrollComments"></div>
+                <div *ngIf="!task.taskSecret.comments?.length">
+                    <p class="lead text-muted q-ml-20 none__yet">
+                        No comments on this task...
+                      </p>
+                </div>
+            </div>
+        </div>
+        </div>
+      </div>
+      <div class="col-4 task--meta__container">
+        <div class="task--meta">
+          <span class="header" id="statusLog">Status
+            <span *ngIf="apiCallState.status.loading" class="ml-3"><i class="fa fa-spinner fa-spin"></i></span>
+                <span *ngIf="apiCallState.status.message"
+                class="ml-3 indicate"
+                [ngClass]=" { 'indicate--error': apiCallState.status.error,
+                 'indicate--success': !apiCallState.status.error } "> {{ apiCallState.status.message }} </span>
+          </span>
+          <span class="task__status cta uppercase" (click)="toggleUpdatingStatus()" *ngIf="!updatingStatus" style="color: #999;font-weight: bolder;">{{ columnName }}</span>
+          <div class="assignee-display" [ngClass]="  {'priority__selection': updatingStatus} ">
+            <span class="assignee-display-word" *ngIf="updatingStatus"
+            (click)="toggleUpdatingStatus()" role="initialvalue">  {{ columnName }} </span>
+          </div>
+          <div [ngClass]=" { 'd-none':  !updatingStatus } " class="selectable__dropdown">
+            <div (click)="updateStatus(column.id)"
+            class="form-control searchable"
+            *ngFor="let column of statusesAvailableToUpdateTo">
+              <span class="assignee-display-word" role="allowedvalues"> {{ column.columnSecret.name }}  </span>
+            </div>
+          </div>
+        </div>
+        <div class="task--meta">
+          <span class="header">Priority
+            <span *ngIf="apiCallState.priority.loading" class="ml-3"><i class="fa fa-spinner fa-spin"></i></span>
+                <span *ngIf="apiCallState.priority.message"
+                class="ml-3 indicate"
+                [ngClass]=" { 'indicate--error': apiCallState.priority.error,
+                 'indicate--success': !apiCallState.priority.error } "> {{ apiCallState.priority.message }} </span>
+          </span>
+          <span class="task__status cta uppercase" (click)="toggleUpdatingPriority()" *ngIf="!updatingPriority"
+          [style]="getStylesForPriority([priority]) | sanitizeTaskStyle">{{ priority }}</span>
+          <div class="assignee-display" [ngClass]="  {'priority__selection': updatingPriority} ">
+            <span class="assignee-display-word" *ngIf="updatingPriority" (click)="toggleUpdatingPriority()" role="initialvalue">  {{ priority }} </span>
+          </div>
+          <div [ngClass]=" { 'd-none':  !updatingPriority } " class="selectable__dropdown">
+            <div (click)="updatePriority(priority.text)" class="form-control searchable" *ngFor="let priority of prioritiesAvailableToUpdateTo">
+              <span class="assignee-display-word"  role="allowedvalues" [style]="priority.color | sanitizeTaskStyle"> {{ priority.text }}  </span>
+            </div>
+          </div>
+        </div>
+        <div class="task--meta">
+          <span class="header" id="assigneeLog">Assigned
+            <span *ngIf="apiCallState.assignee.loading" class="ml-3"><i class="fa fa-spinner fa-spin"></i></span>
+                <span *ngIf="apiCallState.assignee.message"
+                class="ml-3 indicate"
+                [ngClass]=" { 'indicate--error': apiCallState.assignee.error,
+                 'indicate--success': !apiCallState.assignee.error } "> {{ apiCallState.assignee.message }} </span>
+          </span>
+          <div class="assignee-display">
+            <span class="user__widget--icon" *ngIf="task.taskSecret.assignee" style="margin-left:0;">{{ initialsOf(assignee) }}</span>
+            <span id="assignee" class="assignee-display-word task-manager__text--only"  role="meta_value">
+                {{ assignee }}
+            </span>
+          </div>
+          <div class="assignee-display" (click)="updateAssignee()" *ngIf="!updatingAssignee">
+            <span><i class="fa fa-user-circle assignee-display-icon"></i></span>
+            <span class="assignee-display-word" style="text-decoration: underline;cursor: pointer;">Assign</span>
+          </div>
+          <div [ngClass]=" { 'd-none':  !updatingAssignee } " style="width: 80%;">
+              <!-- Input with type ahead -->
+              <div class="form-group searchable">
+                <!-- Use ng-If so it clears -->
+                <!-- Get confirmation on behavior form PO -->
+                <input type="text" placeholder="Assign Task to..."
+                [ngClass]="{'d-none': !updatingAssignee}"
+                [ngbTypeahead]="suggestAssignees"
+                [inputFormatter]="inputFormatter"
+                [resultFormatter]="assigneeTypeAheadFormatter"
+                class="form-control input__searchable" ref-typeAheadInput />
+                <!-- DOnt change position because of sibling -->
+                <i class="fa fa-check input__searchable--icon"
+                style="color: green;"
+                *ngIf="!!typeAheadInput.value.trim()"
+                (click)="handleAssigningFromTypeAhead($event, typeAheadInput)"></i>
+                <i class="fa fa-times input__searchable--icon close"
+                (click)="cancelAssigneeUpdate(typeAheadInput)" ></i>
+              </div>
+          </div>
+        </div>
+        <div class="task--meta">
+          <span class="header">Goal
+            <span *ngIf="apiCallState.goal.loading" class="ml-3"><i class="fa fa-spinner fa-spin"></i></span>
+                <span *ngIf="apiCallState.goal.message"
+                class="ml-3 indicate"
+                [ngClass]=" { 'indicate--error': apiCallState.goal.error,
+                 'indicate--success': !apiCallState.goal.error } "> {{ apiCallState.goal.message }} </span>
+          </span>
+          <span class="task__status cta" (click)="toggleUpdatingGoal()" *ngIf="!updatingGoal" style="color: #999; font-weight: bolder;">{{ task.goal?.goalSecret.name || 'None' }}</span>
+          <div class="assignee-display" [ngClass]="  {'priority__selection': updatingGoal} ">
+            <span class="assignee-display-word" *ngIf="updatingGoal"
+            (click)="toggleUpdatingGoal()">  {{ task.goal?.goalSecret.name || 'None' }} </span>
+          </div>
+          <div [ngClass]=" { 'd-none':  !updatingGoal } " class="selectable__dropdown">
+            <div (click)="updateGoal(goal)"
+            class="form-control searchable"
+            *ngFor="let goal of goalsAvailableToUpdateTo">
+              <span class="assignee-display-word"> {{ goal.goalSecret.name }}  </span>
+            </div>
+          </div>
+        </div>
+        <div class="task--meta">
+          <span class="header" id="reportedbyLog">Created By</span>
+          <div class="flex-and-center">
+              <span class="user__widget--icon" style="margin-left:0;padding:0;">{{ initialsOf(uiFriendlyReporterName()) }}</span>
+              <span id="whoisreporting" class="task-manager__text--only"
+              style="padding: 10px; border-radius: 4px;text-overflow: ellipsis; overflow: hidden;"
+              role="meta_value">
+                {{  uiFriendlyReporterName()  }}
+              </span>
+          </div>
+        </div>
+        <div class="task--meta">
+          <span class="header">Logged Time
+              <span *ngIf="apiCallState.loggedHours.loading" class="ml-3"><i class="fa fa-spinner fa-spin"></i></span>
+              <span *ngIf="apiCallState.loggedHours.message"
+              class="ml-3 indicate"
+              [ngClass]=" { 'indicate--error': apiCallState.loggedHours.error,
+               'indicate--success': !apiCallState.loggedHours.error } "> {{ apiCallState.loggedHours.message }} </span>
+          </span>
+          <div class="d-flex icn-spn" style="width: 80%;" >
+            <span class="d-flex align-items-center" style="width: 30px;"><i class="fa fa-clock-o" style="font-size: 2em;"></i></span>
+            <span class="task__status cta" (click)="openLoggedHoursView()">{{ loggedHours ||  'None' }}</span>
+          </div>
+        </div>
+        <div class="task--meta">
+          <span class="header">Time Created</span>
+          <span class="task-manager__text--only" style="font-weight: 500;"  role="meta_value">{{ task.createdTime | date : 'd MMM yyyy' }} - {{ task.createdTime | date: 'h:mm a' }}</span>
+        </div>
+        <div class="task--meta" *ngIf="task.lastUpdatedTime">
+          <span class="header">Last Updated</span>
+          <span class="task-manager__text--only" style="font-weight: 500;" role="meta_value">{{ task.lastUpdatedTime | date : 'd MMM yyyy' }} - {{ task.lastUpdatedTime | date: 'h:mm a' }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #deleteModalContent let-deleteModal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="modal-basic-title">Delete Task </h5>
+    <button type="button" class="close" aria-label="Close" (click)="deleteModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body text-center">
+    <p class="delete__warning">Are you sure you want to delete &nbsp;
+      <br>
+      <span class="text-primary">{{ task.taskSecret.summary }}</span>?</p>
+  </div>
+  <div class="modal-footer" style="border-top: 1px solid #6f859b;">
+    <span *ngIf="apiCallState.deleteTask.loading">
+      <i class="fa fa-spinner fa-spin"></i>
+    </span>
+    <span *ngIf="apiCallState.deleteTask.message">
+      {{ apiCallState.deleteTask.message }}
+    </span>
+    <button type="button" class="btn btn-light"
+    (click)="deleteModal.close('Cancel click')"
+    [disabled]="apiCallState.deleteTask.loading"
+    ngbAutoFocus>Cancel</button>
+    <button type="button" class="btn btn-danger"
+    [disabled]="apiCallState.deleteTask.loading"
+     (click)="deleteTask()">Delete</button>
+  </div>
+</ng-template>

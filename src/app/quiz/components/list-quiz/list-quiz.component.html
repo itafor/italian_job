@@ -1,0 +1,69 @@
+<button *ngIf="createQuiz" (click)="togglePage()" class="btn btn-primary addtask">
+  View Quiz &nbsp; <i class="fa fa-tasks"></i>
+</button>
+
+<button *ngIf="listQuiz" (click)="togglePage()" class="btn btn-primary addtask">
+  Create Quiz &nbsp; <i class="fa fa-plus"></i>
+</button>
+
+<div *ngIf="createQuiz">
+  <app-create-quiz></app-create-quiz>
+</div>
+
+<div *ngIf="listQuiz" class="pt-4">
+  <ngx-datatable
+    [rows]="rows"
+    [columnMode]="'force'"
+    [headerHeight]="40"
+    [footerHeight]="50"
+    [rowHeight]="'auto'"
+    [externalPaging]="true"
+    [count]="count"
+    [offset]="offset"
+    [limit]="limit"
+    (page)="onPage($event)"
+  >
+    <ngx-datatable-column name="Title">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6 [ngClass]="{ roleActive: row.active }">{{ row.title }}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Visibility">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6 class="badge py-1 px-2 border border-primary text-primary text-uppercase rounded-0">
+          <span *ngIf="row.is_public">PUBLIC</span>
+          <span *ngIf="!row.is_public">PRIVATE</span>
+        </h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Status">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6
+          [ngClass]="{ roleActive: row.active }"
+          class="badge badge-primary py-1 px-2 text-uppercase rounded-0"
+        >
+          {{ row.status }}
+        </h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Description">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6>{{ row.description }}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Action">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6 [ngClass]="{ roleAction: row.active }">
+          <span class="action-span">
+            <i (click)="view(row)" class="icon fa fa-eye fa-1.5x text-info" placement="auto" ngbTooltip="View Quiz"></i>
+            <i (click)="edit(row)" class="icon fa fa-pencil fa-1.5x text-info" placement="auto" ngbTooltip="Update Quiz"></i>
+            <i class="icon fa fa-trash fa-1.5x text-danger" placement="auto" ngbTooltip="Delete Quiz"></i>
+          </span>
+        </h6>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate"></ngx-loading>
+
+</div>

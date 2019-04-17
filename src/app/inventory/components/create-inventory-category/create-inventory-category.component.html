@@ -1,0 +1,28 @@
+
+<div class="details-header">
+  <div class="card">
+    <div class="modal-header">
+      <h4 class="modal-title" id="newInventoryCategoryHeader">New Inventory Category</h4>
+    </div>
+    <div class="card-body">
+      <app-alert></app-alert>
+      <form (ngSubmit)="submitForm($event)">
+        <div class="form-group">
+          <div class="form-group row offset-1">
+            <label class="col-lg-2 col-form-label" for="example-text-input">Name:</label>
+            <div class="col-lg-7">
+              <input class="form-control role-title" id="create-inventory-category" type="text" [(ngModel)]="categoryName"
+                name="categoryName">
+            </div>
+          </div>
+          <div class="center_icon">
+            <button id="disabledButton" [disabled]="isBtnDisabled()" (click)="submitForm($event)" class="btn btn-primary"
+              type="button">Submit
+              <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,304 @@
+<div class="container">
+  <div class="details-header">
+    <div class="row">
+      <div class="col-lg-12 emp-form">
+        <div class="card">
+          <div class="modal-header">
+            <h4 class="modal-title" id="invoiceDetailheader">New Invoice</h4>
+          </div>
+          <div class="card-body  offset-1">
+            <app-alert></app-alert>
+            <form [formGroup]="nestedForm" (ngSubmit)="addInvoice()" novalidate>
+              <!-- main form -->
+              <div class="row">
+                <div class="col">
+                <div style="display:flex"> 
+                  <!-- sender's info -->
+                  <div class="col-7">
+                  <h3 id="senderInfoHeader">Sender's Info</h3>
+                    <div class="row col-8">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group">
+                            <label for="fnText" id="sfullname-label">Full Name</label>
+                            <input type="text" [formControl]="nestedForm.controls['senderName']" id="sfullname-input"
+                              [ngClass]="{'is-invalid': nestedForm.controls['senderName'].hasError('required') && nestedForm.controls['senderName'].touched}"
+                              class="form-control">
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <div class="form-group">
+                            <label for="lnText" id="semail-label">Email</label>
+                            <input type="email" [formControl]="nestedForm.controls['senderEmail']" id="semail-input"
+                              class="form-control"
+                              [ngClass]="{'is-invalid': nestedForm.controls['senderEmail'].hasError('required') && nestedForm.controls['senderEmail'].touched}"
+                              >
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <div class="form-group">
+                            <label for="fnText" id="saddress-label">Address</label>
+                            <textarea type="text" [formControl]="nestedForm.controls['senderAddress']"
+                              id="saddress-input"
+                              [ngClass]="{'is-invalid': nestedForm.controls['senderAddress'].hasError('required') && nestedForm.controls['senderAddress'].touched}"
+                               class="form-control">
+                            </textarea>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label for="lnText" id="sphone-label">Phone Number</label>
+                            <input type="text" [formControl]="nestedForm.controls['senderPhoneNumber']"
+                              id="sphone-input"
+                              [ngClass]="{'is-invalid': nestedForm.controls['senderPhoneNumber'].hasError('required') && nestedForm.controls['senderPhoneNumber'].touched}"
+                               class="form-control">
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label for="lnText" id="sbusphone-label">Business Phone Number</label>
+                            <input type="text" [formControl]="nestedForm.controls['senderBusinessPhoneNumber']"
+                              id="sbusphone-input"
+                              [ngClass]="{'is-invalid': nestedForm.controls['senderBusinessPhoneNumber'].hasError('required') && nestedForm.controls['senderBusinessPhoneNumber'].touched}"
+                               class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                      
+                    </div>
+
+                  <h3 id="receiverInfoHeader">Receiver's Info</h3>
+                  <div class="row col-8">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label for="fnText" id="rfullname-label">Full Name</label>
+                          <input type="text" [formControl]="nestedForm.controls['receiverName']" class="form-control"
+                            id="rfullname-input"
+                            [ngClass]="{'is-invalid': nestedForm.controls['receiverName'].hasError('required') && nestedForm.controls['receiverName'].touched}"
+                            >
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label for="lnText" id="remail-label">Email</label>
+                          <input type="email" [formControl]="nestedForm.controls['receiverEmail']" class="form-control"
+                            id="remail-input"
+                            [ngClass]="{'is-invalid': nestedForm.controls['receiverEmail'].hasError('required') && nestedForm.controls['receiverEmail'].touched}"
+                            >
+                        </div>
+                      </div>
+                      <div class="col-12">
+                          <div class="form-group">
+                            <label for="fnText" id="raddress-label">Address</label>
+                            <textarea type="text" [formControl]="nestedForm.controls['receiverAddress']"
+                              class="form-control" id="raddress-input"
+                              [ngClass]="{'is-invalid': nestedForm.controls['receiverAddress'].hasError('required') && nestedForm.controls['receiverAddress'].touched}">
+                              </textarea>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label for="lnText" id="rphone-label">Phone Number</label>
+                            <input type="text" [formControl]="nestedForm.controls['receiverPhoneNumber']"
+                              id="rphone-input" class="form-control"
+                              [ngClass]="{'is-invalid': nestedForm.controls['receiverPhoneNumber'].hasError('required') && nestedForm.controls['receiverPhoneNumber'].touched}">
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="form-group col-4">
+                      <label for="fnText" id="terms-label">Terms and Condition</label>
+                        <div style="border: 0.5px solid rgb(213, 214, 213); height: auto; overflow: hidden">
+                          <textarea id="terms-input" class="form-control" rows="15" [formControl]="nestedForm.controls['invoiceTerms']"></textarea>
+                            
+                          </div>
+                          
+                          
+                    </div>
+
+
+                </div>
+
+
+                  <hr>
+                  <h3 id="invoiceDetailheader">Invoice's details</h3>
+
+                  <div class="row">
+
+                    <div class="col-4">
+                      <div class="form-group">
+                        <label for="invoiceDate" id="createddate-label">Created Date</label>
+                        <input type="date" [formControl]="nestedForm.controls['invoiceDate']" id="createddate-input"
+                          [ngClass]="{'is-invalid': nestedForm.controls['invoiceDate'].hasError('required') && nestedForm.controls['invoiceDate'].touched}"
+                          class="form-control" placeholder="Created Date">
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="form-group">
+
+                        <label for="lnText" id="duedate-label">Due Date</label>
+                        <input type="date" [formControl]="nestedForm.controls['invoiceDueDate']" id="duedate-input"
+                          [ngClass]="{'is-invalid': nestedForm.controls['invoiceDueDate'].hasError('required') && nestedForm.controls['invoiceDueDate'].touched}"
+                          placeholder="Due Date" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- seperator -->
+                  <div class="row">
+                    <div class="col">
+                      <hr>
+                    </div>
+                  </div>
+
+                  <!-- Item form portion -->
+                  <div class="row" formArrayName="items">
+                    <div class="col-12" *ngFor="let group of itemArray.controls; let i = index;" [formGroupName]="i">
+                      <div class="row" style="margin-top:-50px;">
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="col-8">
+                              <small>Item {{i+1}}</small>
+                            </div>
+                            <div class="col-4 control-buttons">
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="col-12">
+                          <div class="form-group row">
+                            <label for="example-text-input" class="col-1 col-form-label">
+                              <h6 (click)="removeItem(i)" class="text text-danger"> <i class="icon fa fa-remove"
+                                  ngbTooltip="Remove Item" id="removeItem"></i></h6>
+                              <h6 class="text text-primary" (click)="addItem()"><i class="icon fa fa-plus"
+                                  ngbTooltip="Add Item" id="addItem"></i></h6>
+                            </label>
+                            <div class="col-3">
+                              <div class="form-group">
+                                <label for="itemDescription" style="margin-top:20px;" id="description-label">
+                                  Description</label>
+                                <input type="text" id="description-input" [formControl]="group.controls['itemDescription']"
+                                   class="form-control" placeholder="Item Description">
+                              </div>
+                            </div>
+                            <div class="col-3">
+                              <div class="form-group">
+                                <label for="price" style="margin-top:20px;" id="price-label">Price
+                                  (<span>&#8358;</span>)</label>
+                                <input [formControl]="group.controls['price']" id="price-input" class="form-control"
+                                  type="number" name="price"
+                                  (ngModelChange)="calculate(group.controls['price'].value, group.controls['quantity'].value, i)"
+                                  placeholder="Price">
+                              </div>
+                            </div>
+                            <div class="col-3">
+                              <div class="form-group">
+                                <label for="quantity" style="margin-top:20px;" id="quantity-label">Quantity</label>
+                                <input type="number" [formControl]="group.controls['quantity']" id="quantity-input"
+                                  class="form-control" placeholder="Quantity" name="quantity"
+                                  (ngModelChange)="calculate(group.controls['price'].value, group.controls['quantity'].value, i)">
+                              </div>
+                            </div>
+                            <div class="col-2">
+                              <div class="form-group">
+                                <label for="quantity" style="margin-top:20px;" id="amount-label">Amount
+                                  (<span>&#8358;</span>)</label>
+                                <input id="amount-input" type="number" class="form-control invoiceAmount"
+                                  [formControl]="group.controls['invoiceAmount']" placeholder="Amount" readonly>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group">
+
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="row">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label for="fnText" id="tax-label">Tax %</label>
+                            <input id="tax-input" type="number" [formControl]="nestedForm.controls['tax']" class="form-control tax"
+                              (ngModelChange)="taxValue($event)"
+                              [ngClass]="{'is-invalid': nestedForm.controls['tax'].hasError('required') && nestedForm.controls['tax'].touched}"
+                              placeholder="Tax %">
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label for="lnText" id="amountpaid-label">Amount Paid (<span>&#8358;</span>) </label>
+                            <input id="amountpaid-input" type="number" [formControl]="nestedForm.controls['amountPaid']" class="form-control"
+                              (ngModelChange)="amtPaidValue($event)"
+                              [ngClass]="{'is-invalid': nestedForm.controls['amountPaid'].hasError('required') && nestedForm.controls['amountPaid'].touched}"
+                              placeholder="Amount Paid">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Calculate total,subtota,bal due, -->
+                  <div class="row" *ngIf="subtotal !==null">
+                    <div class="col-6">
+
+                    </div>
+                    <div class="col-6">
+
+                      <table class="table table-striped">
+                        <tbody>
+                          <tr>
+                            <td class="invoiceCalculation"> SubTotal:</td>
+                            <td><span>&#8358;</span> {{subtotal}}</td>
+                          </tr>
+                          <tr>
+                            <td class="invoiceCalculation"> Tax:</td>
+                            <!-- <td> {{(subtotal * (tax/100)).toFixed(1)}}  tax% </td>   -->
+                            <td> {{tax}} % </td>
+                          </tr>
+                          <tr>
+                            <td class="invoiceCalculation"> Total:</td>
+                            <td> <span>&#8358;</span> {{(subtotal * (tax/100) + subtotal).toFixed(2)}}</td>
+                          </tr>
+                          <tr *ngIf="amtPaid != null">
+                            <td class="invoiceCalculation"> Balance Due:</td>
+                            <td><span>&#8358;</span> {{((subtotal * (tax/100) + subtotal)-(amtPaid)).toFixed(2)}}</td>
+                          </tr>
+                          <tr *ngIf="amtPaid == null">
+                            <td class="invoiceCalculation"> Balance Due:</td>
+                            <td> <span>&#8358;</span> {{subtotal.toFixed(2)}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- seperator -->
+                  <div class="row">
+                    <div class="col">
+                      <hr>
+                    </div>
+                  </div>
+
+                  <!-- final action buttons -->
+                  <div class="d-flex justify-content-center mt-4 mb-4">
+                    <button class="btn btn-primary" id="createInvoiceBtn" type="submit"
+                      [disabled]="!nestedForm.valid"><i *ngIf="loadingInvoce" class="fa fa-spinner fa-spin"></i> Create
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

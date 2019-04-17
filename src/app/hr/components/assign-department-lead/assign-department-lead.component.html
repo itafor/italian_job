@@ -1,0 +1,60 @@
+<div class="details-header">
+  <div class="card">
+    <div class="modal-header">
+      <h4 class="modal-title" id="newDepartmentHeader">Assign Department Head</h4>
+    </div>
+    <div class="card-body">
+      <div class="text-center">
+        <app-alert></app-alert>
+      </div>
+      <div>
+        <div class="text-center" *ngIf="!employeeList">
+          <div class="loading-tab">
+            <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Fetching data</h5>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="employeeList">
+        <div class="text-center" *ngIf="(employeeList.length === 0)">
+          <div class="loading-tab">
+            <i class="fa fa-frown-o fa-2x text-secondary"></i><br />
+            <h5>No Employee</h5>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="(employeeList && employeeList.length)">
+        <form (ngSubmit)="submitForm($event)">
+          <div class="form-group">
+            <div class="form-group row offset-1">
+              <label id="department-input-title" class="col-lg-2 col-form-label">Department</label>
+              <div class="col-lg-7">
+                <input class="form-control" id="department-lead-id" type="text" [(ngModel)]="newDeptTitle"
+                  name="newDeptTitle" disabled>
+              </div>
+            </div>
+            <div class="form-group row  offset-1">
+              <label id="employee-input-title" class="col-lg-2 col-form-label">Employee</label>
+              <div class="col-lg-7">
+                <select name="employee" class="custom-select" [class.is-invalid]="employeeHasError  && employee.touched"
+                  (change)="validateEmployee(employee.value)" #employee="ngModel" [(ngModel)]="newHead"
+                  id="assigned-lead-id">
+                  <option value="default">-- Select Lead --</option>
+                  <option id="employee-list-{{optionIndex}}"
+                    *ngFor="let employee of employeeList; let optionIndex = index" value="{{ employee.id}}">
+                    {{employee.employeeSecret.firstname }} {{employee.employeeSecret.lastname}}
+                  </option>
+                </select>
+                <small class="text-danger" [class.d-none]="!employeeHasError || employee.untouched">Please select an
+                  employee</small>
+              </div>
+            </div>
+            <div class="center_icon">
+              <button id="assign-lead-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit"><i *ngIf="submitting" class="fa fa-spinner fa-spin"></i> Assign
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,166 @@
+@import './../../../../assets/fonts/fontawesome-5/css/all.min.css';
+.edit-name{
+    opacity: 0;
+}
+.hover-on-hide:hover  .edit-name{
+    color: #00897B;
+    opacity: 1;
+}
+.actualspace{
+    cursor: pointer;;
+}
+.bg-teal {
+    background-color: #00897B;
+    border-color: #00897B;
+    color: #fff;
+    cursor: pointer;
+}
+
+.bg-blue {
+    background-color: #039BE5;
+    border-color: #039BE5;
+    color: #fff;
+}
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2rem;
+    text-align: center;
+    pointer-events: none;
+    color: rgba(0, 0, 0, 0.32);
+    font-size: 1rem;
+}
+
+.bg-none {
+    background: none;
+}
+
+.sidebar-x {
+    border-right: 1px solid #cccccc29;
+    height: 100%;
+}
+
+.sidebar-x .list-group-item-action {
+    border: none;
+    border-radius: 0;
+}
+
+.sidebar-x .list-group-item-action.active {
+    background: #5c6bc0 !important;
+    color: #fff;
+}
+
+.sidebar-x .list-group-item:focus, .list-group-item-action:hover {
+    z-index: 1;
+    text-decoration: none;
+}
+
+.sidebar-x .list-group-item-action:focus, .list-group-item-action:hover {
+    color: #495057;
+    text-decoration: none;
+    background-color: #f8f9fa;
+}
+
+.sidebar-x .list-group-item-action.active:hover {
+    color: #fff !important;
+}
+.createFolder-error{
+    border-color: #ce4946;
+}
+
+.px-10 {
+    padding-left: 4.7rem !important;
+    padding-right: 4.7rem !important;
+}
+.mx-wd-18{
+    max-width: 18.3em;
+    margin: 0px 10.5px;
+}
+
+.position-left-10 {
+    margin-right: 10px !important;
+}
+
+.table tr td:not(:last-child) {
+    padding-top: 20px !important;
+}
+
+.fs-16 {
+    font-size: 16px !important;
+}
+
+.dropdown.remove-caret .dropdown-toggle::after {
+    display: none;
+}
+
+.dropdown .dropdown-menu button {
+    cursor: pointer;
+}
+.table-responsive{
+    overflow-x: inherit !important;
+}
+.share input.email{
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px
+}
+.share textarea{
+    border: 0px;
+}
+.btn-grey{
+    background-color: rgb(235, 235, 235);
+}
+.actualspace{
+    margin: -1px 0px 7px 13px;
+}
+.inputspace{
+    display: none;
+    margin-top: -8px;
+}
+
+#emailField:focus{
+    outline:0px !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+}
+textarea[name=comment]:focus{
+    outline:0px !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+}
+#sharing .text-danger{
+    color: #ce4946 !important;
+}
+.dark-modal .modal-content {
+    //background-color: #292b2c;
+    //color: white;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    max-width: 100%;
+    overflow: hidden;
+   }
+.create-folder-input button, input{
+    box-shadow: none !important;
+}
+.breadcrumb-item + .breadcrumb-item::before {
+    content: none; }
+     .breadcrumb-item.active {
+    color: #455a64; }
+  .parentFolder .bredcum{
+    padding-top: 10px !important;
+  }
+  .sharedwithme-card{
+      min-height: 25rem
+  }
+  .breadcrumb .breadcrumb-item a {
+    font-weight: bold;
+}

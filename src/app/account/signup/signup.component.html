@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-center align-items-center min-height-100 h-100">
+  <div class="auth-container">
+    <div class="card card-body m-3 p-5">
+      <h3 class="fw-100 text-success mb-4">Create your account</h3>
+      <div [innerHTML]="errors" *ngIf="showAlert" class="alert alert-danger alert-dismissible" role="alert" ><button aria-label="Close" class="close ng-star-inserted" type="button"><span aria-hidden="true">×</span></button></div>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <fieldset class="form-group">
+          <input type="text" class="form-control" placeholder="Firstname" [formControl]="form.controls['firstname']"
+          id="form-register-firstname"
+            [ngClass]="{'is-invalid': form.controls['firstname'].hasError('required') && form.controls['firstname'].touched}" />
+          <div class="invalid-feedback" *ngIf="form.controls['firstname'].hasError('required') && form.controls['firstname'].touched">Firstname
+            is required.</div>
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" placeholder="Lastname" [formControl]="form.controls['lastname']"
+          id="form-register-lastname"
+            [ngClass]="{'is-invalid': form.controls['lastname'].hasError('required') && form.controls['lastname'].touched}" />
+          <div class="invalid-feedback" *ngIf="form.controls['lastname'].hasError('required') && form.controls['lastname'].touched">Lastname
+            is required.</div>
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="email" class="form-control" placeholder="Email" [formControl]="form.controls['email']"
+          id="form-register-email"
+            [ngClass]="{'is-invalid': form.controls['email'].hasError('required') && form.controls['email'].touched}" />
+          <div class="invalid-feedback" *ngIf="form.controls['email'].hasError('required') && form.controls['email'].touched">Email
+            is required.</div>
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" placeholder="Company Name" [formControl]="form.controls['companyName']"
+          id="form-register-company_name"
+            [ngClass]="{'is-invalid': form.controls['companyName'].hasError('required') && form.controls['companyName'].touched}" />
+          <div class="invalid-feedback" *ngIf="form.controls['companyName'].hasError('required') && form.controls['companyName'].touched">Company name
+            is required.</div>
+        </fieldset>
+
+        <fieldset class="form-group">
+          <input type="password" class="form-control" placeholder="Password" [formControl]="form.controls['password']"
+          id="form-register-password"
+            [ngClass]="{'is-invalid': form.controls['password'].hasError('required') && form.controls['password'].touched}" />
+          <div class="invalid-feedback" *ngIf="form.controls['password'].hasError('required') && form.controls['password'].touched">Password
+            is required.</div>
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="password"  id="form-register-password_confirm" class="form-control" placeholder="Confirm Password" [formControl]="form.controls['confirmPassword']"
+            [ngClass]="{'is-invalid': form.controls['confirmPassword'].hasError('required') && form.controls['confirmPassword'].touched}" />
+          <div class="invalid-feedback" *ngIf="form.controls['confirmPassword'].hasError('required') && form.controls['confirmPassword'].touched">Confirm
+            your password.</div>
+        </fieldset>
+        <div class="d-flex justify-content-center mt-4 mb-4">
+          <button class="btn btn-primary" type="submit" [disabled]="!form.valid"><i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Create account</button>
+        </div>
+        <div class="text-center" id="form-register-alternative-auth">
+          <p>Already have an account? <a [routerLink]="['/account/signin']">Login Now!</a></p>
+        </div>
+
+      </form>
+    </div>
+  </div>
+  <div class="bg-cover"></div>
+</div>

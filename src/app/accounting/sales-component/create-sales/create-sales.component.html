@@ -1,0 +1,406 @@
+<div class="container">
+  <div class="details-header">
+    <div class="row">
+      <div class="col-lg-12 emp-form">
+        <div class="card">
+          <div class="modal-header">
+            <h4 class="modal-title" id="newSales">New Sales</h4>
+          </div>
+          <div class="card-body">
+            <form #expenseForm=ngForm [formGroup]="form" (ngSubmit)="initStoreExpense()" novalidate
+              enctype="multipart/form-data">
+              <app-alert></app-alert>
+              <div class="form-group row">
+                <label for="inputEmail3" id="saleDescription-label" class="col-sm-2 col-form-label">Sales Description</label>
+                <div class="col-sm-10">
+                  <textarea class="form-control col-md-6" id="saleDescription-input"
+                    [formControl]="form.controls['saleDescription']" cols="3" rows="3"  [ngClass]="{'is-invalid': form.controls['saleDescription'].hasError('required') && form.controls['saleDescription'].touched}"required></textarea>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputPassword3" id="category-label" class="col-sm-2 col-form-label">Category</label>
+                <div class="form-group col-md-5" style="flex: 0 0 38.667%;">
+                  <select class="custom-select mr-sm-6" id="category-input" [formControl]="form.controls['category']"
+                    [ngClass]="{'is-invalid': form.controls['category'].hasError('required') && form.controls['category'].touched}">
+                    <option selected value="">Choose Sale Category</option>
+                    <option  *ngFor="let category of incomeCategoryList; let optionIndex = index" value="{{category._id}}" id="category-{{optionIndex}}" class="category">
+                      {{category.secret.name}}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback"
+                    *ngIf="form.controls['category'].hasError('required') && form.controls['category'].touched">Category is required.</div>
+                </div>
+                <div class="form-group col-md-3">
+                  <button style="height: 99%;" ngbTooltip="Create Category" id="addIncomecatbtn" type="button" class="btn btn-sm btn-primary" (click)="open(content)"> <i
+                      class="fa fa-plus"></i> </button>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label id="customer-label" class="col-sm-2 col-form-label">Customer</label>
+                <div class="form-group col-md-5" style="flex: 0 0 38.667%;">
+                  <select class="custom-select mr-sm-6" id="customer-input" [formControl]="form.controls['customer']" 
+                    [ngClass]="{'is-invalid': form.controls['customer'].hasError('required') && form.controls['customer'].touched}">
+                    <option selected value="">Choose Customer</option>
+                    <option *ngFor="let customer of customerList; let optionIndex = index" value="{{customer._id}}" id="customer-{{optionIndex}}">{{customer.secret.name}}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <button style="height: 99%;" type="button" id="add-customerbtn" class="btn btn-sm btn-primary" (click)="open(vendor)"
+                    ngbTooltip="Create Customer">
+                    <i class="fa fa-plus"></i> </button>
+                </div>
+              </div>
+              <fieldset class="form-group">
+                <div class="row">
+                  <legend class="col-form-label col-sm-2 pt-0" id="paymentType-label">Payment Type</legend>
+                  <div class="col-sm-10">
+                    <div class="form-check form-check-inline col-md-2">
+                      <input class="form-check-input" id="Checkbox-bank" type="checkbox" (click)="toggleBank()"
+                        [formControl]="form.controls['paymentTypeBank']"
+                        [ngClass]="{'is-invalid': form.controls['paymentTypeBank'].hasError('required') && form.controls['paymentTypeBank'].touched}">
+                      <label class="form-check-label" id="sale-bank" for="bank">Bank</label>
+                    </div>
+                    <div class="form-check form-check-inline col-md-2">
+                      <input class="form-check-input" id="Checkbox-cash" type="checkbox" (click)="toggleCash()"
+                        name="cash" [formControl]="form.controls['paymentTypeCash']"
+                        [ngClass]="{'is-invalid': form.controls['paymentTypeCash'].hasError('required') && form.controls['paymentTypeCash'].touched}">
+                      <label class="form-check-label" id="sale-cash" for="cash">Cash</label>
+                    </div>
+                    <div class="form-check form-check-inline col-md-2">
+                      <input class="form-check-input" id="Checkbox-credit" type="checkbox" (click)="toggleCredit()"
+                        name="credit" [formControl]="form.controls['paymentTypeCredit']" value="credit"
+                        [ngClass]="{'is-invalid': form.controls['paymentTypeCredit'].hasError('required') && form.controls['paymentTypeCredit'].touched}">
+                      <label class="form-check-label" id="sale-credit" for="credit">Credit</label>
+                    </div>
+                 
+                  </div>
+                </div>
+              </fieldset>
+              <div *ngIf="bank">
+                <div class="form-group row">
+                  <label for="inputPassword3" id="expense-bankAccount" class="col-sm-2 col-form-label">Bank
+                    Account</label>
+                  <div class="form-group col-md-3">
+                    <select class="custom-select mr-sm-6" [formControl]="form.controls['bankAccount']" id="bankAccount-input"
+                      [ngClass]="{'is-invalid': form.controls['bankAccount'].hasError('required') && form.controls['bankAccount'].touched}" >
+                      <option selected value="">Choose Bank</option>
+                      <option *ngFor="let bank of bankList; let optionIndex = index"  value="{{bank._id}}" id="bank-{{optionIndex}}">
+                        {{bank.secret.bankName}}: {{bank.secret.accountNumber}}</option>
+                    </select>
+                    <div class="invalid-feedback"
+                      *ngIf="form.controls['bankAccount'].hasError('required') && form.controls['bankAccount'].touched">
+                      Bank Account is required.</div>
+                  </div>
+                 
+                  <div class="form-group col-md-2" id="amountReceivedViaBankdiv">
+                    <input type="number" class="form-control" id="amountReceivedViaBankinput" placeholder="Amount"
+                      [formControl]="form.controls['amountReceivedViaBank']"
+                      [ngClass]="{'is-invalid': form.controls['amountReceivedViaBank'].hasError('required') && form.controls['amountReceivedViaBank'].touched}">
+                    <div class="invalid-feedback"
+                      *ngIf="form.controls['amountReceivedViaBank'].hasError('required') && form.controls['amountReceivedViaBank'].touched">
+                      Amount Paid Via Bank is required.</div>
+                  </div>
+                </div>
+
+
+             
+              </div>
+              <div class="form-group row" *ngIf="cash">
+                <label for="cashPaid" id="expense-cashPaid" class="col-sm-2 col-form-label">Cash Paid</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control col-md-6" id="cashPaid" placeholder="Cash Paid"
+                    [formControl]="form.controls['cashReceived']"
+                    [ngClass]="{'is-invalid': form.controls['cashReceived'].hasError('required') && form.controls['cashReceived'].touched}">
+                </div>
+             
+               <br><br><br>
+              <label for="cashAccount" id="expense-cashAccount" class="col-sm-2 col-form-label"> Cash
+                Account</label>
+              <div class="col-sm-10" id="cashAccountDiv">
+                <select type="text" class="form-control col-md-6"
+                  id="cashAccount-input" placeholder="Cash Account" [formControl]="form.controls['cashAccount']"
+                  [ngClass]="{'is-invalid': form.controls['cashAccount'].hasError('required') && form.controls['cashAccount'].touched}">
+                  <option *ngFor="let cashAccount of cashAccountList; let optionIndex = index" value="{{cashAccount._id}}" id="cash-{{optionIndex}}">
+                    {{cashAccount.secret.name}}</option>
+                </select>
+              </div>
+          </div>
+
+              <div class="form-group row" *ngIf="credit">
+                <label for="CreditAmtn" id="expense-creditAmount" class="col-sm-2 col-form-label">Credit Amount</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control col-md-6" id="creditAmount-input" placeholder="Credit Amount"
+                    [formControl]="form.controls['creditAmount']"
+                    [ngClass]="{'is-invalid': form.controls['creditAmount'].hasError('required') && form.controls['creditAmount'].touched}">
+                </div>
+              </div>
+            
+              <div class="form-group row">
+                <label for="saleDate" id="salesDate-label" class="col-sm-2 col-form-label">Sales Date</label>
+                <div class="col-sm-10">
+                  <input type="date" class="form-control col-md-6" id="salesDate-input" placeholder="Date of Expense"
+                    [formControl]="form.controls['saleDate']"
+                    [ngClass]="{'is-invalid': form.controls['saleDate'].hasError('required') && form.controls['saleDate'].touched}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="cashPaid" id="receipt-label" class="col-sm-2 col-form-label">Receipts</label>
+                <div class="col-sm-10">
+                  <input (change)="initReceiptUpload($event)" name="fileToUpload" type="file" multiple
+                    class="form-control col-md-6" id="receipt-input" [formControl]="form.controls['receipts']"
+                    [ngClass]="{'is-invalid': form.controls['receipts'].hasError('required') && form.controls['receipts'].touched}">
+                </div>
+              </div>
+              <div class="d-flex justify-content-center mt-4 mb-4">
+                <button id="createSaleBtn" class="btn btn-primary" type="submit" [disabled]="!form.valid"><i
+                    *ngIf="loadingExpense" class="fa fa-spinner fa-spin"></i> Create Sales</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Create Expense Category template -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="createIncomeCat">Create Income Category</h4>
+    <button type="button" id="close_modal" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #createExpenseForm=ngForm [formGroup]="createSaleCatform" (ngSubmit)="onSubmit(createSaleCatform.value)">
+      <app-alert></app-alert>
+
+      <div class="form-group row">
+        <label for="example-search-input" class="col-2 col-form-label" id="name-label">Name<span
+            style="color:red">*</span></label>
+        <div class="col-10">
+          <input type="text" id="name-input" class="form-control"
+            [formControl]="createSaleCatform.controls['name']"
+            [ngClass]="{'is-invalid': createSaleCatform.controls['name'].hasError('required') && createSaleCatform.controls['name'].touched}" />
+          <div class="invalid-feedback"
+            *ngIf="!createSaleCatform.controls['name'].hasError('required') && createSaleCatform.controls['name'].touched">
+            Name must not be less than three characters.</div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="example-text-input" class="col-2 col-form-label" id="categoryType-label">Category Type</label>
+        <div class="col-10">
+          <select id="categoryType-input" [formControl]="createSaleCatform.controls['categoryType']" 
+          [ngClass]="{'is-invalid': createSaleCatform.controls['categoryType'].hasError('required') && createSaleCatform.controls['categoryType'].touched}"
+          name="categoryType" class="form-control">
+            <option id="each-category-type-0" value="sales" >Sales </option>
+            <option id="each-category-type-1" value="equity">Equity</option>
+            <option id="each-category-type-2" value="otherIncome">Other Income</option>
+          
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="createSaleCatform.controls['categoryType'].hasError('required') && createSaleCatform.controls['categoryType'].touched">
+          Category
+          Type
+          is required.</div>
+        </div>
+      </div>
+
+
+      <div class="d-flex justify-content-center mt-4 mb-4">
+        <button id="createIncomecatbtn" class="btn btn-primary" type="submit"
+          [disabled]="!createSaleCatform.valid"><i *ngIf="loading" class="fa fa-spinner fa-spin"></i>
+          Create </button>
+      </div>
+    </form>
+
+  </div>
+
+</ng-template>
+
+
+
+<!-- Create bank template -->
+<ng-template #createBank let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="craeteBankTitle">Create bank</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')" id="close-bank-modal">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <div class="card-body offset-1">
+      <app-alert></app-alert>
+      <form #createBankForm=ngForm [formGroup]="createBankform" (ngSubmit)="addBank()">
+        <div class="form-group row">
+          <label for="example-text-input" id="bankName" class="col-2 col-form-label">Bank Name<span
+              style="color:red">*</span></label>
+          <div class="col-10">
+            <input type="text" id="bank-bankName" class="form-control"
+              [formControl]="createBankform.controls['bankName']"
+              [ngClass]="{'is-invalid': createBankform.controls['bankName'].hasError('required') && createBankform.controls['bankName'].touched}" />
+            <div class="invalid-feedback"
+              *ngIf="createBankform.controls['bankName'].hasError('required') && createBankform.controls['bankName'].touched">
+              Bank Name
+              is required.</div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-search-input" id="accountName" class="col-2 col-form-label">Account Name<span
+              style="color:red">*</span></label>
+          <div class="col-10">
+            <input type="text" id="bank-accountName" class="form-control"
+              [formControl]="createBankform.controls['accountName']"
+              [ngClass]="{'is-invalid': createBankform.controls['accountName'].hasError('required') && createBankform.controls['accountName'].touched}" />
+            <div class="invalid-feedback"
+              *ngIf="createBankform.controls['accountName'].hasError('required') && createBankform.controls['accountName'].touched">
+              Account Name
+              is required.</div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-tel-input" id="accountNumber" class="col-2 col-form-label">Account Number<span
+              style="color:red">*</span></label>
+          <div class="col-10">
+            <input type="text" id="bank-accountNumber" class="form-control"
+              [formControl]="createBankform.controls['accountNumber']"
+              [ngClass]="{'is-invalid': createBankform.controls['accountNumber'].hasError('required') && createBankform.controls['accountNumber'].touched || createBankform.controls['accountNumber'].hasError('pattern')  ||  createBankform.controls['accountNumber'].hasError('minlength') || createBankform.controls['accountNumber'].hasError('maxlength')}" />
+            <div class="invalid-feedback"
+              *ngIf="createBankform.controls['accountNumber'].hasError('required') && createBankform.controls['accountNumber'].touched">
+              Account Number is required.</div>
+            <div class="invalid-feedback "
+              *ngIf="createBankform.controls['accountNumber'].hasError('maxlength') && createBankform.controls['accountNumber'].touched">
+              Account Number must be 10 characters.</div>
+            <div class="invalid-feedback "
+              *ngIf="createBankform.controls['accountNumber'].hasError('minlength') && createBankform.controls['accountNumber'].touched">
+              Account Number must be 10 characters.
+            </div>
+            <div class="invalid-feedback "
+              *ngIf="createBankform.controls['accountNumber'].hasError('pattern') && createBankform.controls['accountNumber'].touched">
+              Account Number must be a valid number.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="example-text-input" id="label-incomeCategory" class="col-2 col-form-label">Currency</label>
+            <div class="col-9">
+              <select class="form-control" [formControl]="form.controls['currency']">
+                <option *ngFor="let currency of currencies" value="{{currency}}">
+                  {{currency}}
+                </option>
+              </select>
+              <div class="invalid-feedback"
+              *ngIf="form.controls['currency'].hasError('required') && form.controls['currency'].touched">Currency
+              is required.</div>
+            </div>
+          </div>
+        <div class="form-group row">
+          <label for="example-email-input" id="branch" class="col-2 col-form-label">Branch</label>
+          <div class="col-10">
+            <textarea type="text" id="bank-branch" class="form-control" [formControl]="createBankform.controls['branch']"
+              [ngClass]="{'is-invalid': createBankform.controls['branch'].hasError('required') && createBankform.controls['branch'].touched}" ></textarea>
+            <div class="invalid-feedback"
+              *ngIf="createBankform.controls['branch'].hasError('required') && createBankform.controls['branch'].touched">
+              Address
+              is required.</div>
+          </div>
+
+        </div>
+        <div class="d-flex justify-content-center mt-4 mb-4">
+          <button class="btn btn-primary" id="createBankCategoryBtn" type="submit" [disabled]="!createBankform.valid"><i
+              *ngIf="loadingBank" class="fa fa-spinner fa-spin"></i> Create</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+</ng-template>
+
+<!-- Create vendor template -->
+<ng-template #vendor let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="createCustomer">Create Customer</h4>
+    <button type="button" id="close_modal" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="card-body">
+      <app-alert></app-alert>
+      <form [formGroup]="customerForm" (ngSubmit)="createVendor()">
+        <div class="form-group row">
+          <label for="example-text-input" id="name-label" class="col-2 col-form-label">Name<span
+              style="color:red">*</span></label>
+          <div class="col-10">
+            <input type="text" id="name-input" class="form-control" [formControl]="customerForm.controls['name']"
+              [ngClass]="{'is-invalid': customerForm.controls['name'].hasError('required') && customerForm.controls['name'].touched ||  customerForm.controls['name'].hasError('minlength') ||  customerForm.controls['name'].hasError('maxlength')} " />
+            <div class="invalid-feedback errname"
+              *ngIf="customerForm.controls['name'].hasError('required') && customerForm.controls['name'].touched">Name
+              is required.</div>
+            <div class="invalid-feedback errname"
+              *ngIf="customerForm.controls['name'].hasError('minlength') ||  customerForm.controls['name'].hasError('maxlength') && customerForm.controls['name'].touched">
+              Name must be between 3 and 100 characters
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-search-input" id="email-label" class="col-2 col-form-label">Email</label>
+          <div class="col-10">
+            <input type="email" id="email-input" class="form-control"
+              [formControl]="customerForm.controls['email']"
+              [ngClass]="{'is-invalid': customerForm.controls['email'].hasError('email') && customerForm.controls['email'].touched}" />
+            <div class="invalid-feedback erremail"
+              *ngIf="customerForm.controls['email'].hasError('email') && customerForm.controls['email'].touched">Enter a
+              valid email</div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-tel-input" id="phone-label" class="col-2 col-form-label">Phone Number</label>
+          <div class="col-10">
+            <input type="" id="phone-input" class="form-control"
+              [formControl]="customerForm.controls['phoneNumber']"
+              [ngClass]="{'is-invalid': customerForm.controls['phoneNumber'].hasError('required') && customerForm.controls['phoneNumber'].touched ||  customerForm.controls['phoneNumber'].hasError('pattern')  ||  customerForm.controls['phoneNumber'].hasError('minlength') || customerForm.controls['phoneNumber'].hasError('maxlength')}" />
+            <div class="invalid-feedback errphoneNumber"
+              *ngIf="customerForm.controls['phoneNumber'].hasError('maxlength') && customerForm.controls['phoneNumber'].touched">
+              Phone
+              number must be 11 characters.</div>
+            <div class="invalid-feedback errphoneNumber"
+              *ngIf="customerForm.controls['phoneNumber'].hasError('minlength') && customerForm.controls['phoneNumber'].touched">
+              Phone number must be 11 characters.
+            </div>
+            <div class="invalid-feedback errphoneNumber"
+              *ngIf="customerForm.controls['phoneNumber'].hasError('pattern') && customerForm.controls['phoneNumber'].touched">
+              Phone number must be a valid number.
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-email-input" id="address-label" class="col-2 col-form-label">Address</label>
+          <div class="col-10">
+            <input type="text" id="address-input" class="form-control"
+              [formControl]="customerForm.controls['address']" />
+          </div>
+
+        </div>
+        <div class="d-flex justify-content-center mt-4 mb-4">
+          <button id="createCustomerBtn" class="btn btn-primary" type="submit" [disabled]="!customerForm.valid"><i
+              *ngIf="loadingCustomer" class="fa fa-spinner fa-spin"></i> Create </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+</ng-template>
+
+
+
+
+<hr>

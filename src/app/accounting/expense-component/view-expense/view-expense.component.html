@@ -1,0 +1,179 @@
+<div class="container">
+  <div class="details-header">
+    <div class="row">
+      <div class="col-lg-12 emp-form">
+        <div class="card">
+          <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">View Expense</h4>
+          </div>
+          <div class="card-body">
+            <form #expenseForm=ngForm [formGroup]="form" (ngSubmit)="initStoreExpense()" novalidate
+              enctype="multipart/form-data">
+              <app-alert></app-alert>
+              <div class="form-group row">
+                <label for="inputEmail3" id="expense-describe" class="col-sm-2 col-form-label">Expense Description</label>
+                <div class="col-sm-10">
+                  <textarea class="form-control col-md-6" cols="3" rows="3" readonly>{{expenseData && expenseData.secret && expenseData.secret.expenseDescription ? expenseData.secret.expenseDescription : '' }}</textarea>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputPassword3" id="expense-category" class="col-sm-2 col-form-label">Category</label>
+                <div class="form-group col-md-5">
+                  <select class="custom-select mr-sm-6" disabled>
+                    <option selected value="">Choose Expense Category</option>
+                    <option *ngFor="let category of expenseCategory" value="{{category._id}}" [selected]="expenseData && expenseData.category && expenseData.category._id && expenseData.category._id == category._id">
+                      {{category.secret.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label id="expense-vendor" class="col-sm-2 col-form-label">Vendor</label>
+                <div class="form-group col-md-5">
+                  <select class="custom-select mr-sm-6" id="vendor" disabled>
+                    <option selected value="">Choose vendor</option>
+                    <option *ngFor="let vendor of vendorList" value="{{vendor._id}}" [selected]="expenseData && expenseData.vendor && expenseData.vendor._id && expenseData.vendor._id == vendor._id">
+                      {{vendor.secret.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <fieldset class="form-group">
+                <div class="row">
+                  <legend class="col-form-label col-sm-2 pt-0" id="expense-paymentType">Payment Type</legend>
+                  <div class="col-sm-10">
+                    <div class="form-check form-check-inline col-md-1">
+                      <input class="form-check-input" type="checkbox" readonly [checked]="expenseData && expenseData.bankAccount" disabled>
+                      <label class="form-check-label" id="expense-bank" for="bank">Bank</label>
+                    </div>
+                    <div class="form-check form-check-inline col-md-1">
+                      <input class="form-check-input" type="checkbox" readonly [checked]="expenseData && expenseData.secret && expenseData.secret.cashPaid" disabled>
+                      <label class="form-check-label" id="expense-cash"  for="cash">Cash</label>
+                    </div>
+                    <div class="form-check form-check-inline col-md-1">
+                      <input class="form-check-input" id="Checkbox-credit" readonly type="checkbox"  [checked]="expenseData && expenseData.secret && expenseData.secret.creditAmount" disabled>
+                      <label class="form-check-label" id="expense-credit" for="credit">Credit</label>
+                    </div>
+                    <div class="form-check form-check-inline col-md-2">
+                      <input class="form-check-input" id="Checkbox-creditCard" readonly type="checkbox"  [checked]="expenseData && expenseData.secret && expenseData.secret.amountPaidViaCard" disabled>
+                      <label class="form-check-label" id="expense-creditCard" for="creditCard">Credit Card</label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              
+
+              <div *ngIf="expenseData && expenseData.cardId">
+                <div class="form-group row">
+                  <label for="inputPassword3" id="expense-bankAccount" class="col-sm-2 col-form-label">Credit Card</label>
+                  <div class="form-group col-md-3" style="max-width: 23%;">
+                    <select class="custom-select mr-sm-6" disabled>
+                      <option *ngFor="let card of cardList" value="{{card.secret.description}}" [selected]="expenseData && expenseData.secret && expenseData.secret.description && expenseData.secret.description == card.secret.description">
+                        {{card.secret.description}}</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-1" style="max-width: 0%;"></div>
+                  <div class="form-group col-md-2" id="amountPaidViaCard">
+                    <input type="number" class="form-control" id="amountPaidViaBankinput" placeholder="Amount" readonly value="{{expenseData && expenseData.secret && expenseData.secret.amountPaidViaCard ? expenseData.secret.amountPaidViaCard : ''}}">
+                  </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword3" id="expense-bankAccount" class="col-sm-2 col-form-label">Card Exchange Rate</label>
+                  <div class="form-group col-md-5" id="amountPaidViaCard">
+                    <input type="number" class="form-control" id="cardAccountExchangeRate" placeholder="Amount" readonly value="{{expenseData && expenseData.secret && expenseData.secret.cardAccountExchangeRate ? expenseData.secret.cardAccountExchangeRate : ''}}">
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="expenseData && expenseData.bankAccount">
+                <div class="form-group row">
+                  <label for="inputPassword3" id="expense-bankAccount" class="col-sm-2 col-form-label">Bank
+                    Account</label>
+                  <div class="form-group col-md-3" style="max-width: 23%;">
+                    <select class="custom-select mr-sm-6" disabled>
+                      <option *ngFor="let bank of bankList" value="{{bank.secret.accountNumber}}" [selected]="expenseData && expenseData.bankAccount && expenseData.bankAccount.secret && expenseData.bankAccount.secret.accountNumber == bank.secret.accountNumber">
+                        {{bank.secret.bankName}}: {{bank.secret.accountNumber}}</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-1" style="max-width: 0%;"></div>
+                  <div class="form-group col-md-2" id="amountPaidViaBankdiv">
+                    <input type="number" class="form-control" id="amountPaidViaBankinput" placeholder="Amount" readonly value="{{expenseData && expenseData.secret && expenseData.secret.amountPaidViaBank ? expenseData.secret.amountPaidViaBank : ''}}">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputPassword3" class="col-sm-2 col-form-label">Transfer Fee</label>
+                  <div class="form-group col-md-5">
+                    <input type="number" class="form-control" id="transferFee" placeholder="Transfer Fee" readonly value="{{expenseData && expenseData.secret && expenseData.secret.transferFee ? expenseData.secret.transferFee : ''}}">
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputPassword3" id="expense-bankAccount" class="col-sm-2 col-form-label">Bank Exchange Rate</label>
+                  <div class="form-group col-md-5" id="amountPaidViaCard">
+                    <input type="number" class="form-control" id="bankAccountExchangeRate;" placeholder="Amount" readonly value="{{expenseData && expenseData.secret && expenseData.secret.bankAccountExchangeRate ? expenseData.secret.bankAccountExchangeRate : ''}}">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="expenseData && expenseData.secret && expenseData.secret.cashPaid">
+                <label for="cashPaid" id="expense-cashpaid" class="col-sm-2 col-form-label">Cash Paid</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control col-md-6" placeholder="Cash Paid" readonly value="{{expenseData && expenseData.secret && expenseData.secret.cashPaid ? expenseData.secret.cashPaid : ''}}">
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="expenseData && expenseData.secret && expenseData.secret.cashPaid">
+                  <label for="inputPassword3" id="expense-cashAccountExchangeRate" class="col-sm-2 col-form-label">Cash Exchange Rate</label>
+                <div class="form-group col-md-5" id="amountPaidViaCard">
+                  <input type="number" class="form-control" id="cashAccountExchangeRate" placeholder="Amount" readonly value="{{expenseData && expenseData.secret && expenseData.secret.cashAccountExchangeRate ? expenseData.secret.cashAccountExchangeRate : ''}}">
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="expenseData && expenseData.secret && expenseData.secret.cashPaid">
+                <label for="cashPaid" id="expense-cashpaid" class="col-sm-2 col-form-label">Cash Account</label>
+                <div class="col-sm-5">
+                    <select class="custom-select mr-sm-6" disabled>
+                        <option *ngFor="let cashAccount of cashAccountList" value="{{cashAccount.secret.name}}" [selected]="expenseData && expenseData.cashAccount == cashAccount._id">
+                            {{cashAccount.secret.name}}</option>
+                      </select>
+                </div>
+              </div>
+
+              <div class="form-group row" *ngIf="expenseData && expenseData.secret && expenseData.secret.creditAmount">
+                <label for="CreditAmtn" id="expense-creditAmount" class="col-sm-2 col-form-label">Credit Amount</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control col-md-6"placeholder="Credit Amount" readonly value="{{expenseData && expenseData.secret && expenseData.secret.creditAmount ? expenseData.secret.creditAmount : ''}}">
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="expenseData && expenseData.expenseDate">
+                <label for="expenseDate" id="expense-date" class="col-sm-2 col-form-label">Expense Date</label>
+                <div class="col-sm-10">
+                  <input class="form-control col-md-6" placeholder="Date of Expense" readonly value="{{expenseData.expenseDate | date}}">
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="expenseData && expenseData.secret && expenseData.secret.receipts && expenseData.secret.receipts.length > 0">
+                <label for="cashPaid" id="expense-receipt" class="col-sm-2 col-form-label">Receipts</label>
+                <div class="col-sm-6" style="flex: 0 0 43.667%; max-width: 43.667%">
+                  <div id="showaddedfile" style="display: flex; margin-right: 10px;"
+                    *ngFor="let receipt of expenseData.secret.receipts; let i = index">
+                    <div class="col-12 subtask-history"
+                      style="display: flex; padding-top: 10px; padding-left: 19px; color: #333a67; cursor: pointer;">
+                      <i class="fa fa-paperclip" style="padding-top: 3px;"></i>
+                      <a target="_blank" href="{{  urlWithToken(receipt) }}">
+                        <div style="margin-left: 10px;">
+                          <b>Receipt {{i+1}}</b>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<hr>

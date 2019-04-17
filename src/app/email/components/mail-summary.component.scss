@@ -1,0 +1,75 @@
+:host {
+  background-color: rgba(245,245,245,0.7);
+  &.unread {
+    background-color: #ddd;
+    font-weight: 800;
+  }
+  display: block;
+  padding: 0px 10px;
+  .action--icons {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    &__right {
+      right: 0;
+    }
+    &__left {
+      left: 0;
+    }
+  }
+  .widget-icon {
+    display: none;
+  }
+  a.mail-link {
+    height: 40px;
+  }
+  &.marked {
+    background-color: #68accd;
+  }
+}
+
+:host(:hover) {
+  box-shadow: 1px 0px 3px 2px rgba(0,0,255,0.2);
+  .hide--on--hover {
+    opacity: 0;
+  }
+  .action--icons {
+    opacity: 1;
+  }
+}
+
+.w-5 {
+  width: 5%;
+}
+
+.w-20 {
+  width: 20%;
+}
+
+.w-40 {
+  width: 40%;
+}
+
+.w-45 {
+  width: 45%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.overflow--x__hidden {
+  overflow-x: hidden;
+}
+
+.crop__text {
+  overflow-x: hidden;
+  & * {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.attachment--icon {
+  font-size: 1.5em !important;
+}

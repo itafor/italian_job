@@ -1,0 +1,9 @@
+version: "2.1"
+services:
+  frontend:
+    image: registry.quabbly.com/quabblyfrontend-${TAG}:latest
+    restart: always
+    ports:
+      - 8079:80
+    container_name: frontend
+    mem_limit: 900m

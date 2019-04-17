@@ -1,0 +1,33 @@
+.icon {
+  margin-right: 20px;
+  cursor: pointer;
+}
+.InactiveVendor {
+  color: #6c757d6b;
+  font-variant: all-petite-caps;
+}
+#tableValue {
+  font-size: 2px;
+  opacity: 0.01;
+}
+#tableValue {
+  font-size: 2px;
+  opacity: 0.01;
+}
+#tableValue {
+  font-size: 2px;
+  opacity: 0.01;
+}
+.table-header {
+  background: '#333';
+}
+
+// #delete_vendor{
+//     margin-right: 10px;
+//     }
+
+@media only screen and (max-width: 600px) {
+  #delete_vendor {
+    margin-right: 5px;
+  }
+}

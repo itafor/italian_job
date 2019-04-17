@@ -1,0 +1,47 @@
+.details-header {
+  margin-top: 25px;
+}
+.addRemoveEmail {
+  margin-top: 100px;
+}
+.addItem {
+  margin-top: 10px;
+}
+.addItem:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+#removeItem {
+  margin-top: 10px;
+  margin-left: 70px;
+}
+#emailDiv {
+  margin-bottom: -70px;
+}
+#procurementApprovers {
+  margin-bottom: 80px;
+}
+#requisitionApprovers {
+  margin-bottom: 80px;
+}
+
+.section {
+  font: normal 20px 'Bitter', serif;
+  margin-bottom: 5px;
+}
+
+label {
+  display: block;
+  // font: 13px Arial, Helvetica, sans-serif;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.icon-rel{
+  top: -23px;
+  position: relative;
+  float: right;
+  margin-left: 95%;
+  font-size: 1.3em;
+}
+

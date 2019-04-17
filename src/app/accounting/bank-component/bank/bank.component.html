@@ -1,0 +1,183 @@
+<div class="card-header">
+    <nav class="navbar ruler-nav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <span>
+                    <button (click)="newTabHandler()" class="btn btn-primary" id="create-bank">Create Bank
+                        <i id="createbankplusicon" class="fa fa-plus"></i></button>
+                </span></li>
+        </ul>
+    </nav>
+    <div class="card-body">
+        <ngb-tabset #banksTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="forceResize($event, 'viewBank')">
+            <ngb-tab title="Banks" id="viewBank">
+                <ng-template ngbTabContent>
+                    <div class="details-header">
+
+                        <h2 id="tableValue">{{tableValue}}</h2>
+                        <div class="text-center" *ngIf="bankList && (bankList.length === 0)">
+                            <div class="loading-tab">
+                                <i class="fa fa-frown-o fa-2x text-secondary"></i><br />
+                                <h5 id="no-bank">No Bank</h5>
+                            </div>
+                        </div>
+                        <div class="text-center" *ngIf="!(bankList)">
+                            <div class="loading-tab">
+                                <h5 id="pls-wait"><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+                            </div>
+                        </div>
+                        <ngx-datatable *ngIf="bankList && bankList.length" [rows]="rows" [columnMode]="'force'"
+                            [headerHeight]="40" [footerHeight]="50" [rowHeight]="'auto'" [externalPaging]="true"
+                            [count]="count" [offset]="offset" [limit]="limit" (page)='onPage($event)'>
+                            <ngx-datatable-column name="Bank Name">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template
+                                    class="tab-column">
+                                    <h6><a (click)="viewBankHandler($event, row)">{{row.secret.bankName}}</a></h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Account Name">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6>{{row.secret.accountName}}</h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Account Number">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6>{{row.secret.accountNumber}}</h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Branch">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6>{{row.secret.branch}}</h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Date Created">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6>{{row.createdAt  | date }}</h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Action">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <span class="action-span">
+                                        <i (click)="deleteBank(row._id)" class="icon fa fa-trash fa-1.5x text-danger"
+                                            *ngIf="!row.active" placement="auto" ngbTooltip="Delete Bank"
+                                            id="deleteBank"></i>
+
+                                        <i style="margin-left: 20px;" (click)="getBank(content,row)" class="icon fa fa-pencil fa-1.5x text-info"
+                                            *ngIf="!row.active" placement="auto" ngbTooltip="Edit Bank"
+                                            id="editBank"></i>
+                                    </span>
+                                </ng-template>
+                            </ngx-datatable-column>
+                        </ngx-datatable>
+
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+                <ng-template ngbTabTitle>
+                    <span [innerHTML]="tab.title"></span> &nbsp;
+                    <span (click)="closeTab($event, index)" class="indicate--danger">
+                        &times;
+                    </span>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <app-create-bank *ngIf="tab.type === 'NEW_BANK' "
+                        (bankCreatedSuccessfulEvent)="bankSuccessHandler($event, tabIndex)"></app-create-bank>
+                    <app-list-bank *ngIf="tab.type === 'VIEW_BANK' " [bankData]="tab.content"></app-list-bank>
+
+                    <div class="details-header" *ngIf="tab.type ===  'UPDATE_BANK' ">
+                        <div class="container">
+                            <div class="details-header">
+                                <div class="row">
+                                    <div class="col-lg-12 emp-form">
+                                        <div class="card">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="updateBankHeader">Update Bank</h4>
+                                            </div>
+                                            <div class="card-body offset-1">
+                                                <app-alert></app-alert>
+                                                <form #updateBankForm=ngForm
+                                                    (ngSubmit)="bankUpdate(updateBankForm, tabIndex)" novalidate>
+                                                    <input type="hidden" [(ngModel)]="bl._id" class="form-control"
+                                                        name="_id">
+                                                    <div class="form-group row">
+                                                        <label for="example-text-input" id="bankname-label"
+                                                            class="col-2 col-form-label">Bank Name<span
+                                                                style="color:red">*</span></label>
+                                                        <div class="col-10">
+                                                            <input id="bankname-input" class="form-control" #bankName="ngModel"
+                                                                name="bankName" [(ngModel)]="bl.secret.bankName"
+                                                                maxlength="100" placeholder="Bank Name" required>
+                                                            <small class="validation-error"
+                                                                *ngIf="bankName.invalid && bankName.touched"> Bank Name
+                                                                is required!</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="example-tel-input" id="accountname-label"
+                                                            class="col-2 col-form-label">Account Name<span
+                                                                style="color:red">*</span></label>
+                                                        <div class="col-10">
+                                                            <input id="accountname-input" name="accountName"
+                                                                class="form-control" #accountName="ngModel"
+                                                                [(ngModel)]="bl.secret.accountName"
+                                                                placeholder="Account Name" required>
+                                                            <small class="validation-error"
+                                                                *ngIf="accountName.invalid && accountName.touched">
+                                                                Account Name is required!</small>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="example-search-input" id="accountnumber-label"
+                                                            class="col-2 col-form-label">Account Number<span
+                                                                style="color:red">*</span></label>
+                                                        <div class="col-10">
+                                                            <input id="accountnumber-input" type="text"
+                                                                #accountNumber="ngModel" name="accountNumber"
+                                                                class="form-control"
+                                                                [(ngModel)]="bl.secret.accountNumber"
+                                                                placeholder="Account Number" required>
+                                                            <small class="validation-error"
+                                                                *ngIf="accountNumber.invalid && accountNumber.touched">Account
+                                                                Number is required!</small>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="example-email-input" id="branch-label"
+                                                            class="col-2 col-form-label">Branch</label>
+                                                        <div class="col-10">
+                                                            <input id="branch-input" name="branch" #branch="ngModel"
+                                                                class="form-control" [(ngModel)]="bl.secret.branch"
+                                                                cols="4" rows="5" placeholder="Branch">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-flex justify-content-center mt-4 mb-4">
+                                                        <button id="updateBankBtn" class="btn btn-primary" type="submit"
+                                                            [disabled]="updateBankForm.invalid"><i *ngIf="loading"
+                                                                class="fa fa-spinner fa-spin"></i>
+                                                            Update </button>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

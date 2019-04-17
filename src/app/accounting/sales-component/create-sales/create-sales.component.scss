@@ -1,0 +1,27 @@
+#amountReceivedViaBankdiv {
+  margin-left: 10px;
+}
+
+@media only screen and (max-width: 1200px) {
+  #delete_sale {
+    margin-right: 5px;
+  }
+  #amountReceivedViaBankdiv {
+    margin-left: 10px;
+  }
+  #amountReceivedViaBankinput {
+    width: 100px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  #delete_sale {
+    margin-right: 5px;
+  }
+  #amountReceivedViaBankdiv {
+    margin-left: 10px;
+  }
+  #amountReceivedViaBankinput {
+    width: 100px;
+  }
+}

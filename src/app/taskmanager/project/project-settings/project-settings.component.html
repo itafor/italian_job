@@ -1,0 +1,38 @@
+<mat-sidenav-container
+  class="page-height card card-block p-0 m-0 rounded-0 shadow-none mat-drawer-container mat-sidenav-container">
+  <div class="details-header">
+    <div>
+      <div class="details-header text-center " *ngIf="!projectInfo">
+        <div class="loading-tab">
+          <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="projectInfo">
+      <div class="col-sm-3">
+        <div class="card-body sidebar-x">
+          <div class="list-group mt-3 text-center general">
+            <a  id="general-project-menu"  routerLink='/taskmanager/project/settings/{{projectInfo.project.id }}'
+             routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+            >GENERAL</a>
+          </div>
+          <div  class="list-group mt-3 text-center goals">
+            <a  id="goals-project-menu" routerLink='goals/{{projectInfo.project.id }}' routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">GOALS</a>
+          </div>
+          <div  class="list-group mt-3 text-center fields">
+            <a id="fields-project-menu" routerLink='fields/{{projectInfo.project.id }}'
+             routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">FIELDS</a>
+          </div>
+          <div  class="list-group mt-3 text-center members">
+            <a  id="members-project-menu" routerLink='members/{{projectInfo.project.id }}'
+              routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">MEMBERS</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-9" *ngIf="projectInfo">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+
+</mat-sidenav-container>

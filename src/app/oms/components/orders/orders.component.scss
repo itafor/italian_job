@@ -1,0 +1,25 @@
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2rem;
+    text-align: center;
+    pointer-events: none;
+    color: rgba(0, 0, 0, 0.32);
+    font-size: 1rem;
+}
+
+.bg-none {
+    background: none;
+}
+
+
+.loading-tab {
+     height: 330px;
+}

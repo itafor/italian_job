@@ -1,0 +1,251 @@
+<div class="card-header">
+  <div class="card-body">
+    <ngb-tabset #banksTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="forceResize($event, 'viewBank')">
+      <ngb-tab title="Settings" id="viewSettings">
+        <ng-template ngbTabContent>
+          <div class="details-header">
+            <!-- <app-alert></app-alert> -->
+            <div class="text-center" *ngIf="!(settingsValues)">
+              <div class="loading-tab">
+                  <h5 id="pls-wait"><i class="fa fa-spinner fa-spin fa-1x"></i> Loading Settings</h5>
+              </div>
+          </div>
+            <form  [formGroup]="form" (ngSubmit)="addSettings()"  novalidate>
+
+              <div class="form-group">
+                <div class="section" id="EnableApprovalForProcurement">Enable Approval For Procurement</div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio"
+                    [formControl]="form.controls['enableApprovalForProcurement']" id="checkTrueProcurement" value="true"
+                    formControlName="enableApprovalForProcurement">
+                  <label class="form-check-label" for="inlineRadio1" id="yes">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio"
+                    [formControl]="form.controls['enableApprovalForProcurement']" value="false"
+                    formControlName="enableApprovalForProcurement">
+                  <label class="form-check-label" for="inlineRadio2" id="no">No</label>
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="form.controls['enableApprovalForProcurement'].value ==='true'"
+              id="procurementApprovers">
+                <div class="form-group col-md-6" style="flex: 0 0 38.667%;">
+
+                  <div class="form-group row" id="emailDiv">
+                    <div *ngIf="procumentDefault.length">
+                      <span *ngFor="let procemIl of procumentDefault; let index = index">
+                        <button type="button" style="background-color:rgb(248, 244, 244) !important"
+                          class="btn btn-secondary ml-2 mb-2">{{procemIl}}
+                          <span (click)="removeMailProc(index)" class="fa fa-times text-danger" ></span> </button>
+                      </span>
+                    </div>
+
+                    <input type="email" [formControl]="form.controls['procurementApprovers']"
+                      formControlName="procurementApprovers" class="form-control" id="procurementApprovalEmailsInput"
+                      placeholder="Procurement Approval Email">
+                    <span (click)="addEMail()" class="fa fa-plus icon-rel" ngbTooltip="Add Email"></span>
+                    <div class="row text-danger">
+                      <span *ngIf="invalidprocumentEmailError" class="">Please enter a valid email</span>
+                    </div>
+                    <div class="row text-danger">
+                      <span *ngIf="procEmailAlreadyExistError && !invalidprocumentEmailError" class="">Email already
+                        exist</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="section" id="EnableRequisitionApproval">Enable Requisition Approval</div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio"
+                    [formControl]="form.controls['enablerequisitionApprover']" id="checkTrueRequisition" value="true"
+                    formControlName="enablerequisitionApprover">
+                  <label class="form-check-label" for="inlineRadio1" id="yes">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio"
+                    [formControl]="form.controls['enablerequisitionApprover']" id="inlineRadio2" value="false"
+                    formControlName="enablerequisitionApprover">
+                  <label class="form-check-label" for="inlineRadio2" id="no">No</label>
+                </div>
+              </div>
+
+
+              <div class="form-group" *ngIf="form.controls['enablerequisitionApprover'].value ==='true'"
+              id="requisitionApprovers">
+                <div class="form-group col-md-6" style="flex: 0 0 38.667%;">
+                  <div class="form-group row" id="emailDiv">
+
+                    <div *ngIf="requisitionDefault.length">
+                      <span *ngFor="let reqcemIl of requisitionDefault; let index = index">
+                        <button type="button" style="background-color:rgb(248, 244, 244) !important"
+                          class="btn btn-secondary ml-2 mb-2">{{reqcemIl}}
+                          <span (click)="removeMailRequi(index)" class="fa fa-times text-danger"></span> </button>
+                      </span>
+                    </div>
+                    <input type="email" [formControl]="form.controls['requisitionApprovers']" class="form-control"
+                      formControlName="requisitionApprovers" id="requisitionApproversInput"
+                      placeholder="Enter Requisition Approval Emails">
+                    <span (click)="addReqEMail()" class="fa fa-plus icon-rel" ngbTooltip="Add Email"></span>
+                    <div class="row text-danger">
+                      <span *ngIf="invalidrequisitionEmailError" class="">Please enter a valid email</span>
+                    </div><br>
+                    <div class="row text-danger">
+                      <span *ngIf="reqEmailAlreadyExistError && !invalidrequisitionEmailError" class="">Email already
+                        exist</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="section" id="EnableBankTransferFee">Enable Bank Transfer Fee</div>
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" [formControl]="form.controls['enableBankTransferCharge']"
+                    id="checkTrueBank" value="true" formControlName="enableBankTransferCharge">
+                  <label class="form-check-label" for="inlineRadio1" id="yes">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" [formControl]="form.controls['enableBankTransferCharge']"
+                    id="inlineRadio2" value="false" formControlName="enableBankTransferCharge">
+                  <label class="form-check-label" for="inlineRadio2" id="no">No</label>
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="form.controls['enableBankTransferCharge'].value ==='true'">
+                <label class="form-check-label" for="inlineRadio1" id="transferFeeExpenseCategory">Transfer Fee
+                    Expense Category : <span *ngIf="chargeCategoryDefault" style="color:black;">  {{chargeCategoryDefault}} </span> </label>
+                <div class="input-group col-md-6" style="flex: 0 0 38.667%;">
+                    <select class="form-control" (change)="getchargeCategoryDefault($event)"  [formControl]="form.controls['chargeCategory']" id="transferfee"
+                    formControlName="chargeCategory">
+                    <option id="transfee-{{optionIndex}}"
+                      *ngFor="let category of expenseCategory; let optionIndex = index" value="{{category._id}}">
+                      {{category.secret.name}}
+                    </option>
+                  </select>
+                  <div class="input-group-append">
+                    <button style="height: 99%; " ngbTooltip="Create Category"
+                    id="add-expense-cat" type="button"
+                    class="btn btn-sm btn-primary"
+                    (click)="openup(contentexpense)">
+                    <i class="fa fa-plus"></i> </button>
+                  </div>
+                </div>
+              </div>
+             
+              <div class="form-group">
+                <div class="form-group col-md-6" style="flex: 0 0 38.667%;">
+                  <label class="form-check-label" for="inlineRadio1" id="DefaultCurrency">
+                    Default Currency: <span *ngIf="currencyDefault" style="color:black;">  {{currencyDefault}} </span>
+                  </label>
+                  <select class="form-control" (change)="addCurrency($event)" [formControl]="form.controls['currency']" id="DefaultCurrencyInput"
+                  formControlName="currency">
+                  <option *ngFor="let currency of currencies; let optionIndex = index"  value="{{currency}}" id="currency-{{optionIndex}}">
+                    {{currency}}
+                  </option>
+                </select>
+                </div>
+              </div>
+              <div class="form-group" style="margin-left:200px;">
+                <button class="btn btn-primary" id="updateSettingsBtn" type="submit" [disabled]="!form.valid">
+                  <i *ngIf="loadingSettings" class="fa fa-spinner fa-spin"></i> Submit</button>
+              </div>
+            </form>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+        <ng-template ngbTabTitle>
+          <span [innerHTML]="tab.title"></span> &nbsp;
+          <span (click)="closeTab($event, index)" class="indicate--danger">
+            &times;
+          </span>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>
+
+
+   <!-- Create Expense Category template -->
+   <ng-template #contentexpense let-modal>
+    <div class="modal-header">
+        <h4 ngbAutofocus class="modal-title" id="createExpenseCatTitle">Create Expense Category</h4>
+        <button type="button" id="close_modal" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #createExpenseForm=ngForm [formGroup]="createExpenseCatform"
+            (ngSubmit)="onSubmit(createExpenseForm.value)">
+            <app-alert></app-alert>
+
+            <div class="form-group row">
+                <label for="example-search-input" class="col-2 col-form-label"
+                    id="nameLabel">Name<span style="color:red">*</span></label>
+                <div class="col-10">
+                    <input type="text" id="expenseCat-name" class="form-control"
+                        [formControl]="createExpenseCatform.controls['name']"
+                        [ngClass]="{'is-invalid': createExpenseCatform.controls['name'].hasError('required') && createExpenseCatform.controls['name'].touched}" />
+                    <div class="invalid-feedback"
+                        *ngIf="createExpenseCatform.controls['name'].hasError('required') && createExpenseCatform.controls['name'].touched">
+                        Name
+                        is required.</div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-text-input" class="col-2 col-form-label"
+                    id="expCatLabel">Expense Category</label>
+                <div class="col-10">
+                    <select id="expenseCat-categoryType"
+                        [formControl]="createExpenseCatform.controls['categoryType']"
+                        [ngClass]="{'is-invalid': createExpenseCatform.controls['categoryType'].hasError('required') && createExpenseCatform.controls['categoryType'].touched}"
+                        name="categoryType" class="form-control">
+                        <option id="each-category-type-0" value="expenseOnDirectCosts">Expense On
+                            Direct Costs</option>
+                        <option id="each-category-type-1" value="expenseOnFixedAssets">Expense On
+                            Fixed Assets</option>
+                        <option id="each-category-type-2" value="expenseOnCurrentAssets">Expense On
+                            Current Assets</option>
+                        <option id="each-category-type-3" value="generalOperatingExpense">General
+                            Operating Expense</option>
+                    </select>
+                    <div class="invalid-feedback"
+                        *ngIf="createExpenseCatform.controls['categoryType'].hasError('required') && createExpenseCatform.controls['categoryType'].touched">
+                        Category
+                        Type
+                        is required.</div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-text-input" id="label-description"
+                    class="col-2 col-form-label">Parent Category</label>
+                <div class="col-10">
+                    <select id="create-expCat-description" class="form-control"
+                        [formControl]="createExpenseCatform.controls['parentCategory']"
+                        [ngClass]="{'is-invalid': createExpenseCatform.controls['parentCategory'].hasError('required') && createExpenseCatform.controls['parentCategory'].touched}">
+                        <span *ngFor="let pcat of expenseCategoryList; let optionIndex = index">
+                            <option value="{{pcat._id}}" id="each-parent-category-{{optionIndex}}"
+                                *ngIf="showParentOption(pcat._id, modalContext._id)">
+                                {{pcat.secret.name}}</option>
+                        </span>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center mt-4 mb-4">
+                <button id="createExpenseCategoryBtn" class="btn btn-primary" type="submit"
+                    [disabled]="!createExpenseCatform.valid"><i *ngIf="loading"
+                        class="fa fa-spinner fa-spin"></i>
+                    Create </button>
+            </div>
+        </form>
+
+    </div>
+
+</ng-template>

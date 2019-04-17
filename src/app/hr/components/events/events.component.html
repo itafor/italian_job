@@ -1,0 +1,178 @@
+<div class="card-header">
+  <nav class="navbar ruler-nav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <span>
+          <button id="createEventButton" (click)="newTabHandler()" class="btn btn-primary">Create Event <i
+              id="icon-create-event" class="fa fa-plus"></i></button>
+        </span></li>
+    </ul>
+  </nav>
+  <div class="card-body">
+    <ngb-tabset #eventsTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="refreshTable($event)">
+      <ngb-tab title="Events" id='events-id'>
+        <ng-template ngbTabContent>
+          <div class="details-header">
+            <div>
+              <div class="text-center" *ngIf="!eventList">
+                <div class="loading-tab">
+                  <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="eventList">
+              <div class="text-center" *ngIf="eventList.length === 0">
+                <div class="loading-tab">
+                  <h5 id="no-event-id">No Events</h5>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="suspendingState" class="bg-info text-center status-confirmation">
+              <h5> <i class="fa fa-spinner fa-spin fa-1x"></i> Loading...</h5>
+            </div>
+            <ngx-datatable *ngIf="eventList && eventList.length" [rows]="rows" [columnMode]="'force'"
+              [headerHeight]="40" [footerHeight]="50" [rowHeight]="'auto'" [externalPaging]="true" [count]="count"
+              [offset]="offset" [limit]="limit" (page)='onPage($event)'>
+              <ngx-datatable-column name="Names">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6 [ngClass]="{'eventInactive' : !row.active, 'eventActive': row.active }">{{row.eventSecret.name }}
+                  </h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Description">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6 [ngClass]="{'eventInactive' : !row.active, 'eventActive': row.active }">
+                    {{row.eventSecret.description }}</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Start Time">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6 id="event-startTime-id" [ngClass]="{'eventInactive' : !row.active, 'eventActive': row.active }">
+                    {{row.eventSecret.startTime | date:'medium' }}</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Stop Time">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6 id="event-stopTime-id" [ngClass]="{'eventInactive' : !row.active, 'eventActive': row.active }">
+                    {{row.eventSecret.stopTime | date:'medium'}}
+                  </h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Action">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <div class="dropdown remove-caret" placement="left-top" ngbDropdown>
+                    <button id="drop-view" type="button" class="btn btn-secondary py-1 px-2" ngbDropdownToggle><i
+                        class="ion-ios-more"></i></button>
+                    <div class="dropdown-menu py-0" role="menu" ngbDropdownMenu>
+                      <button id="update-event" (click)="updateEventHandler(row)" type="button"
+                        class="dropdown-item py-2">Update Event</button>
+                      <div class="dropdown-divider my-0"></div>
+                      <button *ngIf="row.active" id="suspend-id" (click)="suspend(row)" type="button"
+                        class="dropdown-item py-2">Suspend Event</button>
+                      <button *ngIf="!row.active" id="unsuspend-id" (click)="unsuspend(row)" type="button"
+                        class="dropdown-item py-2">Unsuspend Event</button>
+                      <div class="dropdown-divider my-0"></div>
+                      <button (click)="deleteConfirmHandler(row)" id="delete-id" type="button"
+                        class="dropdown-item py-2">Delete Event</button>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+        <ng-template ngbTabTitle>
+          <span [innerHTML]="tab.title"></span> &nbsp;
+          <span (click)="closeTab($event, tabIndex)" class="indicate--danger">
+            &times;
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <app-create-event *ngIf="tab.type === 'NEW_EVENT' "
+            (eventCreatedSuccessfulEvent)="eventSuccessHandler($event, tabIndex)">
+          </app-create-event>
+          <div class="details-header" *ngIf="tab.type ===  'UPDATE_EVENT'">
+            <div class="card">
+              <div class="modal-header">
+                <h4 class="modal-title" id="event-update-header-text">Updating {{ tab.content.eventSecret.name }}
+                </h4>
+              </div>
+              <div class="card-body">
+                <div class="text-center">
+                  <app-alert></app-alert>
+                </div>
+                <form [formGroup]="form" (ngSubmit)="onUpdate($event)">
+                  <div class="form-group">
+                    <div class="form-group row">
+                      <div class="col-lg-12">
+                        <input name="name" class="form-control" type="text" id="event-name-update"
+                          [formControl]="form.controls['name']"
+                          [ngClass]="{'is-invalid': form.controls['name'].hasError('required') && form.controls['name'].touched}"
+                          placeholder="Name" />
+                        <small class="invalid-feedback errname"
+                          *ngIf="form.controls['name'].hasError('required') && form.controls['name'].touched">Please
+                          enter
+                          event name</small>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-lg-12">
+                        <textarea name="description" class="form-control" rows="8" id="event-description-update"
+                          [formControl]="form.controls['description']"
+                          [ngClass]="{'is-invalid': form.controls['description'].hasError('required') && form.controls['description'].touched}"
+                          placeholder="Description" autofocus></textarea>
+                        <small class="invalid-feedback errdescription"
+                          *ngIf="form.controls['description'].hasError('required') && form.controls['description'].touched">Please
+                          enter event description</small>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-lg-6">
+                        <small id="update-startTime-label">Event Start Time</small>
+                        <input name="startTime" class="form-control" type="datetime-local" id="event-startTime-update"
+                          [formControl]="form.controls['startTime']"
+                          value="{{ tab.content.eventSecret.startTime| date:'yyyy-MM-ddTHH:mm'}}"
+                          [ngClass]="{'is-invalid': form.controls['startTime'].hasError('required') && form.controls['startTime'].touched}"
+                          placeholder="Start Time" />
+                        <small class="invalid-feedback errstartTime"
+                          *ngIf="form.controls['startTime'].hasError('required') && form.controls['startTime'].touched">Please
+                          enter event start time</small>
+                      </div>
+                      <div class="col-lg-6">
+                        <small id="update-stopTime-label">Event Stop Time</small>
+                        <input name="stopTime" class="form-control" type="datetime-local"
+                          (change)="onChangeStopTime($event)" id="event-stopTime-update"
+                          [formControl]="form.controls['stopTime']"
+                          value="{{ tab.content.eventSecret.stopTime| date:'yyyy-MM-ddTHH:mm'}}"
+                          [ngClass]="{'is-invalid': form.controls['stopTime'].hasError('required') && form.controls['stopTime'].touched}"
+                          placeholder="Stop Time" />
+                        <small class="invalid-feedback errstopTime"
+                          *ngIf="form.controls['stopTime'].hasError('required') && form.controls['stopTime'].touched">Please
+                          enter event stop time</small>
+                      </div>
+                    </div>
+                    <div class="row text-center">
+                      <div class="col-lg-12">
+                        <div class="assign-btn">
+                          <button id="event-submit-update" [disabled]="isBtnDisabled()" class="btn btn-primary"
+                            type="submit"> <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Update Event
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

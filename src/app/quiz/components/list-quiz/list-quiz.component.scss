@@ -1,0 +1,35 @@
+body {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  
+  :host ::ng-deep .ngx-datatable .datatable-header-cell {
+    padding: 0.5rem 1rem !important;
+    text-align: center !important;
+  }
+  
+  :host
+    ::ng-deep
+    .ngx-datatable
+    .datatable-body
+    .datatable-body-row
+    .datatable-body-cell {
+    padding: 0.5rem 1rem !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+  .roleAction {
+    color: #6c757d6b;
+    padding: 10px;
+  }
+  
+  .icon {
+    margin-right: 30px;
+    cursor: pointer;
+  }
+  
+  .right {
+    align-items: right;
+  }
+  

@@ -1,0 +1,376 @@
+<ngx-loading [show]="(!driveList && mainFIleFolder) || (!subDriveList && subFolder)" [config]="{ backdropBorderRadius: '3px' , 
+                                              animationType: ngxLoadingAnimationTypes.doubleBounce,
+                                              primaryColour: '#00897B',
+                                              secondaryColour: '#4d88ff'}">
+</ngx-loading>
+
+<div class="file-manager" id="home">
+  <div class="card mb-3 sharedwithme-card">
+      <p *ngIf="fileUploadStatus">
+          <ngb-progressbar type="primary" height="20px" [value]="90" [striped]="true" [animated]="true">
+            <h6>uploading</h6>
+          </ngb-progressbar>
+        </p>
+    <div class="row no-gutter">
+      <div class="col-sm-3 sidebar">
+        <div class="card-body px-0 sidebar-x">
+          <div class="action-buttons text-center mt-5" *ngIf="subDriveList" >
+            <label class="btn btn-action bg-teal mb-2 py-2" style="width: 90%;"><i class="fas fa-cloud-upload-alt position-left-10"></i>
+              Upload File
+              <input type="file" style="display: none;" multiple  name="fileToBeupload"
+                (change)="onFileSelected($event)">
+            </label>
+            <button id="createNewFolderBtn" style="width: 90%" (click)="creatFolderLogic()" type="button" class="btn  bg-blue mb-2 py-2"><i
+                class="fas fa-plus position-left-10"></i>
+              New Folder 
+            </button>
+            <div class="col-12" id="create-folder-input" *ngIf="showCreateFolderInput" style="margin-bottom: 40px;">
+               <div class="col-12" style="position: absolute; margin-left: -14px;">
+                <input (keyup.enter)="createNewFolder(foldername)" class="inty input-desc form-control  mx-wd-18 " type="text"
+                  placeholder="Folder Name" #foldername="ngModel" [ngClass]="{'createFolder-error' : foldername.invalid && foldername.touched  }"
+                  [(ngModel)]="folderName" style="width: 102%; padding-right: 80px;" autofocus required />
+                <div *ngIf="!loading " style="display: flex; position: relative; bottom: 22px; float: right; left: -8px; font-size: 12px;">
+                  <i id="savesubtask" *ngIf="foldername.valid" class="fa fa-check" (click)="createNewFolder(foldername)"
+                    style="cursor: pointer; color: #333a67 !important;"></i>
+                  <i id="closeCreateFolder" class="fa fa-times" (click)="hideCreateFolderInput()" style="margin-left: 17px; cursor: pointer; color: #ee524f;"></i>
+                </div>
+                <div *ngIf="loading" style="display: flex; position: relative; bottom: 22px; float: right; left: -8px; font-size: 12px;">
+                  <i id="cancelsubtask" class="fa fa-spinner fa-spin" style="margin-left: 17px; cursor: pointer; color: blue"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="list-group mt-3">
+            <span class="list-group-item border-0 text-uppercase">File Menu</span>
+            <a routerLink="/filemanager/myfile" class="list-group-item list-group-item-action "><i class="icon ion-ios-browsers-outline position-left-10"></i>
+              My Drive</a>
+            <a routerLink="/filemanager/sharedwithme" class="list-group-item list-group-item-action active"><i class="fas fa-user-friends position-left-10"></i>
+              Shared With Me</a>
+          </div>
+        </div>
+      </div> 
+      <div class="{{mainViewSize}} main">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <h1 id="heading" class="display-3" style="font-size: 1.45rem;">Shared With Me</h1>
+            </div>
+            <div class="offset-sm-1 col-sm-5">
+              <form id="search-files" action="" method="get">
+                <div class="form-group has-search">
+                  <i class="fas fa-search form-control-feedback"></i>
+                  <input type="search" name="" id="" class="bg-none form-control" placeholder="Search My Files">
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <ng-container *ngIf="mainFIleFolder">
+            <div id="noFiles" class="row" *ngIf="driveList && driveList.length == 0">
+              <div class="col-sm-12">
+                <div class="col-sm-12 text-center mt-5">
+                  <i class="d-block fas fa-file fa-8x text-secondary mb-3"></i>
+                  <div class="d-block">
+                    <span class="display-4" style="font-size: 1.2rem;">No File Found</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="driveList && driveList.length > 0">
+              <div class="col-sm-12">
+                <div class="table-responsive">
+                  <table class="table mb-0 table-hover">
+                    <thead>
+                      <tr>
+                        <th width="300px">Name</th>
+                        <th>Shared Date</th>
+                        <th>Size</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let drive of driveList">
+                        <td class="name" style="display: flex">
+                          <i *ngIf="!drive || !drive.secret || !drive.secret.fileExtension" class="fas fa-folder position-left-10 fs-16 {{getIsSharedClass(drive)}}"></i>
+                          <i *ngIf="drive && drive.secret && drive.secret.fileExtension" class="fas {{getFileIcon(drive.secret.fileExtension)}} position-left-10 fs-16 {{getIsSharedClass(drive)}}"></i>
+                          <span (dblclick)="openFolder(drive)" class="actualspace" *ngIf="!drive || !drive.secret || !drive.secret.fileExtension">
+                            {{ drive && drive.secret ? drive.secret.folderName ? getShortName(drive.secret.folderName, 'folder')
+                            :
+                            drive.secret.originalFileName ? getShortName(drive.secret.originalFileName, 'folder') : '' : 'No
+                            Name'
+                            }}
+                          </span>
+                          <span class="actualspace" (dblclick)="openPreviewFile(previewFile, drive, 'share', 'file')"  
+                                *ngIf="drive && drive.secret && drive.secret.fileExtension">
+                            {{ drive && drive.secret ? drive.secret.folderName ? getShortName(drive.secret.folderName, 'file')
+                            :
+                            drive.secret.originalFileName ? getShortName(drive.secret.originalFileName, 'file') : '' : 'No
+                            Name'
+                            }}
+                          </span>
+                        </td>
+                        <td class="date">
+                          {{drive.updatedAt | date}}
+                        </td>
+
+                        <td class="size">
+                          {{ drive && drive.secret && drive.secret.fileSize ? getFileSize(drive.secret.fileSize) : ''
+                          }}
+                        </td>
+                        <td class="actions">
+                          <div  class="dropdown remove-caret" placement="left-top" ngbDropdown>
+                            <button id="testingDropdown" type="button" class="btn btn-secondary py-1 px-2" ngbDropdownToggle><i class="ion-ios-more"></i></button>
+                            <div class="dropdown-menu py-0" role="menu" ngbDropdownMenu>
+                               <a id="openFolder" (click)="openFolder(drive)" *ngIf="!drive || !drive.secret || !drive.secret.fileExtension"
+                                class="dropdown-item py-2"><i class="fa fa-arrows-alt"></i>  Open Folder</a>
+                              <a id="previewFile" *ngIf="!drive || !drive.secret || drive.secret.fileExtension" class="dropdown-item py-2"
+                                (click)="openPreviewFile(previewFile, drive, 'share', 'file')"><i class="fa fa-eye"></i> Preview</a>
+                              <div class="dropdown-divider my-0"></div>
+                              <a id="download" *ngIf="drive && drive.secret && drive.secret.fileExtension" class="dropdown-item py-2"
+                                (click)="downloadFile(drive)" href="javascript:;"><i class="fa fa-download"></i> Download</a>
+                           
+                                     
+                                <button id="details"  type="button"
+                                class="dropdown-item py-2" (click)="showDetail(drive)">
+                                <i class="fa fa-info-circle"></i> Detail</button>
+                              </div>
+
+
+                          </div>
+                        </td> 
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="subFolder">
+              <nav aria-label="breadcrumb" class="bredcum">
+
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-hdd-o"></i></li>
+                    <li class="breadcrumb-item" *ngFor="let breadcum of getNavShortPath(breadCumList); let first = first; let last = last;">
+                      <a class="text-primary" *ngIf="first && !last" (click)="showMain(breadcum)">
+                        {{breadcum.name}}</a>
+    
+                      <a class="text-primary" *ngIf="(!last && !first) && (breadcum.id !== 'short')" 
+                        (click)="goBack(breadcum)">{{getPathShortName(breadcum.name, 'folder', 10)}}</a>
+                      <a class="text-secondary " *ngIf="breadcum.id === 'short'">{{getPathShortName(breadcum.name, 'folder', 10)}}</a>
+                      <a *ngIf="last">{{getPathShortName(breadcum.name, 'folder', 10)}}</a>
+                      <i class="fas fa-caret-right mx-2" aria-hidden="true"></i>
+                    </li>
+    
+                  </ol>
+                </nav>
+            <div id="noSubFiles" class="row" *ngIf="subDriveList && subDriveList.length == 0">
+              <div class="col-sm-12">
+                <div class="col-sm-12 text-center mt-5">
+                  <i class="d-block fas fa-folder-minus fa-8x text-secondary mb-3"></i>
+                  <div class="d-block">
+                    <p class="mt-2">Folder Is Empty</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="subDriveList && subDriveList.length > 0">
+
+              <div class="col-sm-12">
+                <div class="table-responsive">
+                  <table class="table mb-0 table-hover">
+                    <thead>
+                      <tr>
+                        <th width="300px">Name</th>
+                        <th>Shared Date</th>
+                        <th>Size</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let drive of subDriveList">
+                        <td class="name" style="display: flex">
+                          <i *ngIf="!drive || !drive.secret || !drive.secret.fileExtension" class="fas fa-folder position-left-10 fs-16 {{getIsSharedClass(drive)}}"></i>
+                          <i *ngIf="drive && drive.secret && drive.secret.fileExtension" class="fas {{getFileIcon(drive.secret.fileExtension)}} position-left-10 fs-16 {{getIsSharedClass(drive)}}"></i>
+                          <span (dblclick)="openFolder(drive)" class="actualspace" *ngIf="!drive || !drive.secret || !drive.secret.fileExtension">
+                            {{ drive && drive.secret ? drive.secret.folderName ? getShortName(drive.secret.folderName, 'folder')
+                            :
+                            drive.secret.originalFileName ? getShortName(drive.secret.originalFileName, 'folder') : '' : 'No
+                            Name'
+                            }}
+                          </span>
+                          <span class="actualspace" (dblclick)="openPreviewFile(previewFile, drive, 'share', 'file')"   
+                              *ngIf="drive && drive.secret && drive.secret.fileExtension">
+                            {{ drive && drive.secret ? drive.secret.folderName ? getShortName(drive.secret.folderName, 'file')
+                            :
+                            drive.secret.originalFileName ? getShortName(drive.secret.originalFileName, 'file') : '' : 'No
+                            Name'
+                            }}
+                          </span>
+                        </td>
+                        <td class="date">
+                          {{drive.updatedAt | date}}
+                        </td>
+                        <td class="size">
+                          {{ drive && drive.secret && drive.secret.fileSize ? getFileSize(drive.secret.fileSize) : ''
+                          }}
+                        </td>
+                        <td class="actions">
+                          <div class="dropdown remove-caret" placement="left-top" ngbDropdown>
+                            <button type="button" class="btn btn-secondary py-1 px-2" ngbDropdownToggle><i class="ion-ios-more"></i></button>
+                            <div class="dropdown-menu py-0" role="menu" ngbDropdownMenu>
+                              <a id="openFolder" (click)="openFolder(drive)" *ngIf="!drive || !drive.secret || !drive.secret.fileExtension"
+                                class="dropdown-item py-2"><i class="fa fa-arrows-alt"></i> Open Folder</a>
+                              <a id="previewFile" *ngIf="!drive || !drive.secret || drive.secret.fileExtension" class="dropdown-item py-2"
+                                (click)="openPreviewFile(previewFile, drive, 'share', 'file')"><i class="fa fa-eye"></i> Preview</a>
+                              <div class="dropdown-divider my-0"></div>
+                              <a id="download" *ngIf="drive && drive.secret && drive.secret.fileExtension" class="dropdown-item py-2"
+                                (click)="downloadFile(drive)" href="javascript:;"><i class="fa fa-download"></i> Download</a>
+                              <button id="delete" *ngIf="drive && drive.secret && drive.secret.fileExtension" type="button"
+                                class="dropdown-item py-2" (click)="open(delete, drive, null, 'file')">
+                                <i class="fa fa-trash"></i> Delete</button>
+                              <button id="deleteFolder" *ngIf="drive && drive.secret && !drive.secret.fileExtension"
+                                type="button" class="dropdown-item py-2" (click)="open(delete, drive, null, 'folder')"> 
+                                <i class="fa fa-trash"></i> Delete</button>
+                                
+                              <div class="dropdown-divider my-0"></div>
+                                     
+                              <button id="details"  type="button"
+                              class="dropdown-item py-2" (click)="showDetail(drive)">
+                              <i class="fa fa-info-circle"></i> Detail</button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        
+      </div>
+      <div class="col-sm-3 detailInfo" *ngIf="driveDetail">
+        <div class="row mt-5">
+          <div class="col-8">
+            <h5 id="filename">
+              <!-- <i class="fa fa-folder  text-primary"></i> -->
+              <i *ngIf="!driveDetailInfo || !driveDetailInfo.secret || !driveDetailInfo.secret.fileExtension" 
+                  class="fas fa-folder  {{getIsSharedClass(driveDetailInfo)}}"></i>
+              <i *ngIf="driveDetailInfo && driveDetailInfo.secret && driveDetailInfo.secret.fileExtension" 
+              class="fas {{getFileIcon(driveDetailInfo.secret.fileExtension)}}  {{getIsSharedClass(driveInfo)}}"></i>        
+              {{ driveDetailInfo.secret.folderName || driveDetailInfo.secret.originalFileName}} </h5>
+          </div> 
+          <div class="col-3 closeBtn"> 
+            <i style="cursor: pointer; font-size: 14px" (click)="closeDetail()" class="fa  fa-times float-right"></i>
+          </div>
+        </div>
+        <div class="row mt-3 detail-label">
+          <div class="col-5 ">
+              <h6>Type: </h6>
+              <h6>Location: </h6>
+              <h6>Size:</h6>
+              <h6>Created: </h6>
+              <h6>Modified: </h6>
+              <h6 *ngIf="driveDetailInfo.shared_with?.length">Owner: </h6>
+          </div>
+          <div class="col-5 detail-input">
+              <h6 *ngIf="driveDetailInfo.secret.folderName">Folder</h6>
+              <h6 *ngIf="driveDetailInfo.secret.originalFileName">File</h6>
+              <h6> <i class="fa text-primary fa-folder"></i> 
+                {{breadCumList[breadCumList.length - 1].name}}
+              </h6>
+              <h6 *ngIf="driveDetailInfo.secret.originalFileName">
+                {{getFileSize(driveDetailInfo.secret.fileSize) }}
+              </h6>
+              <h6 *ngIf="driveDetailInfo.secret.folderName" >--</h6>
+              <h6> {{driveDetailInfo.createdAt | date}}</h6>
+              <h6> {{driveDetailInfo.updatedAt | date}}</h6>
+          </div>
+        </div>
+        <div class="row sharwith-emails">
+          <div class="col-12">
+            <ul class="mr-3">
+              <li *ngFor="let email of driveDetailInfo.shared_with">{{email}}</li>
+            </ul>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
+<ng-template #previewFile let-modal>
+  <div class="container preview-modal">
+    <div class="modal-header">
+      <h4 class="modal-title" id="viewFileModalTitle">{{driveName}}</h4>
+      <button id="closeViewFileModalBtn" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row" *ngIf="getImgExt(driveInfo.secret.fileExtension)">
+        <div class="col-12 mt-5 text-center" *ngIf="!fileBlogUrl">
+          <img src="/assets/loaders/bars.gif" alt="bars" />
+        </div>
+        <div class="col-12" *ngIf="fileBlogUrl">
+          <img [src]="fileBlogUrl" style="width: 100%; height:100%">
+        </div>
+      </div>
+      <div class="row" *ngIf="getPdfExt(driveInfo.secret.fileExtension)">
+        <div *ngIf="!fileBlogUrl" class="col-12 mt-5 text-center">
+          <img src="/assets/loaders/bars.gif" alt="bars" />
+        </div>
+        <iframe *ngIf="fileBlogUrl" [src]="sanitizer.bypassSecurityTrustResourceUrl(fileBlogUrl)" width="100%" height="400"></iframe>
+      </div>
+      <div class="row" *ngIf="getMp3Ext(driveInfo.secret.fileExtension)">
+        <div class="col-12 text-center ">
+          <ng-container *ngIf="!fileBlogUrl">
+            <img src="/assets/loaders/bars.gif" alt="bars" />
+          </ng-container>
+          <ng-container *ngIf="fileBlogUrl">
+            <div class="bg-secondary ">
+              <i class="fa fa-music fa-10x text-dark mt-4 mb-3"></i><br>
+              <audio controls>
+                <source [src]="fileBlogUrl">
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row" *ngIf="!(getPdfExt(driveInfo.secret.fileExtension)) &&
+                                               !(getImgExt(driveInfo.secret.fileExtension)) 
+                                               && !getMp3Ext(driveInfo.secret.fileExtension)">
+        <div class="col-12">
+          view mode is not yet supported for this file download it and view
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="downloadFileBtn" (click)="downloadFile(driveInfo)" class="btn btn-dark">
+        Download
+      </button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #delete let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Delete <span style="text-transform: capitalize">{{driveType}}</span></h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align: center; padding: 30px;" class="form-group mb-0">
+        <b style="font-size: 15px;">Are you sure you want to delete <br> 
+        </b>
+        <h5 style="word-break: break-all;" class="text-primary">{{driveName}}</h5>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+      <button [disabled]="disableBtn" type="submit" class="btn btn-danger" (click)="deleteLogic()">Delete <i *ngIf="loading"
+          class="fa fa-spinner fa-spin"></i></button>
+    </div>
+  </ng-template>

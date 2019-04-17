@@ -1,0 +1,122 @@
+<div class="card-header">
+    <nav class="navbar ruler-nav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <span>
+                    <button id="createRoleButton" (click)="newTabHandler()" class="btn btn-primary">Create Role <i
+                            id="icon-create-role" class="fa fa-plus"></i></button>
+                </span></li>
+        </ul>
+    </nav>
+    <div class="card-body">
+        <ngb-tabset #rolesTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="refreshTable($event)">
+            <ngb-tab title="Roles" id='roles'>
+                <ng-template ngbTabContent>
+                    <div class="details-header">
+                        <div>
+                            <div class="text-center" *ngIf="!roleList">
+                                <div class="loading-tab">
+                                    <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="roleList">
+                            <div class="text-center" *ngIf="(roleList.length === 0)">
+                                <div class="loading-tab">
+                                    <h5 id="no-role-id">No Roles</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="suspendingState" class="bg-info text-center status-confirmation">
+                            <h5> <i class="fa fa-spinner fa-spin fa-1x"></i> Loading...</h5>
+                        </div>
+                        <ngx-datatable *ngIf="roleList && roleList.length" [rows]="rows" [columnMode]="'force'"
+                            [headerHeight]="40" [footerHeight]="50" [rowHeight]="'auto'" [externalPaging]="true"
+                            [count]="count" [offset]="offset" [limit]="limit" (page)='onPage($event)'>
+                            <ngx-datatable-column name="Roles">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6 [ngClass]="{'roleActive' : row.active  }">{{row.roleSecret.name }}</h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Date Created">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6 [ngClass]="{'roleActive' : row.active  }">{{row.createdDate | date }}</h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Time Created">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <h6 [ngClass]="{'roleActive' : row.active }">{{row.createdDate | date:'shortTime'}}
+                                    </h6>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Action">
+                                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                                    <div class="dropdown remove-caret" placement="left-top" ngbDropdown>
+                                        <button id="drop-list" type="button" class="btn btn-secondary py-1 px-2"
+                                            ngbDropdownToggle><i class="ion-ios-more"></i></button>
+                                        <div class="dropdown-menu py-0" role="menu" ngbDropdownMenu>
+                                            <button (click)="updateRoleHandler(row)" id="edit-role" type="button"
+                                                class="dropdown-item py-2">Update Role</button>
+                                            <div class="dropdown-divider my-0"></div>
+                                            <button (click)="deleteConfirmHandler(row)" id="delete-id" type="button"
+                                                class="dropdown-item py-2">Delete
+                                                Role</button>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                        </ngx-datatable>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+                <ng-template ngbTabTitle>
+                    <span [innerHTML]="tab.title"></span> &nbsp;
+                    <span (click)="closeTab($event, tabIndex)" class="indicate--danger">
+                        &times;
+                    </span>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <app-create-role *ngIf="tab.type === 'NEW_ROLE' "
+                        (roleCreatedSuccessfulEvent)="roleSuccessHandler($event, tabIndex)"></app-create-role>
+                    <div class="details-header" *ngIf="tab.type ===  'UPDATE_ROLE'">
+                        <div class="card">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="role-update-header-text">Updating
+                                    {{ tab.content.roleSecret.name }}
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <app-alert></app-alert>
+                                </div>
+                                <form (ngSubmit)="submitForm($event)">
+                                    <div class="form-group">
+                                        <div class="form-group row offset-1">
+                                            <label id="input-title" class="col-lg-2 col-form-label"
+                                                for="example-text-input">Name</label>
+                                            <div class="col-lg-7">
+                                                <input class="form-control" id="roleupdate" type="text"
+                                                    [(ngModel)]="newRoleName" name="newRoleName">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-center mt-4 mb-4">
+                                            <button id="update-role-submit-btn" [disabled]="isBtnDisabled()"
+                                                class="btn btn-primary" type="submit"> <i *ngIf="submitting"
+                                                    class="fa fa-spinner fa-spin"></i> Update
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="details-header">
+  <div class="card">
+    <div class="modal-header">
+      <h4 class="modal-title" id="newMemberHeader">New Member</h4>
+    </div>
+    <div class="card-body">
+      <div class="text-center">
+        <app-alert></app-alert>
+      </div>
+      <form (ngSubmit)="addMembersForm($event)">
+        <div class="form-group">
+          <div class="form-group row">
+            <div class="col-lg-6">
+              <small id="role-create-label">Role Name</small>
+              <select id="role-id" name="role" class="custom-select" [class.is-invalid]="roleHasError  && role.touched"
+                (change)="validateRole(role.value)" #role="ngModel" [(ngModel)]="roleinview">
+                <option  *ngIf="!roleList">Loading...</option>
+                <option value="default">-- Select Role --</option>
+                <option *ngFor="let role of roleList; let optionIndex = index" id="role-list-{{optionIndex}}"
+                  [ngValue]="role">
+                  {{role.roleSecret.name}}
+                </option>
+              </select>
+            </div>
+            <div class="col-lg-6">
+              <small id="user-create-label">User</small>
+              <select id="user-id" name="user" class="custom-select" [class.is-invalid]="userHasError  && user.touched"
+                (change)="validateUser(user.value)" #user="ngModel" [(ngModel)]="userinview">
+                <option selected *ngIf="!Users"><i class="fa fa-spinner fa-spin fa-1x"></i></option>
+                <option value="default">-- Select User --</option>
+                <option *ngFor="let user of Users; let optionIndex = index" id="user-list-{{optionIndex}}"
+                  [ngValue]="user">
+                  {{user.firstname}} {{user.lastname}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="center_icon">
+            <button id="add-member-submit" [disabled]="isBtnDisabled()" (click)="addMembersForm($event)"
+              class="btn btn-primary" type="button"><i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Add
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

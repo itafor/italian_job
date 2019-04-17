@@ -1,0 +1,77 @@
+<div class="details-header">
+  <div>
+    <div class="details-header text-center " *ngIf="!projectInfo">
+      <div class="loading-tab">
+        <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+      </div>
+    </div>
+  </div>
+  <div class="card-body" *ngIf="projectInfo">
+    <div class="row">
+      <div class="col-md-6">
+        <h4><span id="project-title">{{projectInfo.projectSecret.name}}</span>|<span
+            id="project-uniquekey">{{projectInfo.uniqueKey}}</span></h4>
+        <div class="description-text">
+          <div class="row">
+            <div class="col-sm-10">
+              <div id="project-description-tag" class="head-tag">ADD DESCRIPTION</div>
+            </div>
+            <div class="col-sm-2 text-right">
+              <span class="text-right add-plus" (click)="addDescriptionHandler()"><i id="project-description-plus-icon"
+                  class="fa fa-plus-circle text-primary" placement="auto" ngbTooltip="Add"></i></span>
+            </div>
+          </div>
+          <div class="row" *ngIf="addDescription">
+            <div class="col-sm-12">
+              <div class="add-descr-wrap">
+                <div class="text-right close-form"><i id="project-description-close-icon"
+                    (click)="closeDescriptionHandler()" class="fa fa-close close-icon" placement="auto"
+                    ngbTooltip="Close"></i></div>
+                <div class="text-center">
+                  <app-alert></app-alert>
+                </div>
+                <form (ngSubmit)="submitForm($event)">
+                  <div class="form-group">
+                    <div class="form-group row">
+                      <div class="col-lg-12">
+                        <textarea name="projectDescription" rows="6" class='form-control'
+                          id="project-description-textarea"
+                          [formControl]="form.controls['projectDescription']"></textarea>
+                      </div>
+                    </div>
+                    <div class="row text-center">
+                      <div class="col-lg-12">
+                        <div class="add-decription-btn">
+                          <button id="add-description-submit" class="btn btn-primary" type="submit"
+                            [disabled]="isBtnDisabled()"><i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Add
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="displayDesc">
+            <p class="description-tag" *ngIf="projectInfo.projectSecret.description" id="addedDescription">
+              {{projectInfo.projectSecret.description}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <span><a [routerLink]="boardUrl" id="linkToBoard">Go To Board</a></span>
+        <div class="row project-created-details">
+          <div class="col-sm-6">
+            <div id="project-created-by">Created by: {{projectInfo.createdBy}}</div>
+          </div>
+          <div class="col-sm-6 text-right">
+            <span class="text-right" id="project-created-date" >Created:
+            {{projectInfo.createdTime | date}}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

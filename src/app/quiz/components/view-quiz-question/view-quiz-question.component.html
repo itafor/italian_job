@@ -1,0 +1,42 @@
+<div class="container card">
+  <h2>List of Created Quizzes</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Scores</th>
+        <th>Date Created</th>
+        <th>Options</th>
+        <th>Answer</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let quiz of quizList">
+      <tr>
+        <td>{{ quiz.name }}</td>
+        <td>{{ quiz.type }}</td>
+        <td>{{ quiz.score }}</td>
+        <td>{{ quiz.created_at }}</td>
+
+        <td>
+          <!-- {{ quiz.answers.Key }}<br /> -->
+          <!-- {{ quiz.answers.value }} -->
+        </td>
+        <td *ngFor="let opt of quiz.options">
+          <!-- {{ opt.key }}<br /> -->
+          <!-- {{ opt.value }} -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<button
+  routerLink="/quiz/list"
+  type="submit"
+  id="step_three_submit"
+  class="btn btn-success loading-demo py-2 mr-2 mb-1 text-light "
+>
+  Go Home
+</button>

@@ -1,0 +1,133 @@
+<div class="taskboard-wrapper" style="margin-bottom: 10px;">
+  <button (click)="open(content)" class="btn btn-primary" style="background-color: #fff !important;  border: 1px solid #5c6bc0; color: #5c6bc0;"> Create User </button>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Create User </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="submitForm()">
+      <div class="form-group">
+        <div class="form-group row">
+          <label class="col-2 col-form-label" for="example-text-input"> First Name: </label>
+          <div class="col-10 proj-input">
+            <input class="proj-input form-control proj-name col-title err-max" id="example-text-input"
+              type="text" [formControl]="form.controls['firstname']">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-2 col-form-label" for="example-text-input"> Last Name: </label>
+          <div class="col-10 proj-input">
+            <input class="proj-input form-control proj-name col-title err-max" id="example-text-input"
+              type="text" [formControl]="form.controls['lastname']">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-2 col-form-label" for="example-text-input"> Email: </label>
+          <div class="col-10 proj-input">
+            <input class="proj-input form-control proj-name col-title err-max" id="example-text-input"
+              type="email" [formControl]="form.controls['email']">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-2 col-form-label" for="example-text-input"> Password: </label>
+          <div class="col-10 proj-input">
+            <input class="proj-input form-control proj-name col-title err-max" id="example-text-input"
+              type="password" [formControl]="form.controls['password']">
+          </div>
+        </div>
+      </div>
+      <div class="tsk-modal-btn">
+        <button class="btn btn-primary" type="submit" [disabled]="!form.valid">create
+          <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+</ng-template>
+
+<ng-template #changepass let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title"> Update Password </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="changePasswordForm" (ngSubmit)="submitChangePasswordForm()">
+      <div class="form-group">
+        <div class="form-group row">
+          <label class="col-2 col-form-label" for="example-text-input"> Old Password: </label>
+          <div class="col-10 proj-input">
+            <input class="proj-input form-control proj-name col-title err-max" id="example-text-input"
+              type="password" [formControl]="changePasswordForm.controls['oldPassword']">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-2 col-form-label" for="example-text-input"> New Password: </label>
+          <div class="col-10 proj-input">
+            <input class="proj-input form-control proj-name col-title err-max" id="example-text-input"
+              type="password" [formControl]="changePasswordForm.controls['newPassword']">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-2 col-form-label" for="example-text-input"> Confirm Password: </label>
+          <div class="col-10 proj-input">
+            <input class="proj-input form-control proj-name col-title err-max" id="example-text-input"
+              type="password" [formControl]="changePasswordForm.controls['confirmPassword']">
+          </div>
+        </div>
+      </div>
+      <div class="tsk-modal-btn">
+        <button class="btn btn-primary" type="submit" [disabled]="!changePasswordForm.valid"> Update
+          <i *ngIf="submitting" class="fa fa-spinner fa-spin"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+</ng-template>
+
+<div id="table" class="details-header">
+  <ngx-datatable *ngIf="userList" [rows]="rows" [columnMode]="'force'" [headerHeight]="40" [footerHeight]="50"
+    [rowHeight]="'auto'" [externalPaging]="true" [count]="count" [offset]="offset" [limit]="limit" (page)='onPage($event)'>
+    <ngx-datatable-column name="First Name">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template class="tab-column">
+        <h6 style="cursor: pointer; color: #5c6bc0" (click)="navigatetoprojectboard(row)">{{row.firstname}}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Last Name">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template class="tab-column">
+        <h6 style="cursor: pointer; color: #5c6bc0" (click)="navigatetoprojectboard(row)">{{row.lastname}}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Email">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template class="tab-column">
+        <h6 style="cursor: pointer; color: #5c6bc0" (click)="navigatetoprojectboard(row)">{{row.email}}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Date Created">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6>{{row.createdTime | date}}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Time Created">
+      <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+        <h6>{{row.createdTime | date:'shortTime'}}</h6>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Action">
+      <ng-template let-row="board" let-value="tab" ngx-datatable-cell-template>
+        <span class="action-span">
+          <i class="icon fa fa-trash fa-1.5x text-danger" title="Delete"></i>
+        </span>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</div>
+

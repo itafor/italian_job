@@ -1,0 +1,8 @@
+<div class="pt-4">
+    <app-create-quiz-start *ngIf="currentFormIndex === 0" (nextStageEvent)="handleChangeInStage($event)"></app-create-quiz-start>
+    <app-create-quiz-setting *ngIf="currentFormIndex === 1" (nextStageEvent)="handleChangeInStage($event)"></app-create-quiz-setting>
+    <app-create-quiz-instruction *ngIf="currentFormIndex === 2" (nextStageEvent)="handleChangeInStage($event)"></app-create-quiz-instruction>
+    <app-view-quiz *ngIf="currentFormIndex === 3" (nextStageEvent)="handleChangeInStage($event)"></app-view-quiz>
+    <app-list *ngIf="currentFormIndex === 4" (nextStageEvent)="handleChangeInStage($event)"></app-list>
+    <app-setquestions *ngIf="currentFormIndex === 5" (nextStageEvent)="handleChangeInStage($event)"></app-setquestions>
+</div>

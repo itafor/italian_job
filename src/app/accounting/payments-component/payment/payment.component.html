@@ -1,0 +1,293 @@
+<div class="card-header">
+  <nav class="navbar ruler-nav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <span>
+          <button (click)="newTabHandler()" class="btn btn-primary" id="create-payment">Make payment &nbsp;
+            <i class="fa fa-plus"></i></button>
+        </span></li>
+    </ul>
+  </nav>
+  <div class="card-body">
+    <ngb-tabset #paymentTabSet="ngbTabset" [destroyOnHide]="false" (tabChange)="forceResize($event, 'viewVendor')">
+      <ngb-tab title="Payments" id="viewPayment">
+        <ng-template ngbTabContent>
+          <div class="details-header">
+            <h2 id="tableValue">{{tableValue}}</h2>
+            <h2 id="{{vendorListHasData}}">{{vendorListHasData}}</h2>
+            <div class="text-center" *ngIf="vendorList && (vendorList.length === 0)">
+              <div class="loading-tab">
+                <h5 id="no-vendor">No payment</h5>
+              </div>
+            </div>
+            <div class="text-center" *ngIf="!(vendorList)">
+              <div class="loading-tab">
+                <h5 id="pls-wait"><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+              </div>
+            </div>
+            <div *ngIf="suspendingState" class="bg-info text-center status-confirmation">
+              <h5> <i class="fa fa-spinner fa-spin fa-1x"></i> Loading...</h5>
+            </div>
+            <ngx-datatable *ngIf="vendorList && vendorList.length" [rows]="rows" [columnMode]="'force'"
+              [headerHeight]="40" [footerHeight]="50" [rowHeight]="'auto'" [externalPaging]="true" [count]="count"
+              [offset]="offset" [limit]="limit" (page)='onPage($event)'>
+              <ngx-datatable-column name="Vendor">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template class="tab-column">
+                  <h6><a (click)="viewPaymentHandler($event, row)">Michael Isoko</a></h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Amount Payable" id="PhoneNumber">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6>N 50,000</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Transaction Date">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <h6>03/04/2019</h6>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Action">
+                <ng-template let-row="row" let-value="tab" ngx-datatable-cell-template>
+                  <span class="action-span">
+                    <i (click)="getVendor(content,row)" class="icon fa fa-credit-card fa-1.5x text-primary"
+                      *ngIf="!row.active" placement="auto" ngbTooltip="Pay Up" id="make-payment"> Pay Up</i>
+                  </span>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab *ngFor="let tab of openTabs; let tabIndex=index" id="{{tabIdForIndex(tabIndex)}}">
+        <ng-template ngbTabTitle>
+          <span [innerHTML]="tab.title"></span> &nbsp;
+          <span (click)="closeTab($event, index)" class="indicate--danger">
+            &times;
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <app-create-payment *ngIf="tab.type === 'NEW_PAYMENT' "
+            (paymentCreatedSuccessfulEvent)="paymentSuccessHandler($event, tabIndex)"></app-create-payment>
+          <app-list-payment *ngIf="tab.type === 'VIEW_PAYMENT' " [PaymentData]="tab.content"></app-list-payment>
+          <div class="details-header" *ngIf="tab.type ===  'UPDATE_PAYMENT' ">
+            <div class="container">
+              <div class="details-header">
+                <div class="row">
+                  <div class="col-lg-12 emp-form">
+                    <div class="card">
+                      <div class="modal-header">
+                        <h4 class="updatevendor" id="makePayment">Make payment</h4>
+                      </div>
+                      <div class="card-body offset-1">
+                        <app-alert></app-alert>
+                        <form [formGroup]="paymentForm" (ngSubmit)="initStoreExpense()" novalidate
+                          enctype="multipart/form-data">
+                          <div class="form-group row">
+                            <label for="inputEmail3" id="expense-amtpayable" class="col-sm-2 col-form-label">Amount
+                              Payable</label>
+                            <div class="col-sm-10">
+                              <h3> <span>&#8358;</span> 5000</h3>
+                            </div>
+                          </div>
+                          <fieldset class="form-group">
+                            <div class="row">
+                              <legend class="col-form-label col-sm-2 pt-0" id="expense-paymentType">Payment Type
+                              </legend>
+                              <div class="col-sm-10">
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" id="Checkbox-bank" type="checkbox"
+                                    (click)="toggleBank()" [formControl]="paymentForm.controls['paymentTypeBank']"
+                                    [ngClass]="{'is-invalid': paymentForm.controls['paymentTypeBank'].hasError('required') && paymentForm.controls['paymentTypeBank'].touched}">
+                                  <label class="form-check-label" id="expense-bank" for="bank">Bank</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" id="Checkbox-cash" type="checkbox"
+                                    (click)="toggleCash()" name="cash"
+                                    [formControl]="paymentForm.controls['paymentTypeCash']"
+                                    [ngClass]="{'is-invalid': paymentForm.controls['paymentTypeCash'].hasError('required') && paymentForm.controls['paymentTypeCash'].touched}">
+                                  <label class="form-check-label" id="expense-cash" for="cash">Cash</label>
+                                </div>
+                              </div>
+                            </div>
+                          </fieldset>
+                          <div class="form-group row" *ngIf="bank">
+                            <label for="inputPassword3" id="expense-bankAccount" class="col-sm-2 col-form-label">Bank
+                              Account</label>
+                            <div class="form-group col-md-3">
+                              <select class="custom-select mr-sm-6" [formControl]="paymentForm.controls['bankAccount']"
+                                id="bankAccount"
+                                [ngClass]="{'is-invalid': paymentForm.controls['bankAccount'].hasError('required') && paymentForm.controls['bankAccount'].touched}">
+                                <option selected value="">Choose Bank</option>
+                                <option *ngFor="let bank of bankList" value="{{bank.secret.accountNumber}}">
+                                  {{bank.secret.bankName}}: {{bank.secret.accountNumber}}</option>
+                              </select>
+                              <div class="invalid-feedback"
+                                *ngIf="paymentForm.controls['bankAccount'].hasError('required') && paymentForm.controls['bankAccount'].touched">
+                                bankAccount is required.</div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <button type="button" id="add-bank-account" class="btn btn-sm btn-primary"
+                                (click)="open(createBank)" ngbTooltip="Create Bank">
+                                <i class="fa fa-plus"></i> </button>
+                            </div>
+
+                            <div class="form-group col-md-3" id="amountPaidViaBankdiv">
+                              <input type="number" class="form-control col-md-6" id="amountPaidViaBankinput"
+                                placeholder="Amount" [formControl]="paymentForm.controls['amountPaidViaBank']"
+                                (ngModelChange)="getAmountPaid($event)"
+                                [ngClass]="{'is-invalid': paymentForm.controls['amountPaidViaBank'].hasError('required') && paymentForm.controls['amountPaidViaBank'].touched}">
+                              <div class="invalid-feedback"
+                                *ngIf="paymentForm.controls['amountPaidViaBank'].hasError('required') && paymentForm.controls['amountPaidViaBank'].touched">
+                                amountPaidViaBank is required.</div>
+                            </div>
+                          </div>
+                          <div class="form-group row" *ngIf="theAmountPaid > 5000">
+                            <label for="cashPaid" id="expense-cashPaid" class="col-sm-2 col-form-label">Reason</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control col-md-6" id="cashPaid"
+                                placeholder="Reason why amount is greater than amount Payable"
+                                [formControl]="paymentForm.controls['cashPaid']"
+                                [ngClass]="{'is-invalid': paymentForm.controls['cashPaid'].hasError('required') && paymentForm.controls['cashPaid'].touched}">
+                            </div>
+                          </div>
+                          <div class="form-group row" *ngIf="cash">
+                            <label for="cashPaid" id="expense-cashPaid" class="col-sm-2 col-form-label">Cash
+                              Paid</label>
+                            <div class="col-sm-10">
+                              <input type="number" class="form-control col-md-6" id="cashPaid" placeholder="Cash Paid"
+                                [formControl]="paymentForm.controls['cashPaid']"
+                                [ngClass]="{'is-invalid': paymentForm.controls['cashPaid'].hasError('required') && paymentForm.controls['cashPaid'].touched}">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label for="CreditAmtn" id="expense-vendor" class="col-sm-2 col-form-label">Vendor</label>
+                            <div class="form-group col-md-3">
+                              <span style="font-size:14px; font-family:'Courier New', Courier, monospace;">Ruth
+                                Ejike</span>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label for="cashPaid" id="expense-receipt" class="col-sm-2 col-form-label">Receipts</label>
+                            <div class="col-sm-10">
+                              <input (change)="initReceiptUpload($event)" name="fileToUpload" type="file" multiple
+                                class="paymentForm-control col-md-6" id="receipts"
+                                [formControl]="paymentForm.controls['receipts']"
+                                [ngClass]="{'is-invalid': paymentForm.controls['receipts'].hasError('required') && paymentForm.controls['receipts'].touched}">
+                            </div>
+                          </div>
+                          <div class="d-flex justify-content-center mt-4 mb-4">
+                            <button id="createExpenseBtn" class="btn btn-primary" type="submit"
+                              [disabled]="!paymentForm.valid"><i *ngIf="loadingpayment"
+                                class="fa fa-spinner fa-spin"></i> Pay </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>
+
+<!-- Create bank template -->
+<ng-template #createBank let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="craeteBankTitle">Create bank</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')" id="close-bank-modal">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="card-body offset-1">
+      <app-alert></app-alert>
+      <form #createBankForm=ngForm [formGroup]="createBankform" (ngSubmit)="addBank()">
+        <div class="form-group row">
+          <label for="example-text-input" id="bankName" class="col-2 col-form-label">Bank Name<span
+              style="color:red">*</span></label>
+          <div class="col-10">
+            <input type="text" id="bank-bankName" class="form-control"
+              [formControl]="createBankform.controls['bankName']"
+              [ngClass]="{'is-invalid': createBankform.controls['bankName'].hasError('required') && createBankform.controls['bankName'].touched}" />
+            <div class="invalid-feedback"
+              *ngIf="createBankform.controls['bankName'].hasError('required') && createBankform.controls['bankName'].touched">
+              Bank Name
+              is required.</div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-search-input" id="accountName" class="col-2 col-form-label">Account Name<span
+              style="color:red">*</span></label>
+          <div class="col-10">
+            <input type="text" id="bank-accountName" class="form-control"
+              [formControl]="createBankform.controls['accountName']"
+              [ngClass]="{'is-invalid': createBankform.controls['accountName'].hasError('required') && createBankform.controls['accountName'].touched}" />
+            <div class="invalid-feedback"
+              *ngIf="createBankform.controls['accountName'].hasError('required') && createBankform.controls['accountName'].touched">
+              Account Name
+              is required.</div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-tel-input" id="accountNumber" class="col-2 col-form-label">Account Number<span
+              style="color:red">*</span></label>
+          <div class="col-10">
+            <input type="text" id="bank-accountNumber" class="form-control"
+              [formControl]="createBankform.controls['accountNumber']"
+              [ngClass]="{'is-invalid': createBankform.controls['accountNumber'].hasError('required') && createBankform.controls['accountNumber'].touched || createBankform.controls['accountNumber'].hasError('pattern')  ||  createBankform.controls['accountNumber'].hasError('minlength') || createBankform.controls['accountNumber'].hasError('maxlength')}" />
+            <div class="invalid-feedback"
+              *ngIf="createBankform.controls['accountNumber'].hasError('required') && createBankform.controls['accountNumber'].touched">
+              Account Number is required.</div>
+            <div class="invalid-feedback "
+              *ngIf="createBankform.controls['accountNumber'].hasError('maxlength') && createBankform.controls['accountNumber'].touched">
+              Account Number must be 10 characters.</div>
+            <div class="invalid-feedback "
+              *ngIf="createBankform.controls['accountNumber'].hasError('minlength') && createBankform.controls['accountNumber'].touched">
+              Account Number must be 10 characters.
+            </div>
+            <div class="invalid-feedback "
+              *ngIf="createBankform.controls['accountNumber'].hasError('pattern') && createBankform.controls['accountNumber'].touched">
+              Account Number must be a valid number.
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-text-input" id="label-incomeCategory" class="col-2 col-form-label">Currency</label>
+          <div class="col-9">
+            <select class="form-control" [formControl]="form.controls['currency']">
+              <option *ngFor="let currency of currencies" value="{{currency}}">
+                {{currency}}
+              </option>
+            </select>
+            <div class="invalid-feedback"
+            *ngIf="form.controls['currency'].hasError('required') && form.controls['currency'].touched">Currency
+            is required.</div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-email-input" id="branch" class="col-2 col-form-label">Branch</label>
+          <div class="col-10">
+            <input type="text" id="bank-branch" class="form-control" [formControl]="createBankform.controls['branch']"
+              [ngClass]="{'is-invalid': createBankform.controls['branch'].hasError('required') && createBankform.controls['branch'].touched}" />
+            <div class="invalid-feedback"
+              *ngIf="createBankform.controls['branch'].hasError('required') && createBankform.controls['branch'].touched">
+              Address
+              is required.</div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center mt-4 mb-4">
+          <button class="btn btn-primary" id="createBankCategoryBtn" type="submit" [disabled]="!createBankform.valid"><i
+              *ngIf="loadingBank" class="fa fa-spinner fa-spin"></i> Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>

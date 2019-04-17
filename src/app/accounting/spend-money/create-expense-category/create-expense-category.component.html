@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="details-header">
+    <div class="row">
+      <div class="col-lg-12 emp-form">
+        <div class="card">
+          <div class="modal-header">
+            <h4 class="modal-title" id="createexpensecategoryheader">New Expense Category</h4>
+          </div>
+          <div class="card-body col-6" style="margin: auto; width: 70%">
+            <app-alert></app-alert>
+            <form #createExpenseForm=ngForm [formGroup]="form" (ngSubmit)="onSubmit()">
+              <div class="form-group row">
+                <label for="example-search-input" id="name-label" class="col-3 col-form-label">Name<span
+                    style="color:red">*</span></label>
+                <div class="col-9">
+                  <input type="text" id="name-input" class="form-control" [formControl]="form.controls['name']"
+                    [ngClass]="{'is-invalid': form.controls['name'].hasError('required') && form.controls['name'].touched}" />
+                  <div class="invalid-feedback errname"
+                    *ngIf="form.controls['name'].hasError('required') && form.controls['name'].touched">Name
+                    is required.</div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="example-text-input" id="categoryType-label" class="col-3 col-form-label">Category
+                  Type</label>
+                <div class="col-9">
+                  <select id="categoryType-input" class="form-control" [formControl]="form.controls['categoryType']">
+                    <option id="each-category-type-0" value="expenseOnDirectCosts">Expense On Direct Costs</option>
+                    <option id="each-category-type-1" value="expenseOnFixedAssets">Expense On Fixed Assets</option>
+                    <option id="each-category-type-2" value="expenseOnCurrentAssets">Expense On Current Assets</option>
+                    <option id="each-category-type-3" value="generalOperatingExpense">General Operating Expense</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="expenseCategoryList && expenseCategoryList.length != 0">
+                <label for="description" id="parentCategory-label" class="col-sm-3 col-form-label">Parent
+                  Category</label>
+                <div class="col-sm-9">
+                  <select id="parentCategory-input" class="form-control"
+                    [formControl]="form.controls['parentCategory']">
+                    <option *ngFor="let pcat of expenseCategoryList; let optionIndex = index" value="{{pcat._id}}"
+                      id="parentCategory-{{optionIndex}}">{{pcat.secret.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="d-flex justify-content-center mt-4 mb-4">
+                <button id="createexpensecategoryBtn" class="btn btn-primary" type="submit" [disabled]="!form.valid || disableBtn"><i
+                    *ngIf="loading" class="fa fa-spinner fa-spin"></i> Create</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

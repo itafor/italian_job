@@ -1,0 +1,40 @@
+.parsed {
+    &__container {
+      padding: 5px;
+    }
+  
+    border: 1px solid grey;
+    background-color: white;
+    color: #333;
+    border-radius: 3px;
+    margin: 2px;
+    display: inline-block;
+  
+    &__email {
+      margin-right: 10px;
+      margin-left: 5px;
+    }
+  
+    &__close {
+      margin-right: 5px;
+    }
+  
+    &__close:hover {
+      color: red;
+      cursor: pointer;
+    }
+  }
+  
+  // .head {
+  //   background-color: #fbeec1;
+  // }
+  
+  .alert {
+    color: red;
+    display: inline-block;
+    padding-left: 3px;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+    animation: 2s alertAnim forwards;
+  }
+  

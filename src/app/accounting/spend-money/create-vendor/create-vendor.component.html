@@ -1,0 +1,83 @@
+<div class="container">
+  <div class="details-header">
+    <div class="row">
+      <div class="col-lg-12 emp-form">
+        <div class="card">
+          <div class="modal-header">
+            <h4 class="modal-title" id="createvendorheader">New Vendor</h4>
+          </div>
+          <div class="card-body offset-1">
+            <app-alert></app-alert>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              <div class="col-12" style="display:flex">
+                <div class="col-6">
+                <div class="form-group row">
+                  <div class="col-10">
+                    <label for="example-text-input" id="name-label" class="col-2 col-form-label" style="display: inline">Name<span
+                        style="color:red">*</span></label>
+                    <input type="text" id="name-input" class="form-control"
+                      [formControl]="form.controls['name']"
+                      [ngClass]="{'is-invalid': form.controls['name'].hasError('required') && form.controls['name'].touched ||  form.controls['name'].hasError('minlength') ||  form.controls['name'].hasError('maxlength')} " />
+                    <div class="invalid-feedback errname"
+                      *ngIf="form.controls['name'].hasError('required') && form.controls['name'].touched">Name
+                      is required.</div>
+                    <div class="invalid-feedback errname"
+                      *ngIf="form.controls['name'].hasError('minlength') ||  form.controls['name'].hasError('maxlength') && form.controls['name'].touched">
+                      Name must be between 3 and 100 characters.
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-10">
+                    <label for="example-search-input" id="email-label" class="col-2 col-form-label" style="display: inline">Email</label>
+                    <input type="email" id="email-input" class="form-control"
+                      [formControl]="form.controls['email']"
+                      [ngClass]="{'is-invalid': form.controls['email'].hasError('email') && form.controls['email'].touched}" />
+                    <div class="invalid-feedback erremail"
+                      *ngIf="form.controls['email'].hasError('email') && form.controls['email'].touched">Enter a valid
+                      Email.</div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-10">
+                    <label for="example-tel-input" id="phone-label" style="display:inline"
+                      class="col-2 col-form-label">Phone Number</label>
+                    <input type="text" id="phone-input" class="form-control"
+                      [formControl]="form.controls['phoneNumber']"
+                      [ngClass]="{'is-invalid': form.controls['phoneNumber'].hasError('required') && form.controls['phoneNumber'].touched ||  form.controls['phoneNumber'].hasError('pattern')  ||  form.controls['phoneNumber'].hasError('minlength') || form.controls['phoneNumber'].hasError('maxlength')}" />
+                    <div class="invalid-feedback errphone"
+                      *ngIf="form.controls['phoneNumber'].hasError('maxlength') && form.controls['phoneNumber'].touched">
+                      Phone
+                      Number must be 11 characters.</div>
+                    <div class="invalid-feedback errphone"
+                      *ngIf="form.controls['phoneNumber'].hasError('minlength') && form.controls['phoneNumber'].touched">
+                      Phone Number must be 11 characters.
+                    </div>
+                    <div class="invalid-feedback errphone"
+                      *ngIf="form.controls['phoneNumber'].hasError('pattern') && form.controls['phoneNumber'].touched">
+                      Phone Number must be a valid number.
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <div class="form-group col-6">
+                    <div class="col-10">
+                      <label for="example-email-input" id="address-label" class="col-2 col-form-label" style="display: inline">Address</label>
+                      <textarea type="text" id="address-input" class="form-control" rows="8"
+                        [formControl]="form.controls['address']">
+                      </textarea>
+                    </div>
+                  </div>
+              </div>
+                <div class="d-flex justify-content-center mt-4 mb-4">
+                  <button id="createVendorBtn" class="btn btn-primary" type="submit" [disabled]="!form.valid"><i
+                      *ngIf="loading" class="fa fa-spinner fa-spin"></i> Create </button>
+                </div>
+              
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

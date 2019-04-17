@@ -1,0 +1,38 @@
+<div role="paginationSpinner" *ngIf="downloadFeedback.show">
+  <span [ngClass]="downloadFeedback.class">{{ downloadFeedback.text }}</span>
+</div>
+<div class="mx-2 my-2 card">
+  <div class="card-body">
+      <ngb-tabset #myMailTabset="ngbTabset" [destroyOnHide]="false">
+          <ngb-tab title="Sent Mails">
+            <ng-template ngbTabContent>
+                <app-email-sent
+                (selectedMail)="handleMailSelection($event)"></app-email-sent>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab *ngFor="let item of openTabs; let index=index" id="{{tabIdForIndex(index)}}">
+            <ng-template ngbTabTitle>
+              <span [innerHTML]="item.title"></span> &nbsp;
+              <span (click)="closeTab($event, index)" class="indicate--danger">
+                  &times;
+              </span>
+            </ng-template>
+            <ng-template ngbTabContent>
+              <ng-container *ngIf="item.type === 'NEW_MAIL' ">
+                  <app-create-email (sendMailEvent)="sendMailEventHandler($event)"
+                  [tabIndex]="index" [mailSender]="user.username"
+                  (addDraftEvent)="draftHandler($event)"
+                  (discardEvent)="handleDiscardEvent(index)"
+                  [initMailObj]="item.content"></app-create-email>
+              </ng-container>
+              <ng-container *ngIf="item.type  === 'EXISTING_MAIL' ">
+                  <app-email-view [mail]="item.content" (sendMailEvent)="sendMailEventHandler($event)"
+                  [loggedInUserEmail]="user.username"
+                  [page]="item.page"
+                  (downloadFeedbackEvent)="downloadFeedbackHandler($event)"></app-email-view>
+              </ng-container>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+  </div>
+</div>

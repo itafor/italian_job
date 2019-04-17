@@ -1,0 +1,52 @@
+.icon{
+    margin-right: 20px;
+    cursor: pointer;
+}
+.InactiveVendor  {
+    color: #6c757d6b;
+    font-variant: all-petite-caps;
+   }
+#tableValue{
+    font-size: 2px;
+    opacity: 0.01;
+}
+.table-header{
+background:'#333';
+}
+
+// #delete_vendor{
+//     margin-right: 10px;
+//     }
+    
+
+#name.ng-touched.ng-invalid {
+    border-color: #dc3545;
+    }
+    div.validation-error {
+        width:100%;
+        margin-top: .25rem;
+        font-size: 80%;
+        color: #dc3545;
+    }
+
+    #amountPaidViaBankdiv{
+        margin-left: -180px;
+    }
+    
+    @media only screen and (max-width: 1200px) {
+        #delete_sale{
+            margin-right: 5px;
+            }
+        #amountPaidViaBankdiv{
+            margin-left: -100px;
+            }
+            #amountPaidViaBankinput{
+                width: 100px;
+            }
+      }
+    
+    @media only screen and (max-width: 600px) {
+        #delete_vendor{
+            margin-right: 5px;
+            }
+      }

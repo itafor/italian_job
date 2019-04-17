@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="display-4" style="font-size:1.3rem;">Quiz Instructions</div>
+      </div>
+
+      <div class="card-body">
+        <form id="step_three_form" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-10 offset-md-1">
+              <div class="form-group mb-4">
+                <quill-editor
+                  [(ngModel)]="instruction"
+                  [options]="editorOptions"
+                  name="form"
+                  [value]="instruction"
+                  (ready)="onEditorCreated($event)"
+                  (change)="onContentChanged($event)"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                </quill-editor>
+              </div>
+
+              <div class="row float-right">
+                <div class="col-12">
+                  <button
+                    id="step_two_previous"
+                    (click)="saveAndGoBack()"
+                    class="btn btn-secondary loading-demo py-2 mr-3 mb-1"
+                  >
+                    <i class="icon ion-ios-arrow-back pr-2"></i>
+                    Previous
+                  </button>
+                  <button
+                    type="submit"
+                    id="step_two_submit"
+                    class="btn btn-primary loading-demo py-2 mr-2 mb-1"
+                  >
+                    <i *ngIf="loading" class="fa fa-spinner fa-spin"></i> Next<i
+                      class="icon ion-ios-arrow-forward pl-2"
+                    ></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

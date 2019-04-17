@@ -1,0 +1,24 @@
+[
+    {
+        "role": "Manager",
+        "date": "14 Jan, 2019",
+        "time":"4:20pm"
+        
+    },
+    {
+        "role": "Supervisor",
+        "date": "15 Jan, 2019",
+        "time": "8:20am"
+    },
+    {
+        "role": "Secretary",
+        "date": "16 Jan, 2019",
+        "time": "9:00am"
+    },
+    {
+        "role": "Deputy",
+        "date": "17 Jan, 2019",
+        "time": "12:20pm"
+    }
+
+]

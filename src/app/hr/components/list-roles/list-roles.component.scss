@@ -1,0 +1,40 @@
+
+.icon{
+ margin-right: 30px;
+ cursor: pointer;
+}
+
+.details-header {
+    margin: 30px 15px;
+    padding: 0px;
+}
+
+.loading-tab {
+     height: 330px;
+}
+
+.roleActive  {
+      color: rgba(0,0,0,.87);
+     font-variant: all-petite-caps;
+}
+
+
+.roleAction {
+  color: #6c757d6b;
+}
+
+.status-confirmation {
+  padding: 10px 0px;
+  color: #fff;
+  border-radius: 5px;
+  transition-timing-function: ease;
+}
+
+:host ::ng-deep .datatable-body-cell, .tble_action {
+   overflow-x: inherit !important;
+   padding-bottom: 10px;
+}
+
+:host ::ng-deep .visible{
+     overflow: -webkit-paged-y;
+}

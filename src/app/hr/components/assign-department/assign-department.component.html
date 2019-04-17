@@ -1,0 +1,40 @@
+<div>
+  <div class="text-center" *ngIf="!departmentList">
+    <div class="loading-tab">
+      <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Fetching data</h5>
+    </div>
+  </div>
+</div>
+<div *ngIf="departmentList">
+  <div class="text-center" *ngIf="(departmentList.length === 0)">
+    <div class="loading-tab">
+      <h5 id="no-assigned-department">No Department</h5>
+    </div>
+  </div>
+</div>
+<div *ngIf="departmentList && departmentList.length" class="assign-dept-wrap">
+  <form (ngSubmit)="submitForm($event)">
+    <div class="form-group">
+      <div class="form-group">
+        <div>
+          <select id="assigned-department-id" name="department" class="custom-select"
+            [class.is-invalid]="departmentHasError  && department.touched"
+            (change)="validateDepartment(department.value)" #department="ngModel" [(ngModel)]="newDepartment">
+            <option value="default">-- Select Department --</option>
+            <option id="department-list-{{optionIndex}}"
+              *ngFor="let department of departmentList;  let optionIndex = index" value="{{ department.id}}">
+              {{department.departmentSecret.name }}
+            </option>
+          </select>
+          <small class="text-danger" [class.d-none]="!departmentHasError || department.untouched">Please select a
+            department</small>
+        </div>
+        <div class="assign-btn">
+          <button id="assign-department-submit" [disabled]="isBtnDisabled()" class="btn btn-primary" type="submit"><i *ngIf="submitting" class="fa fa-spinner fa-spin"></i> Assign
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>

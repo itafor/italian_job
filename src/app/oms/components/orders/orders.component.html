@@ -1,0 +1,57 @@
+<div class="card-header">
+  <nav class="navbar ruler-nav">
+    <form>
+        <div class="has-search search-input search-input--large">
+          <i class="fa fa-search form-control-feedback"></i>
+          <input class="bg-none form-control" 
+            placeholder="Search Product" type="search">
+        </div>
+    </form>
+  </nav>
+  <div class="card-body">
+      <div>
+        <div>
+          <div class="text-center" *ngIf="!orderList">
+            <div class="loading-tab">
+              <h5><i class="fa fa-spinner fa-spin fa-1x"></i> Please wait</h5>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="orderList">
+          <div class="text-center" *ngIf="orderList.length === 0">
+            <div class="loading-tab">
+              <h5 id="no-inbound-id">No Orders</h5>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="orderList && orderList.length" class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th> Fullname </th>
+                <th> Email </th>
+                <th> Phone </th>
+                <th> Product Type </th>
+                <th> Quantity </th>
+                <th> Amount </th>
+                <th> TrxRef </th>
+                <th> Date Paid </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let orders of orderList">
+                <td> {{ orders.secret?.customerName }} </td>
+                <td>{{ orders.secret?.customerEmail }}</td>
+                <td>{{ orders.secret?.customerPhoneNumber }}</td>
+                <td>{{ orders.secret?.productType}}</td>
+                <td>{{ orders.secret?.numberOfItems }}</td>
+                <td>{{ orders.secret?.amount }}</td>
+                <td>{{ orders.trxRef }}</td>
+                <td>{{ orders.paymentVerifiedDate | date:'medium'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+  </div>
+</div>
